@@ -1,0 +1,55 @@
+{
+    "access": "org",
+    "accessInformation": null,
+    "appCategories": [
+    ],
+    "avgRating": 0,
+    "banner": null,
+    "commentsEnabled": true,
+    "created": 1480484149000,
+    "culture": "en-au",
+    "description": "\n<p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Tile package creation tool.</p>",
+    "documentation": null,
+    "extent": [
+    ],
+    "guid": null,
+    "id": "d9bf84ab14e04f1c90ef9807542c2788",
+    "industries": [
+    ],
+    "itemControl": "admin",
+    "languages": [
+    ],
+    "largeThumbnail": null,
+    "licenseInfo": "\n<p style='-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><br /></p>",
+    "listed": false,
+    "modified": 1481513660000,
+    "name": "d9bf84ab14e04f1c90ef9807542c2788.zip",
+    "numComments": 17,
+    "numRatings": 0,
+    "numViews": 50,
+    "owner": "Jayson_Ward_melbournedev",
+    "ownerFolder": null,
+    "properties": null,
+    "protected": false,
+    "screenshots": [
+    ],
+    "size": 809433,
+    "snippet": "Tile package creation tool.",
+    "spatialReference": null,
+    "tags": [
+    ],
+    "thumbnail": "thumbnail/thumbnail.png",
+    "title": "Tile Package Kreator",
+    "type": "Native Application",
+    "typeKeywords": [
+        "API_QML",
+        "App",
+        "Application",
+        "AppStudio",
+        "Configuration",
+        "Native",
+        "qml",
+        "Registered App"
+    ],
+    "url": "urn:ietf:wg:oauth:2.0:oob"
+}

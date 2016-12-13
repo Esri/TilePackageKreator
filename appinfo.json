@@ -1,0 +1,76 @@
+{
+    "capabilities": {
+        "audio": false,
+        "bluetooth": false,
+        "camera": false,
+        "location": true,
+        "microphone": false,
+        "network": true,
+        "storage": false
+    },
+    "deployment": {
+        "android": {
+            "packageName": ""
+        },
+        "clientId": "wp34AtIdOpa09Bfx",
+        "ios": {
+            "bundleId": "",
+            "codeSignIdentity": ""
+        },
+        "macos": {
+            "bundleId": "",
+            "codeSignIdentity": ""
+        }
+    },
+    "devicesTypes": [
+        "desktop"
+    ],
+    "display": {
+        "desktop": {
+            "fullScreen": false,
+            "minimumHeight": 0,
+            "minimumWidth": 0
+        },
+        "phone": {
+            "landscape": true,
+            "portrait": true,
+            "showStatusBar": true
+        },
+        "tablet": {
+            "landscape": true,
+            "portrait": true,
+            "showStatusBar": true
+        }
+    },
+    "environment": {
+    },
+    "mainFile": "TilePackageKreator.qml",
+    "projectFile": "TilePackageKreator.qmlproject",
+    "properties": {
+        "mainButtonBackgroundColor": "#196fa6",
+        "mainButtonBorderColor": "#007ac2",
+        "mainButtonBorderWidth": 1,
+        "mainButtonFontColor": "#ffffff",
+        "mainButtonPressedColor": "#166090",
+        "mainButtonRadius": 0,
+        "mapDefaultLat": 0,
+        "mapDefaultLong": 0,
+        "mapDefaultZoomLevel": 3,
+        "toolBarBackgroundColor": "#323232",
+        "toolBarBorderColor": "#aaaaaa",
+        "toolBarFontColor": "#ffffff"
+    },
+    "resources": {
+        "appIcon": "appicon.png",
+        "launchImageBackground": "launchimage-background.png",
+        "launchImageBackgroundColor": "#4c8814",
+        "launchImageOverlay": "launchimage.png"
+    },
+    "type": "app",
+    "urlScheme": "arcgis-tilepackage",
+    "version": {
+        "major": 1,
+        "micro": 82,
+        "minor": 0
+    }
+}

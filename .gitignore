@@ -29,10 +29,30 @@ Makefile*
 
 *.autosave
 
-# QtCtreator Qml
+#QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
+appinfo.user
+.info.json
 
-# QtCtreator CMake
-CMakeLists.txt.user
+*.tpk
 
+_archive/ExportTPKView.qml
+
+HistoryManager/history.json
+
+_archive/TPKGetPKInfo.qml
+
+tpks/tpk_export_0af091e8-7d97-434d-b1c0-b177104395ee.pkinfo
+
+*.pkinfo
+
+_archive/xmlhttprequest
+
+_archive/AvailableServicesView.qml
+
+_archive/OperationSelectionView.qml
+
+#AppStudio
+
+appmetrics.json

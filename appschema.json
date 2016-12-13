@@ -1,0 +1,85 @@
+{
+    "propertiesInfo": {
+        "title": "UI and Map",
+        "categoryInfos": [{
+            "title": "Toolbar",
+            "propertyInfos": [{
+                "type": "color",
+                "label": "Background Color",
+                "name": "toolBarBackgroundColor",
+                "value": "#323232"
+            }, {
+                "type": "color",
+                "label": "Border Color",
+                "name": "toolBarBorderColor",
+                "value": "#aaaaaa"
+            }, {
+                "type": "color",
+                "label": "Font Color",
+                "name": "toolBarFontColor",
+                "value": "#ffffff"
+            }]
+        }, {
+            "title": "Buttons",
+            "propertyInfos": [{
+                "type": "color",
+                "label": "Background Color",
+                "name": "mainButtonBackgroundColor",
+                "value": "#196fa6"
+            }, {
+                "type": "color",
+                "label": "Border Color",
+                "name": "mainButtonBorderColor",
+                "value": "#007ac2"
+            }, {
+                "type": "color",
+                "label": "Pressed Color",
+                "name": "mainButtonPressedColor",
+                "value": "#166090"
+            }, {
+                "type": "color",
+                "label": "Font Color",
+                "name": "mainButtonFontColor",
+                "value": "#ffffff"
+            }, {
+                "type": "number",
+                "label": "Border Width",
+                "name": "mainButtonBorderWidth",
+                "minimum": "1",
+                "maximum": "4",
+                "value" : "1"
+            }, {
+                "type": "number",
+                "label": "Border Radius",
+                "name": "mainButtonRadius",
+                "minimum": "0",
+                "maximum": "10",
+                "value" : "1"
+            }]
+        }, {
+            "title": "Map",
+            "propertyInfos": [{
+                "type": "number",
+                "label": "Default Latitude",
+                "name": "mapDefaultLat",
+                "value": "39.8665",
+                "minimum": "-180",
+                "maximum": "180"
+            }, {
+                "type": "number",
+                "label": "Default Longitude",
+                "name": "mapDefaultLong",
+                "value": "-97.3105",
+                "minimum": "-180",
+                "maximum": "180"
+            }, {
+                "type": "number",
+                "label": "Default Zoom Level",
+                "name": "mapDefaultZoomLevel",
+                "value": "3",
+                "minimum": "0",
+                "maximum": "19"
+            }]
+        }]
+    }
+}
