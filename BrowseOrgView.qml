@@ -200,13 +200,9 @@ Item {
                                 Layout.preferredWidth: innerTile.width
                                 Layout.preferredHeight: (innerTile.width / thumbnailWidth * thumbnailHeight)
                                 fillMode: Image.PreserveAspectFit
-                                source: (function () {
-                                    var tn = "images/no_thumbnail.png";
-                                    if (thumbnail !== null && thumbnail !== undefined && thumbnail !== "") {
-                                        tn = browseOrganizationTpksView.portal.restUrl + "/content/items/" + id + "/info/" + thumbnail + (browseOrganizationTpksView.portal.signedIn ? "?token=" + browseOrganizationTpksView.portal.token : "");
-                                    }
-                                    return tn;
-                                })(thumbnail)
+                                source: (thumbnail !== null && thumbnail !== undefined && thumbnail !== "") ?
+                                        browseOrganizationTpksView.portal.restUrl + "/content/items/" + id + "/info/" + thumbnail + (browseOrganizationTpksView.portal.signedIn ? "?token=" + browseOrganizationTpksView.portal.token : "")
+                                        : "images/no_thumbnail.png"
                             }
 
                             Rectangle {
@@ -329,14 +325,16 @@ Item {
                                 MenuItem {
                                     text: qsTr("Download via Web Browser")
                                     onTriggered: {
-                                        Qt.openUrlExternally("http://www.arcgis.com/sharing/rest/content/items/" + servicesListModel.get(tileMenuMenu.tileIndex).id + "/data?token="+ portal.token);
+                                        var baseUrl = !portal.isPortal ? "http://www.arcgis.com/sharing/rest/content" : portal.restUrl + "/content";
+                                        Qt.openUrlExternally( baseUrl + "/items/" + servicesListModel.get(tileMenuMenu.tileIndex).id + "/data?token="+ portal.token);
                                     }
                                 }
 
                                 MenuItem {
-                                    text: qsTr("View on ArcGIS")
+                                    text: !portal.isPortal ? qsTr("View on ArcGIS") : qsTr("View on Portal")
                                     onTriggered: {
-                                        Qt.openUrlExternally("http://www.arcgis.com/home/item.html?id=" + servicesListModel.get(tileMenuMenu.tileIndex).id + "&token="+ portal.token);
+                                        var baseUrl = !portal.isPortal ? "http://www.arcgis.com/home" : portal.portalUrl + "/home";
+                                        Qt.openUrlExternally( baseUrl + "/item.html?id=" + servicesListModel.get(tileMenuMenu.tileIndex).id + "&token="+ portal.token);
                                     }
                                 }
                             }
@@ -516,6 +514,12 @@ Item {
                         result.description = "";
                     }
 
+                    console.log(result.thumbnail);
+
+                    if(!result.hasOwnProperty("thumbnail")){
+                        result["thumbnail"] = "";
+                    }
+
                     result.isWebMercator = _isWebMercator(result.spatialReference);
 
                     servicesListModel.append(result);
@@ -620,7 +624,6 @@ Item {
         else{
             return false;
         }
-
     }
 
     // END /////////////////////////////////////////////////////////////////////

@@ -24,11 +24,17 @@ Item {
     property AvailableServicesModel asm: AvailableServicesModel {
         portal: availableServicesView.portal
         onModelComplete: {
-            servicesGridView.currentIndex = -1;
-            servicesGridView.interactive = true;
-            servicesGridView.enabled = true;
-            if (activityIndicator.visible === true) {
-                activityIndicator.visible = false;
+            if(asm.servicesListModel.count > 0){
+                servicesGridView.currentIndex = -1;
+                servicesGridView.interactive = true;
+                servicesGridView.enabled = true;
+                if (activityIndicator.visible === true) {
+                    activityIndicator.visible = false;
+                }
+            }
+            else{
+                refreshSpinner.visible = false;
+                servicesStatusText.text = qsTr("No export tile services are available.");
             }
             rotator.stop();
         }
@@ -56,6 +62,7 @@ Item {
         asm.getAvailableServices.start();
         activityIndicator.visible = true;
         rotator.target = refreshSpinner;
+        refreshSpinner.visible = true;
         rotator.start();
     }
 
@@ -391,11 +398,13 @@ Item {
                                 }
 
                                 MenuItem {
-                                    text: qsTr("View on ArcGIS")
-                                    visible: isArcgisTileService
-                                    enabled: isArcgisTileService
+                                    text: !portal.isPortal ? qsTr("View on ArcGIS") : qsTr("View on Portal")
+                                    visible: isArcgisTileService || portal.isPortal
+                                    enabled: isArcgisTileService || portal.isPortal
                                     onTriggered: {
-                                        Qt.openUrlExternally("http://www.arcgis.com/home/item.html?id=" + asm.servicesListModel.get(tileMenuMenu.tileIndex).id + "&token=" + availableServicesView.portal.token);
+                                        var baseUrl = !portal.isPortal ? "http://www.arcgis.com/home" : portal.portalUrl + "/home";
+                                        Qt.openUrlExternally( baseUrl + "/item.html?id=" + asm.servicesListModel.get(tileMenuMenu.tileIndex).id + "&token="+ availableServicesView.portal.token);
+                                        //Qt.openUrlExternally("http://www.arcgis.com/home/item.html?id=" + asm.servicesListModel.get(tileMenuMenu.tileIndex).id + "&token=" + availableServicesView.portal.token);
                                     }
                                 }
 
