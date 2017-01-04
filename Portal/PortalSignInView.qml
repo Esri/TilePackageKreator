@@ -167,12 +167,22 @@ Rectangle {
                                     onClicked: {
                                         signInView.rejected();
                                     }
+
+                                    Accessible.ignored: true
+                                    Accessible.name: dialogStyle ? qsTr("Close") : qsTr("Back")
+                                    Accessible.description: qsTr("This button will either close the dialog or go back to the previous view depending on the dialog style.")
+                                    Accessible.onPressAction: {
+                                        if(enabled && visible){
+                                            clicked();
+                                        }
+                                    }
                                 }
 
                                 ColorOverlay {
                                     anchors.fill: rButton
                                     source: rButton.image
                                     color: bannerTextColor
+                                    Accessible.ignored: true
                                 }
                             }
 
@@ -183,6 +193,7 @@ Rectangle {
 
                                 fillMode: Image.PreserveAspectCrop
                                 visible: source > ""
+                                Accessible.ignored: true
                             }
 
                             Text {
@@ -201,6 +212,9 @@ Rectangle {
                                     bold: true
                                     family: fontFamily
                                 }
+
+                                Accessible.role: Accessible.StaticText
+                                Accessible.name: title
                             }
 
                             Column {
@@ -215,6 +229,8 @@ Rectangle {
                                     source: "images/security_unlock.png"
                                     visible: portal.ignoreSslErrors
                                     fillMode: Image.PreserveAspectFit
+                                    Accessible.role: Accessible.Graphic
+                                    Accessible.name: "Ignoring SSL Errors"
                                 }
 
                                 Item {
@@ -232,12 +248,22 @@ Rectangle {
                                         onClicked: {
                                             stackView.push(signInOptions);
                                         }
+
+                                        Accessible.role: Accessible.Button
+                                        Accessible.name: qsTr("Configure Portals")
+                                        Accessible.description: qsTr("This button will open the Portal configuration view.")
+                                        Accessible.onPressAction: {
+                                            if(enabled && visible){
+                                                clicked();
+                                            }
+                                        }
                                     }
 
                                     ColorOverlay {
                                         anchors.fill: configButton
                                         source: configButton.image
                                         color: bannerTextColor
+                                        Accessible.ignored: true
                                     }
                                 }
                             }
@@ -248,6 +274,7 @@ Rectangle {
                             width: parent.width
                             color: AppFramework.alphaColor(reasonText.color, 0.5)
                             height: 1
+                            Accessible.ignored: true
                         }
 
                         Text {
@@ -266,8 +293,10 @@ Rectangle {
                                 bold: true
                                 family: fontFamily
                             }
-                        }
 
+                            Accessible.role: Accessible.AlertMessage
+                            Accessible.name: reason
+                        }
                     }
                 }
 
@@ -292,11 +321,14 @@ Rectangle {
                         Qt.openUrlExternally(link);
                     }
 
+                    Accessible.role: Accessible.AlertMessage
+                    Accessible.name: errorText.text
+
                     Rectangle {
                         anchors.fill: parent
-
                         color: "white"
                         z: parent.z - 1
+                        Accessible.ignored: true
                     }
                 }
 
@@ -328,6 +360,7 @@ Rectangle {
                     Layout.fillHeight: true
 
                     visible: !signInItem.visible
+                    Accessible.ignored: true
                 }
             }
         }
@@ -353,6 +386,10 @@ Rectangle {
             backgroundColor: bannerColor
             running: busy
         }
+
+        Accessible.role: Accessible.Animation
+        Accessible.name: qsTr("Busy Indicator")
+        Accessible.description: qsTr("This is an animation spinner that is visible when the view is busy.")
     }
 
     //--------------------------------------------------------------------------

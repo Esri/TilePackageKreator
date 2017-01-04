@@ -75,6 +75,7 @@ Item {
         id: servicesGrid
         color: "white"
         anchors.fill: parent
+        Accessible.role: Accessible.Pane
 
         Rectangle {
             id: activityIndicator
@@ -83,12 +84,14 @@ Item {
             color: config.subtleBackground
             opacity: .8
             z: 1000
+            Accessible.role: Accessible.Pane
 
             Rectangle{
                 width: 80 * AppFramework.displayScaleFactor
                 height: 80 * AppFramework.displayScaleFactor
                 anchors.centerIn: parent
                 color: "transparent"
+                Accessible.role: Accessible.Pane
 
                 Text{
                     id: refreshSpinner
@@ -97,6 +100,10 @@ Item {
                     color: "#888"
                     font.family: icons.name
                     text: icons.spinner2
+
+                    Accessible.role: Accessible.Animation
+                    Accessible.name: qsTr("animated spinner")
+                    Accessible.description: qsTr("This is an animated spinner that appears when network queries are in progress.")
                 }
             }
         }
@@ -120,60 +127,6 @@ Item {
     // COMPONENTS //////////////////////////////////////////////////////////////
 
     Component {
-        id: placeholderDelegate
-        Rectangle {
-            id: placeholderTileContainer
-            color: "transparent"
-            width: servicesGridView.cellWidth
-            height: servicesGridView.cellHeight
-            Rectangle {
-                id: placeholderTileContent
-                color: config.availableServicesView.tileItemBackgroundColor
-                border.color: config.availableServicesView.tileItemBorderColor
-                border.width: gridMargin / 2
-                anchors.fill: parent
-                anchors.margins: gridMargin / 2
-                Rectangle {
-                    id: placeholderInnerTile
-                    anchors.fill: parent
-                    anchors.margins: gridMargin / 2 + 5
-                    ColumnLayout {
-                        spacing: 0
-                        anchors.fill: parent
-                        Rectangle {
-                            Layout.preferredWidth: placeholderInnerTile.width
-                            Layout.preferredHeight: (placeholderInnerTile.width / thumbnailWidth * thumbnailHeight)
-                            color: "#f1f1f1"
-                        }
-                        Rectangle {
-                            Layout.fillHeight: true
-                            Layout.fillWidth: true
-                            color: "#fafafa"
-                            Text {
-                                text: title
-                                anchors.fill: parent
-                                font {
-                                    pointSize: config.smallFontSizePoint
-                                }
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                            }
-                        }
-                        Rectangle {
-                            color: "white"
-                            Layout.preferredHeight: 30
-                            Layout.fillWidth: true
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    //--------------------------------------------------------------------------
-
-    Component {
         id: tileServiceDelegate
 
         Item {
@@ -183,16 +136,28 @@ Item {
                 color: "transparent"
                 width: servicesGridView.cellWidth
                 height: servicesGridView.cellHeight
+                Accessible.role: Accessible.Pane
 
                 MouseArea {
                     id: tileClick
                     anchors.fill: parent
+
                     onClicked: {
                         servicesGridView.currentIndex = index;
                     }
+
                     onDoubleClicked: {
-                        servicesGridView.currentIndex = index;
                     }
+
+                    Accessible.ignored: true // ignored at this point as clicking doesn't do anything currently.
+                    /*
+                    Accessible.role: Accessible.Button
+                    Accessible.name: qsTr("Select this tile service.")
+                    Accessible.onPressAction: {
+                        if(enabled && visible){
+                            clicked(null);
+                        }
+                    }*/
                 }
 
                 Rectangle {
@@ -202,11 +167,13 @@ Item {
                     border.width: gridMargin / 2
                     anchors.fill: parent
                     anchors.margins: gridMargin / 2
+                    Accessible.role: Accessible.Pane
 
                     Rectangle {
                         id: innerTile
                         anchors.fill: parent
                         anchors.margins: gridMargin / 2 + 5
+                        Accessible.role: Accessible.Pane
 
                         ColumnLayout {
                             spacing: 0
@@ -219,12 +186,17 @@ Item {
                                 source: (thumbnail !== null && thumbnail !== undefined && thumbnail !== "") ?
                                         browseOrganizationTpksView.portal.restUrl + "/content/items/" + id + "/info/" + thumbnail + (browseOrganizationTpksView.portal.signedIn ? "?token=" + browseOrganizationTpksView.portal.token : "")
                                         : "images/no_thumbnail.png"
+
+                                Accessible.role: Accessible.Graphic
+                                Accessible.name: qsTr("Thumbnail for %1".arg(title))
                             }
 
                             Rectangle {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
                                 color: "#fafafa"
+                                Accessible.role: Accessible.Pane
+
                                 Text {
                                     text: title
                                     anchors.fill: parent
@@ -234,6 +206,10 @@ Item {
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
                                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+
+                                    Accessible.role: Accessible.StaticText
+                                    Accessible.name: text
+                                    Accessible.description: qsTr("This is the title of the tile service.")
                                 }
                             }
 
@@ -242,6 +218,7 @@ Item {
                                 color: "white"
                                 Layout.preferredHeight: 30
                                 Layout.fillWidth: true
+                                Accessible.role: Accessible.Pane
 
                                 RowLayout{
                                     anchors.fill: parent
@@ -250,6 +227,7 @@ Item {
                                         id: tileWebMercIndicatorContainer
                                         Layout.fillHeight: true
                                         Layout.fillWidth: true
+                                        Accessible.role: Accessible.Pane
 
                                         Text {
                                             id: tileWebMercIndicator
@@ -260,6 +238,10 @@ Item {
                                             font.pointSize: config.xSmallFontSizePoint
                                             text: isWebMercator ? "Web Mercator" : "NOT Web Mercator"
                                             color: isWebMercator ? "#007ac2" : "red"
+
+                                            Accessible.role: Accessible.StaticText
+                                            Accessible.name: text
+                                            Accessible.description: qsTr("Denotes whether the tile package is or is not projected in the web mercator spatial reference.")
                                         }
                                     }
 
@@ -276,6 +258,10 @@ Item {
                                             font.pointSize: config.xSmallFontSizePoint
                                             text: access
                                             color: (access === "org") ? "#007ac2" : "#222"
+
+                                            Accessible.role: Accessible.StaticText
+                                            Accessible.name: text
+                                            Accessible.description: qsTr("Denotes the access level for the tile package")
                                         }
                                     }
 
@@ -295,17 +281,23 @@ Item {
                                                     width: 20
                                                     height: 20
                                                     anchors.centerIn: parent
+                                                    Accessible.ignored: true
                                                 }
                                                 ColorOverlay {
                                                     anchors.fill: tileMenuBtnIcon
                                                     source: tileMenuBtnIcon
                                                     color: control.hovered ? app.info.properties.mainButtonBackgroundColor : "#ccc"
+                                                    Accessible.ignored: true
                                                 }
                                             }
                                         }
                                         onClicked: {
                                             tileMenuMenu.popup();
                                         }
+
+                                        Accessible.role: Accessible.Button
+                                        Accessible.name: qsTr("Tile Package Context Menu")
+                                        Accessible.description: qsTr("This button opens up a context menu with options related to this tile package.")
                                     }
                                 }
                             }
@@ -336,6 +328,9 @@ Item {
                                         metadataTextArea.cursorPosition = 0;
                                         metadataDialog.open();
                                     }
+                                    Accessible.role: Accessible.MenuItem
+                                    Accessible.name: text
+                                    Accessible.description: qsTr("This menu item will open up a dialog window and display metadata associated with this tile service.")
                                 }
 
                                 MenuItem {
@@ -344,6 +339,9 @@ Item {
                                         var baseUrl = !portal.isPortal ? "http://www.arcgis.com/sharing/rest/content" : portal.restUrl + "/content";
                                         Qt.openUrlExternally( baseUrl + "/items/" + servicesListModel.get(tileMenuMenu.tileIndex).id + "/data?token="+ portal.token);
                                     }
+                                    Accessible.role: Accessible.MenuItem
+                                    Accessible.name: text
+                                    Accessible.description: qsTr("This menu item will open up a web browser and download the tile package to your local machine.")
                                 }
 
                                 MenuItem {
@@ -352,6 +350,9 @@ Item {
                                         var baseUrl = !portal.isPortal ? "http://www.arcgis.com/home" : portal.portalUrl + "/home";
                                         Qt.openUrlExternally( baseUrl + "/item.html?id=" + servicesListModel.get(tileMenuMenu.tileIndex).id + "&token="+ portal.token);
                                     }
+                                    Accessible.role: Accessible.MenuItem
+                                    Accessible.name: text
+                                    Accessible.description: qsTr("This menu item will open up a web browser and load the ArcGIS or Portal item for this tile service.")
                                 }
                             }
                         }
@@ -369,6 +370,10 @@ Item {
         title: "Metadata"
         modality: Qt.WindowModal
 
+        Accessible.role: Accessible.Dialog
+        Accessible.name: title
+        Accessible.description: qsTr("This is a dialog that displays metadata for a selected tile service.")
+
         contentItem: Rectangle {
             color: config.subtleBackground
             anchors.fill: parent
@@ -384,6 +389,8 @@ Item {
                 Rectangle {
                     Layout.preferredHeight: 60
                     Layout.fillWidth: true
+                    Accessible.role: Accessible.Pane
+
                     RowLayout {
                         spacing: 0
                         anchors.fill: parent
@@ -396,6 +403,8 @@ Item {
                             color: app.info.properties.toolBarBackgroundColor
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
+                            Accessible.role: Accessible.Heading
+                            Accessible.name: text
                         }
 
                         Button {
@@ -414,11 +423,13 @@ Item {
                                         width: parent.width - 40
                                         fillMode: Image.PreserveAspectFit
                                         anchors.centerIn: parent
+                                        Accessible.ignored: true
                                     }
                                     ColorOverlay {
                                         anchors.fill: closeBtnIcon
                                         source: closeBtnIcon
                                         color: closeBtn.pressed ? app.info.properties.mainButtonPressedColor : app.info.properties.mainButtonBackgroundColor
+                                        Accessible.ignored: true
                                     }
                                 }
                             }
@@ -427,12 +438,22 @@ Item {
                                 metadataTitle.text = "Metadata";
                                 metadataDialog.close();
                             }
+
+                            Accessible.role: Accessible.Button
+                            Accessible.name: qsTr("Close Dialog")
+                            Accessible.onPressAction: {
+                                if(metadataDialog.visible){
+                                    clicked();
+                                }
+                            }
                         }
                     }
                 }
                 Rectangle {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    Accessible.role: Accessible.Pane
+
                     TextArea {
                         id: metadataTextArea
                         anchors.fill: parent
@@ -445,6 +466,10 @@ Item {
                         onLinkActivated: {
                             Qt.openUrlExternally(link);
                         }
+                        Accessible.role: Accessible.StaticText
+                        Accessible.name: qsTr("Metadata text")
+                        Accessible.multiLine: true
+                        Accessible.readOnly: true
                     }
                 }
             }
@@ -463,6 +488,7 @@ Item {
             x: servicesGridView.currentItem.x
             y: servicesGridView.currentItem.y
             z: 1000
+            Accessible.ignored: true
 
             Rectangle {
                 id: highlightRect

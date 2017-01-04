@@ -75,6 +75,7 @@ Item {
     Rectangle{
         anchors.fill: parent
         color: toolBarBorderColor
+        Accessible.role: Accessible.Pane
 
         RowLayout {
             anchors.fill: parent
@@ -101,10 +102,20 @@ Item {
                     color: _returnButtonColor(backButton)
                     font.family: icons.name
                     text: icons.chevron_left
+                    Accessible.ignored: true
                 }
 
                 onClicked: {
                     stackView.pop();
+                }
+
+                Accessible.role: Accessible.Button
+                Accessible.name: qsTr("Go Back to previous view")
+                Accessible.description: qsTr("This button will take you back to the previous view. The action on this button will only work when the button is enabled via the application.")
+                Accessible.onPressAction: {
+                    if(enabled && visible){
+                        clicked();
+                    }
                 }
             }
 
@@ -114,6 +125,8 @@ Item {
                 color: toolBarBackground
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Accessible.role: Accessible.Pane
+
                 Text {
                     id:toolbarTitle
                     anchors.centerIn: parent
@@ -124,6 +137,8 @@ Item {
                     textFormat: Text.RichText
                     text: ""
                     font.family: notoRegular.name
+                    Accessible.role: Accessible.Header
+                    Accessible.name: text
                 }
             }
 
@@ -131,7 +146,6 @@ Item {
 
             Button{
                 id: updatesButton
-
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
                 tooltip: qsTr("Updates Available")
@@ -151,6 +165,7 @@ Item {
                     color: _returnButtonColor(updatesButton)
                     font.family: icons.name
                     text: icons.download_circle
+                    Accessible.ignored: true
                 }
 
                 Rectangle{
@@ -170,10 +185,20 @@ Item {
                         text: "0"
                         color:"white"
                     }
+                    Accessible.ignored: true
                 }
 
                 onClicked: {
                     updates.open();
+                }
+
+                Accessible.role: Accessible.Button
+                Accessible.name: qsTr("%1 Updates are available".arg(numberOfUpdatesIndicatorCount.text))
+                Accessible.description: qsTr("This button is enabled when there are updates available to the application. The current number of updates available is %1. The action on this button will only work when the button is enabled via the application.".arg(numberOfUpdatesIndicatorCount.text))
+                Accessible.onPressAction: {
+                    if(enabled && visible){
+                        clicked();
+                    }
                 }
             }
 
@@ -204,6 +229,15 @@ Item {
                 onClicked: {
                     feedbackDialog.open();
                 }
+
+                Accessible.role: Accessible.Button
+                Accessible.name: qsTr("Feedback")
+                Accessible.description: qsTr("This button opens up a dialog that allows a user to submit feedback on the application. The action on this button will only work when the button is enabled via the application.")
+                Accessible.onPressAction: {
+                    if(enabled && visible){
+                        clicked();
+                    }
+                }
             }
 
             //------------------------------------------------------------------
@@ -232,6 +266,15 @@ Item {
                 onClicked: {
                     aboutDialog.open()
                 }
+
+                Accessible.role: Accessible.Button
+                Accessible.name: qsTr("About the app")
+                Accessible.description: qsTr("This button opens up a dialog that provides information about this application. The action on this button will only work when the button is enabled via the application.")
+                Accessible.onPressAction: {
+                    if(enabled && visible){
+                        clicked();
+                    }
+                }
             }
 
             //------------------------------------------------------------------
@@ -259,6 +302,15 @@ Item {
 
                 onClicked: {
                     stackView.push({item: hv});
+                }
+
+                Accessible.role: Accessible.Button
+                Accessible.name: qsTr("Export and Upload History")
+                Accessible.description: qsTr("This button will open the export and upload history view. The action on this button will only work when the button is enabled via the application.")
+                Accessible.onPressAction: {
+                    if(enabled && visible){
+                        clicked();
+                    }
                 }
             }
 
@@ -289,6 +341,15 @@ Item {
                 onClicked: {
                     portal.signOut();
                     stackView.push({item: startView, replace: true});
+                }
+
+                Accessible.role: Accessible.Button
+                Accessible.name: qsTr("Sign out")
+                Accessible.description: qsTr("This button will sign the user out of the application and return to the sign in screen. The action on this button will only work when the button is enabled via the application.")
+                Accessible.onPressAction: {
+                    if(enabled && visible){
+                        clicked();
+                    }
                 }
             }
 

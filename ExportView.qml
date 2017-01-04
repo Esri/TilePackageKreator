@@ -231,6 +231,9 @@ Item {
                                                 color: "#fff"
                                                 font.pointSize: config.smallFontSizePoint
                                                 font.family: notoRegular.name
+
+                                                Accessible.role: Accessible.Heading
+                                                Accessible.name: text
                                             }
                                         }
 
@@ -245,6 +248,10 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "--"
                                                 font.family: notoRegular.name
+
+                                                Accessible.role: Accessible.Indicator
+                                                Accessible.name: text
+                                                Accessible.description: qsTr("This text indicated the current zoom level of the map.")
                                             }
                                         }
                                     }
@@ -274,6 +281,9 @@ Item {
                                                 color: "#fff"
                                                 font.pointSize: config.smallFontSizePoint
                                                 font.family: notoRegular.name
+
+                                                Accessible.role: Accessible.Heading
+                                                Accessible.name: text
                                             }
                                         }
 
@@ -288,6 +298,10 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "-- --"
                                                 font.family: notoRegular.name
+
+                                                Accessible.role: Accessible.Indicator
+                                                Accessible.name: text
+                                                Accessible.description: qsTr("This text denotes the current latitude and longitude position of the mouse cursor on the map.")
                                             }
                                         }
                                     }
@@ -317,6 +331,9 @@ Item {
                                                 color: "#fff"
                                                 font.pointSize: config.smallFontSizePoint
                                                 font.family: notoRegular.name
+
+                                                Accessible.role: Accessible.Heading
+                                                Accessible.name: text
                                             }
                                         }
 
@@ -331,6 +348,12 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "Not Available with Paths"
                                                 font.family: notoRegular.name
+
+                                                Accessible.ignored: mapViewPlus.geometryType !== "multipath"
+                                                Accessible.role: Accessible.Indicator
+                                                Accessible.name: text
+                                                Accessible.description: qsTr("This text denotes the estimated output size for the current geometry and zoom levels. Not currently available with paths.")
+
                                             }
 
                                             Text{
@@ -341,6 +364,11 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "Tiles: -- Size: --"
                                                 font.family: notoRegular.name
+
+                                                Accessible.ignored: mapViewPlus.geometryType === "multipath"
+                                                Accessible.role: Accessible.Indicator
+                                                Accessible.name: text
+                                                Accessible.description: qsTr("This text denotes the estimated output size for the current geometry and zoom levels.")
                                             }
                                         }
                                     }
@@ -357,6 +385,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: 300 * AppFramework.displayScaleFactor
                     color: "#fff"
+                    Accessible.role: Accessible.Pane
 
                    DetailsForm{
                         id: exportDetails

@@ -49,6 +49,8 @@ Item {
             "unionResults": true
         }
 
+        console.log(JSON.stringify(requestInfo));
+
         geometryNetworkRequest.url = bufferUrl;
         geometryNetworkRequest.send(requestInfo);
         active = true;
@@ -95,7 +97,7 @@ Item {
                 tpkGeometryHelper.active = false;
 
                 if (status === 200) {
-                    console.log(JSON.stringify(response));
+                    //console.log(JSON.stringify(response));
                    // var responseJson = JSON.parse(response);
 
                     if(response.hasOwnProperty("geometries")){

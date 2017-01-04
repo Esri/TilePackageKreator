@@ -88,12 +88,14 @@ Item {
                                 border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
                                 radius: app.info.properties.mainButtonRadius
+                                Accessible.ignored: true
                             }
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
+                            Accessible.ignored: true
                             Rectangle {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
@@ -136,7 +138,7 @@ Item {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignTop
-                                    color:app.info.properties.mainButtonBorderColor// app.info.properties.mainButtonFontColor
+                                    color:app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("Local Tile Package")
                                     font.pointSize: config.baseFontSizePoint
@@ -152,6 +154,14 @@ Item {
 
                         onClicked: {
                             mainStackView.push(utpkv);
+                        }
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: qsTr("Upload a local tile package")
+                        Accessible.onPressAction: {
+                            if(enabled && visible){
+                                clicked();
+                            }
                         }
                     }
                 }
@@ -174,12 +184,14 @@ Item {
                                 border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
                                 radius: app.info.properties.mainButtonRadius
+                                Accessible.ignored: true
                             }
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
+                            Accessible.ignored: true
                             Rectangle {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
@@ -207,7 +219,7 @@ Item {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
-                                    color: app.info.properties.mainButtonBorderColor// app.info.properties.mainButtonFontColor
+                                    color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("CREATE")
                                     font.pointSize: config.largeFontSizePoint * .8
@@ -222,7 +234,7 @@ Item {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignTop
-                                    color: app.info.properties.mainButtonBorderColor // app.info.properties.mainButtonFontColor
+                                    color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("New Tile Package")
                                     font.pointSize: config.baseFontSizePoint
@@ -238,6 +250,14 @@ Item {
 
                         onClicked: {
                             mainStackView.push(asv);
+                        }
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: qsTr("Create a new tile package")
+                        Accessible.onPressAction: {
+                            if(enabled && visible){
+                                clicked();
+                            }
                         }
                     }
                 }
@@ -260,12 +280,14 @@ Item {
                                 border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
                                 radius: app.info.properties.mainButtonRadius
+                                Accessible.ignored: true
                             }
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
+                            Accessible.ignored: true
                             Rectangle {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
@@ -293,7 +315,7 @@ Item {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
-                                    color:app.info.properties.mainButtonBorderColor // app.info.properties.mainButtonFontColor
+                                    color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("BROWSE")
                                     font.pointSize: config.largeFontSizePoint * .8
@@ -308,7 +330,7 @@ Item {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignTop
-                                    color: app.info.properties.mainButtonBorderColor // app.info.properties.mainButtonFontColor
+                                    color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("Organization Tile Packages")
                                     font.pointSize: config.baseFontSizePoint
@@ -324,6 +346,14 @@ Item {
 
                         onClicked: {
                             mainStackView.push(btpkv);
+                        }
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: qsTr("Browse organization tile packages")
+                        Accessible.onPressAction: {
+                            if(enabled && visible){
+                                clicked();
+                            }
                         }
                     }
                 }

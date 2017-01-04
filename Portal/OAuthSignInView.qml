@@ -56,6 +56,11 @@ Item {
                 rejected();
             }
         }
+
+        Accessible.role: Accessible.WebDocument
+        Accessible.name: qsTr("ArcGIS OAuth login dialog web view.")
+        Accessible.description: qsTr("This is the ArcGIS Online or Portal login screen. It is a web view returned from the service.")
+        Accessible.focusable: true
     }
 
     //--------------------------------------------------------------------------
@@ -65,6 +70,7 @@ Item {
 
         backgroundColor: signInView.bannerColor
         running: webView.loading
+        Accessible.ignored: true
     }
 
     ProgressBar {
@@ -79,6 +85,9 @@ Item {
         value: webView.loadProgress
         minimumValue: 0
         maximumValue: 100
+
+        Accessible.role: Accessible.ProgressBar
+        Accessible.name: qsTr("Load progress of the sign in web view.")
     }
 
     //--------------------------------------------------------------------------

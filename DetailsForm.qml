@@ -14,6 +14,7 @@
  *
  */
 
+import QtQml 2.2
 import QtQuick 2.6
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
@@ -41,7 +42,7 @@ Item {
     property var currentLevels: null
     property var currentExportRequest: ({})
     property var currentSaveToLocation: null
-    property int currentBufferInMeters: 1
+    property int currentBufferInMeters: desiredBufferInput.unitInMeters
     property string defaultSaveToLocation: ""
 
     property bool exportAndUpload: true
@@ -73,6 +74,10 @@ Item {
         currentBufferInMeters = (usesMetric) ? desiredBufferSlider.value : feetToMeters(desiredBufferSlider.value);
     }
 
+    onCurrentBufferInMetersChanged: {
+        console.log("currentBufferInMeters: ", currentBufferInMeters);
+    }
+
     // UI //////////////////////////////////////////////////////////////////////
 
     ColumnLayout{
@@ -99,6 +104,9 @@ Item {
                     font.family: notoRegular.name
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+
+                    Accessible.role: Accessible.Heading
+                    Accessible.name: text
                 }
                 Rectangle{
                     Layout.fillWidth: true
@@ -120,6 +128,15 @@ Item {
 
                             onPressedChanged: {
                                 if(pressed===false){
+                                    tpkDetailsForm.exportZoomLevelsChanged();
+                                }
+                            }
+
+                            Accessible.role: Accessible.Slider
+                            Accessible.name: qsTr("Number of Zoom Levels Slider")
+                            Accessible.description: qsTr("This slider allows the user to set the number of desired zoom levels to export from level 0 to the maximum number of levels allowed by the tile service.")
+                            Accessible.onPressedChanged: {
+                                if(!pressed){
                                     tpkDetailsForm.exportZoomLevelsChanged();
                                 }
                             }
@@ -145,6 +162,11 @@ Item {
                                 textColor: config.formElementFontColor
                                 font.family: notoRegular.name
                             }
+
+                            Accessible.role: Accessible.StaticText
+                            Accessible.name: qsTr("Current number of levels: 0 to %1".arg(desiredLevelsSlider.value.toString()))
+                            Accessible.readOnly: true
+                            Accessible.description: qsTr("This static text is updated when the slider value is updated.")
                         }
                     }
                 }
@@ -164,6 +186,9 @@ Item {
             visible: (exportAndUpload && desiredLevelsSlider.value) > 15 ? true : false
             statusTextObject.anchors.margins: 10 * AppFramework.displayScaleFactor
             statusTextObject.wrapMode: Text.Wrap
+
+            Accessible.role: Accessible.AlertMessage
+            Accessible.name: message
         }
 
         Rectangle {
@@ -172,6 +197,7 @@ Item {
             Layout.topMargin: 5 * AppFramework.displayScaleFactor
             color: config.subtleBackground
             visible: exportAndUpload
+            Accessible.ignored: true
         }
 
         //----------------------------------------------------------------------
@@ -194,6 +220,8 @@ Item {
                     font.family: notoRegular.name
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    Accessible.role: Accessible.Heading
+                    Accessible.name: text
                 }
                 Rectangle{
                     Layout.fillWidth: true
@@ -203,6 +231,60 @@ Item {
                         anchors.fill: parent
                         spacing:0
 
+                        TextField {
+                            id: desiredBufferInput
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            Layout.rightMargin: 10 * AppFramework.displayScaleFactor
+
+                            property int unitInMeters: 1
+
+                            placeholderText: "%1 max, [default=1]".arg(distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max.toString())
+
+                            validator: IntValidator { bottom: 1; top: distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max;}
+
+                            style: TextFieldStyle {
+                                background: Rectangle {
+                                    anchors.fill: parent
+                                    border.width: config.formElementBorderWidth
+                                    border.color: config.formElementBorderColor
+                                    radius: config.formElementRadius
+                                    color: _uiEntryElementStates(control)
+                                }
+                                textColor: config.formElementFontColor
+                                font.family: notoRegular.name
+                            }
+
+                            onTextChanged: {
+                                currentBufferInMeters = (text !== "") ? Math.ceil(text * distanceUnits.get(desiredBufferDistanceUnit.currentIndex).conversionFactor) : 1;
+                            }
+
+                            Accessible.role: Accessible.EditableText
+                            Accessible.name: qsTr("Enter a buffer radius.")
+                            Accessible.focusable: true
+                        }
+
+                        ComboBox {
+                            id: desiredBufferDistanceUnit
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+
+                            currentIndex: Qt.locale().measurementSystem === Locale.MetricSystem ? 0 : 2
+
+                            model: ListModel {
+                                id: distanceUnits
+                                ListElement { text: "m"; max: 3000; conversionFactor: 1 }
+                                ListElement { text: "km"; max: 5; conversionFactor: 1000}
+                                ListElement { text: "ft"; max: 4000; conversionFactor: 0.3048 }
+                                ListElement { text: "mi"; max: 5; conversionFactor: 1609.34 }
+                            }
+
+                            onCurrentIndexChanged: {
+                                desiredBufferInput.text = "";
+                            }
+                        }
+
+                        /*
                         Slider {
                             id: desiredBufferSlider
                             minimumValue: 1
@@ -218,9 +300,18 @@ Item {
                                     tpkDetailsForm.exportBufferDistanceChanged();
                                 }
                             }
+
+                            Accessible.role: Accessible.Slider
+                            Accessible.name: qsTr("Buffer Radius Slider")
+                            Accessible.description: qsTr("This slider allows the user to set the desired buffer radius around a drawn multi point path.")
+                            Accessible.onPressedChanged: {
+                                if(!pressed){
+                                     tpkDetailsForm.exportBufferDistanceChanged();
+                                }
+                            }
                         }
 
-                       TextField {
+                        TextField {
                             id: desiredBuffer
                             Layout.fillHeight: true
                             Layout.preferredWidth: 90 * AppFramework.displayScaleFactor
@@ -239,7 +330,12 @@ Item {
                                 textColor: config.formElementFontColor
                                 font.family: notoRegular.name
                             }
+                            Accessible.role: Accessible.StaticText
+                            Accessible.name: qsTr("Current buffer radius is %1".arg(text))
+                            Accessible.readOnly: true
+                            Accessible.description: qsTr("This static text is updated when the buffer radius slider value is updated.")
                         }
+                        */
                     }
                 }
             }
@@ -251,6 +347,7 @@ Item {
             Layout.topMargin: 5 * AppFramework.displayScaleFactor
             color: config.subtleBackground
             visible: exportAndUpload && exportPathBuffering
+            Accessible.ignored: true
         }
 
         //----------------------------------------------------------------------
@@ -281,6 +378,9 @@ Item {
                     font.family: notoRegular.name
                     color: config.mainLabelFontColor
                     verticalAlignment: Text.AlignVCenter
+
+                    Accessible.role: Accessible.Heading
+                    Accessible.name: text
                 }
             }
          }
@@ -315,6 +415,10 @@ Item {
                         currentExportTitle = "";
                     }
                 }
+
+                Accessible.role: Accessible.EditableText
+                Accessible.name: qsTr("Enter a title for the exported tile package.")
+                Accessible.focusable: true
             }
         }
 
@@ -323,6 +427,7 @@ Item {
             Layout.preferredHeight: 10 * AppFramework.displayScaleFactor
             Layout.bottomMargin: 5 * AppFramework.displayScaleFactor
             visible: false
+            Accessible.ignored: true
             Text{
                 id: tpkFileTitleName
                 anchors.fill: parent
@@ -337,6 +442,7 @@ Item {
             Layout.preferredHeight: 1
             color: config.subtleBackground
             visible: exportAndUpload
+            Accessible.ignored: true
         }
 
         //----------------------------------------------------------------------
@@ -360,9 +466,13 @@ Item {
                         saveToLocationFolder.text = _extractFolderDirectory(defaultSaveToLocation);
                         saveToLocationDetails.visible = this.checked;
                     }
+
+                    Accessible.role: Accessible.RadioButton
+                    Accessible.name: qsTr(saveToLocationLabel.text)
                 }
 
                 Text{
+                    id: saveToLocationLabel
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     verticalAlignment: Text.AlignVCenter
@@ -370,6 +480,7 @@ Item {
                     font.pointSize: config.smallFontSizePoint
                     font.family: notoRegular.name
                     text: qsTr("Save tile package locally")
+                    Accessible.ignored: true
                 }
             }
         }
@@ -406,6 +517,15 @@ Item {
                         folderChooser.folder = currentSaveToLocation !== null ? currentSaveToLocation : AppFramework.resolvedPathUrl(defaultSaveToLocation);
                         folderChooser.open();
                     }
+
+                    Accessible.role: Accessible.Button
+                    Accessible.name: qsTr("Select the location to save the tile package to locally.")
+                    Accessible.description: qsTr("This button will open a file dialog chooser that allows the user to select the folder to save the tile package to locally.")
+                    Accessible.onPressAction: {
+                        if(saveToLocationDetails.visible){
+                            clicked();
+                        }
+                    }
                 }
                 Rectangle{
                     Layout.fillWidth: true
@@ -421,8 +541,10 @@ Item {
                         minimumPointSize: 10
                         verticalAlignment: Text.AlignVCenter
                         color:config.formElementFontColor
-                    }
 
+                        Accessible.role: Accessible.StaticText
+                        Accessible.name: qsTr("Selected save to location: %1".arg(text))
+                    }
                 }
             }
         }
@@ -446,9 +568,13 @@ Item {
                     onCheckedChanged: {
                         uploadToPortal = (checked) ? true : false;
                     }
+
+                    Accessible.role: Accessible.RadioButton
+                    Accessible.name: qsTr(uploadToPortalCheckboxLabel.text)
                 }
 
                 Text{
+                    id: uploadToPortalCheckboxLabel
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     verticalAlignment: Text.AlignVCenter
@@ -456,6 +582,7 @@ Item {
                     font.pointSize: config.smallFontSizePoint
                     font.family: notoRegular.name
                     text: qsTr("Upload tile package to ArcGIS")
+                    Accessible.ignored: true
                 }
             }
         }
@@ -491,6 +618,8 @@ Item {
                                            font.family: notoRegular.name
                                            color: config.mainLabelFontColor
                                            verticalAlignment: Text.AlignVCenter
+                                           Accessible.role: Accessible.Heading
+                                           Accessible.name: text
                                        }
                                        Text {
                                            id: tpkDescriptionCharacterCount
@@ -502,6 +631,9 @@ Item {
                                            color: config.mainLabelFontColor
                                            horizontalAlignment: Text.AlignRight
                                            verticalAlignment: Text.AlignVCenter
+                                           Accessible.role: Accessible.AlertMessage
+                                           Accessible.name: text
+                                           Accessible.description: qsTr("This text displays the number of charcters left available in the description text area.")
                                        }
                                    }
                         }
@@ -533,6 +665,10 @@ Item {
                                        tpkDescriptionTextArea.text = tpkDescriptionTextArea.getText(0, maximumLength);
                                    }
                             }
+
+                            Accessible.role: Accessible.EditableText
+                            Accessible.name: qsTr("Tile package description text area entry")
+                            Accessible.description: qsTr("Enter a description of the tile package for the online item.")
                         }
 
                         //------------------------------------------------------
@@ -541,12 +677,15 @@ Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
                             Label {
-                                text: qsTr("Share this item with") + ":"
+                                text: qsTr("Share this item with:")
                                 font.pointSize: config.smallFontSizePoint
                                 font.family: notoRegular.name
                                 color: config.mainLabelFontColor
                                 anchors.fill: parent
                                 verticalAlignment: Text.AlignVCenter
+
+                                Accessible.role: Accessible.Heading
+                                Accessible.name: text
                             }
                         }
 
@@ -597,6 +736,8 @@ Item {
                                         currentSharing = "";
                                     }
                                 }
+                                Accessible.role: Accessible.RadioButton
+                                Accessible.name: qsTr("Do not share")
                             }
 
                             RadioButton {
@@ -634,6 +775,8 @@ Item {
                                         currentSharing = "org";
                                     }
                                 }
+                                Accessible.role: Accessible.RadioButton
+                                Accessible.name: qsTr("Your organization")
                             }
 
                             RadioButton {
@@ -671,6 +814,8 @@ Item {
                                         currentSharing = "everyone";
                                     }
                                 }
+                                Accessible.role: Accessible.RadioButton
+                                Accessible.name: qsTr("Everyone (Public)")
                             }
                         }
                 }
@@ -713,8 +858,9 @@ Item {
     //--------------------------------------------------------------------------
 
     function reset(){
-        desiredBufferSlider.value = 1;
+        //desiredBufferSlider.value = 1;
         desiredLevelsSlider.value = 0;
+        desiredBufferInput.text = "";
         uploadToPortalCheckbox.checked = true;
         tpkSharingNotShared.checked = true;
         saveToLocation.checked = false;
