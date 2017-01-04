@@ -269,7 +269,7 @@ Item {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
 
-                            currentIndex: Qt.locale().measurementSystem === Locale.MetricSystem ? 0 : 2
+                            currentIndex: usesMetric ? 0 : 2
 
                             model: ListModel {
                                 id: distanceUnits
