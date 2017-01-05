@@ -39,8 +39,7 @@ FileFolder {
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function readHistory(id){
-
+    function getHistory(){
         if(historyManager.makePath(historyManager.path)){
             if(!historyManager.fileExists(historyFile)){
                 historyManager.writeTextFile(historyFile,"");
@@ -54,6 +53,12 @@ FileFolder {
         }
         else{
             currentHistory = JSON.parse(h);
+        }
+    }
+
+    function readHistory(id){
+        if(currentHistory === null){
+            getHistory();
         }
 
         if( id  !== undefined && id !== null && id !== ""){
