@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,8 @@ Item {
     signal servicesCountReady(int numberOfServices)
     signal modelComplete()
     signal failed(var error)
+    signal serviceAdded()
+    signal serviceNotAdded()
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 
@@ -152,6 +154,55 @@ Item {
     }
 
     // METHODS /////////////////////////////////////////////////////////////////
+
+    function addService(url){
+
+        // TODO: Combine this method with the tileServicesSearch onSuccess loop
+
+        var newService = {
+            "description" : "",
+            "isArcgisTileService" : _isArcgisTileService(url),
+            "isWebMercator" : true,
+            "serviceUrl" : url,
+            "url": url,
+            "useTokenToAccess" : true,
+            "serviceInfo" : {},
+            "title": "User Added"
+        }
+
+        var component = Qt.createComponent("AvailableServicesInfoRequest.qml");
+
+        if (component.status === Component.Ready) {
+            var thisRequest = component.createObject(parent, { portal:availableServicesModel.portal, tileIndex: servicesListModel.count+1 , serviceUrl: url } );
+            thisRequest.complete.connect(function(serviceData){
+
+                if(serviceData.keep === true){
+                    var inInfo = JSON.parse(serviceData.serviceInfo);
+                    newService.serviceInfo = inInfo
+                    newService.description = inInfo.description;
+                    if(inInfo.hasOwnProperty("mapName")){
+                        newService.title = inInfo.mapName;
+                    }
+
+                    if(!serviceData.useToken){
+                        newService.useTokenToAccess = false;
+                    }
+
+                    servicesListModel.append(newService);
+                    serviceAdded();
+                }
+                else{
+                    serviceNotAdded();
+                }
+
+                thisRequest.destroy(2000);
+            });
+
+            thisRequest.send();
+        }
+    }
+
+    //--------------------------------------------------------------------------
 
     function _isArcgisTileService(url){
         if(url.indexOf("esri") > -1 || url.indexOf("arcgis") > -1 || url.indexOf("rest/services") > -1){

@@ -56,6 +56,8 @@ FileFolder {
         }
     }
 
+    // -------------------------------------------------------------------------
+
     function readHistory(id){
         if(currentHistory === null){
             getHistory();

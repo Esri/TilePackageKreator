@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,17 @@ Item {
             catch(e){
                 appMetrics.reportError(e)
             }
+        }
+        onServiceAdded: {
+            addServiceEntry.visible = false;
+            addServiceEntry.enabled = false;
+        }
+        onServiceNotAdded: {
+            addServiceEntry.visible = false;
+            addServiceEntry.enabled = false;
+            viewStatusIndicator.messageType = viewStatusIndicator.error
+            viewStatusIndicator.message = "The service wasn't added. There may be a problem with the service or url entered.";
+            viewStatusIndicator.show();
         }
     }
 
@@ -181,15 +192,203 @@ Item {
             color: config.subtleBackground
             Accessible.role: Accessible.Pane
 
-            Text {
+            RowLayout{
                 anchors.fill: parent
-                anchors.leftMargin: 20  * AppFramework.displayScaleFactor
-                verticalAlignment: Text.AlignVCenter
-                text: qsTr("Select tile service to be used as the source for the tile package")
-                font.family: notoRegular.name
+                spacing: 0
 
-                Accessible.role: Accessible.Heading
-                Accessible.name: text
+                Rectangle{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: config.subtleBackground
+                    visible: !addServiceEntry.visible
+                    enabled: !addServiceEntry.visible
+                    Accessible.role: Accessible.Pane
+
+                    Text {
+                        anchors.fill: parent
+                        anchors.leftMargin: 20 * AppFramework.displayScaleFactor
+                        verticalAlignment: Text.AlignVCenter
+                        text: qsTr("Select tile service to be used as the source for the tile package")
+                        font.family: notoRegular.name
+
+                        Accessible.role: Accessible.Heading
+                        Accessible.name: text
+                    }
+                }
+
+                Rectangle{
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 180 * AppFramework.displayScaleFactor
+                    Layout.margins: 8 * AppFramework.displayScaleFactor
+                    color: config.subtleBackground
+                    visible: !addServiceEntry.visible
+                    enabled: !addServiceEntry.visible
+                    Accessible.role: Accessible.Pane
+
+                    Button{
+                        anchors.fill: parent
+
+                        style: ButtonStyle {
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: config.buttonStates(control)
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: app.info.properties.mainButtonBorderColor
+                            }
+                        }
+
+                        RowLayout{
+                            anchors.fill: parent
+                            spacing: 0
+
+                            Rectangle {
+                                Layout.fillHeight: true
+                                Layout.preferredWidth: parent.height
+                                color: "transparent"
+                                Accessible.role: Accessible.Pane
+
+                                Text{
+                                    anchors.centerIn: parent
+                                    font.pointSize: config.largeFontSizePoint * .8
+                                    color: app.info.properties.mainButtonFontColor
+                                    font.family: icons.name
+                                    text: icons.plus_sign
+                                    Accessible.ignored: true
+                                }
+                            }
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                color: "transparent"
+                                Accessible.role: Accessible.Pane
+
+                                Text {
+                                    anchors.fill: parent
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignVCenter
+                                    color: app.info.properties.mainButtonFontColor
+                                    textFormat: Text.RichText
+                                    text: qsTr("Add Tile Service")
+                                    font.pointSize: config.baseFontSizePoint
+                                    font.family: notoRegular.name
+                                }
+                            }
+                        }
+
+                        onClicked: {
+                            addServiceEntry.visible = true;
+                            addServiceEntry.enabled = true;
+                          }
+                    }
+                }
+
+                Rectangle{
+                    id: addServiceEntry
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: config.subtleBackground
+                    visible: false
+                    enabled: false
+                    Accessible.role: Accessible.Pane
+
+                    RowLayout{
+                        anchors.fill: parent
+                        anchors.margins: 5 * AppFramework.displayScaleFactor
+                        spacing: 5 * AppFramework.displayScaleFactor
+
+                        TextField {
+                            id: tileServiceTextField
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            placeholderText: qsTr("Enter url (e.g. http://someservice.gov/arcgis/rest/services/example/MapServer)")
+
+                            style: TextFieldStyle {
+                                background: Rectangle {
+                                    anchors.fill: parent
+                                    border.width: config.formElementBorderWidth
+                                    border.color: config.formElementBorderColor
+                                    radius: config.formElementRadius
+                                    color: _uiEntryElementStates(control)
+                                }
+                                textColor: config.formElementFontColor
+                                font.family: notoRegular.name
+                            }
+
+                            validator: RegExpValidator{
+                                regExp: /(http(s)*:\/\/).*/g
+                            }
+
+                            Accessible.role: Accessible.EditableText
+                            Accessible.name: qsTr("Enter a title for the exported tile package.")
+                            Accessible.focusable: true
+                        }
+
+                        Button{
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 70 * AppFramework.displayScaleFactor
+                            enabled: tileServiceTextField.length > 0 && tileServiceTextField.acceptableInput
+
+                            property string buttonText: qsTr("Add")
+
+                            style: ButtonStyle {
+                                background: Rectangle {
+                                    anchors.fill: parent
+                                    color: config.buttonStates(control)
+                                    radius: app.info.properties.mainButtonRadius
+                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                    border.color: app.info.properties.mainButtonBorderColor
+                                }
+                            }
+                            Text {
+                                color: app.info.properties.mainButtonFontColor
+                                anchors.centerIn: parent
+                                textFormat: Text.RichText
+                                text: parent.buttonText
+                                font.pointSize: config.baseFontSizePoint
+                                font.family: notoRegular.name
+                            }
+
+                            onClicked: {
+                               addServiceEntry.enabled = false;
+                               asm.addService(tileServiceTextField.text);
+                               tileServiceTextField.text = "";
+                            }
+                        }
+
+                        Button{
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: 70 * AppFramework.displayScaleFactor
+
+                            property string buttonText: qsTr("Cancel")
+
+                            style: ButtonStyle {
+                                background: Rectangle {
+                                    anchors.fill: parent
+                                    color: config.buttonStates(control, "clear")
+                                    radius: app.info.properties.mainButtonRadius
+                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                    border.color: "#fff"
+                                }
+                            }
+
+                            Text {
+                                color: app.info.properties.mainButtonBackgroundColor
+                                anchors.centerIn: parent
+                                textFormat: Text.RichText
+                                text: parent.buttonText
+                                font.pointSize: config.baseFontSizePoint
+                                font.family: notoRegular.name
+                            }
+
+                            onClicked: {
+                               addServiceEntry.enabled = false;
+                               addServiceEntry.visible = false;
+                               tileServiceTextField.text = "";
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -217,6 +416,7 @@ Item {
             onCurrentIndexChanged: {
                 currentTileService = currentIndex >= 0 ? asm.servicesListModel.get(currentIndex) : null;
             }
+
         }
 
         //----------------------------------------------------------------------
