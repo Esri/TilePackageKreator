@@ -218,68 +218,53 @@ Item {
 
                 Rectangle{
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 180 * AppFramework.displayScaleFactor
-                    Layout.margins: 8 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: parent.height - (20 * AppFramework.displayScaleFactor)
+                    Layout.margins: 10 * AppFramework.displayScaleFactor
                     color: config.subtleBackground
                     visible: !addServiceEntry.visible
                     enabled: !addServiceEntry.visible
                     Accessible.role: Accessible.Pane
 
                     Button{
+                        id: addTileServiceBtn
                         anchors.fill: parent
+
+                        property string buttonText: qsTr("Add a tile service")
+
+                        tooltip: buttonText
 
                         style: ButtonStyle {
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: config.buttonStates(control)
-                                radius: app.info.properties.mainButtonRadius
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                color: config.subtleBackground
+                                radius: 3 * AppFramework.displayScaleFactor // app.info.properties.mainButtonRadius
+                                border.width: 1 * AppFramework.displayScaleFactor
                                 border.color: app.info.properties.mainButtonBorderColor
-                            }
+                             }
                         }
 
-                        RowLayout{
-                            anchors.fill: parent
-                            spacing: 0
-
-                            Rectangle {
-                                Layout.fillHeight: true
-                                Layout.preferredWidth: parent.height
-                                color: "transparent"
-                                Accessible.role: Accessible.Pane
-
-                                Text{
-                                    anchors.centerIn: parent
-                                    font.pointSize: config.largeFontSizePoint * .8
-                                    color: app.info.properties.mainButtonFontColor
-                                    font.family: icons.name
-                                    text: icons.plus_sign
-                                    Accessible.ignored: true
-                                }
-                            }
-                            Rectangle {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                color: "transparent"
-                                Accessible.role: Accessible.Pane
-
-                                Text {
-                                    anchors.fill: parent
-                                    horizontalAlignment: Text.AlignLeft
-                                    verticalAlignment: Text.AlignVCenter
-                                    color: app.info.properties.mainButtonFontColor
-                                    textFormat: Text.RichText
-                                    text: qsTr("Add Tile Service")
-                                    font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
-                                }
-                            }
+                        Text{
+                            anchors.centerIn: parent
+                            font.pointSize: config.largeFontSizePoint * .8
+                            color: app.info.properties.mainButtonBackgroundColor
+                            font.family: icons.name
+                            text: icons.plus_sign
+                            Accessible.ignored: true
                         }
 
                         onClicked: {
                             addServiceEntry.visible = true;
                             addServiceEntry.enabled = true;
-                          }
+                        }
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: buttonText
+                        Accessible.description: qsTr("This button will reveal an input form which the user can enter a url for a tile service to add to the list.")
+                        Accessible.onPressAction: {
+                            if(enabled && visible){
+                                clicked(null);
+                            }
+                        }
                     }
                 }
 
@@ -320,7 +305,7 @@ Item {
                             }
 
                             Accessible.role: Accessible.EditableText
-                            Accessible.name: qsTr("Enter a title for the exported tile package.")
+                            Accessible.name: qsTr("Enter a url a tile service.")
                             Accessible.focusable: true
                         }
 
@@ -340,6 +325,7 @@ Item {
                                     border.color: app.info.properties.mainButtonBorderColor
                                 }
                             }
+
                             Text {
                                 color: app.info.properties.mainButtonFontColor
                                 anchors.centerIn: parent
@@ -347,12 +333,21 @@ Item {
                                 text: parent.buttonText
                                 font.pointSize: config.baseFontSizePoint
                                 font.family: notoRegular.name
+                                Accessible.ignored: true
                             }
 
                             onClicked: {
                                addServiceEntry.enabled = false;
                                asm.addService(tileServiceTextField.text);
                                tileServiceTextField.text = "";
+                            }
+
+                            Accessible.role: Accessible.Button
+                            Accessible.name: buttonText
+                               Accessible.onPressAction: {
+                                if(enabled && visible){
+                                    clicked(null);
+                                }
                             }
                         }
 
@@ -379,12 +374,21 @@ Item {
                                 text: parent.buttonText
                                 font.pointSize: config.baseFontSizePoint
                                 font.family: notoRegular.name
+                                Accessible.ignored: true
                             }
 
                             onClicked: {
                                addServiceEntry.enabled = false;
                                addServiceEntry.visible = false;
                                tileServiceTextField.text = "";
+                            }
+
+                            Accessible.role: Accessible.Button
+                            Accessible.name: buttonText
+                            Accessible.onPressAction: {
+                                if(enabled && visible){
+                                    clicked(null);
+                                }
                             }
                         }
                     }
