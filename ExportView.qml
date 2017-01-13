@@ -31,6 +31,7 @@ import "TilePackage"
 import "ProgressIndicator"
 import "DeepLinkingRequest"
 import "HistoryManager"
+import "Geometry"
 import "MapViewPlus" as MapView
 //------------------------------------------------------------------------------
 
@@ -190,7 +191,9 @@ Item {
 
                             onDrawingFinished: {
                                 if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null && mapViewPlus.geometryType !== "multipath"){
-                                    tpkEstimateSize.calculate(mapViewPlus.topLeft, mapViewPlus.bottomRight, exportDetails.tpkZoomLevels)
+                                    var tlAsXY = coordConverter.lngLatToXY(mapViewPlus.topLeft);
+                                    var brAsXY = coordConverter.lngLatToXY(mapViewPlus.bottomRight);
+                                    tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
                                 }
                             }
                         }
@@ -402,7 +405,9 @@ Item {
 
                         onExportZoomLevelsChanged: {
                             if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null){
-                                tpkEstimateSize.calculate(mapViewPlus.topLeft, mapViewPlus.bottomRight, exportDetails.tpkZoomLevels);
+                                var tlAsXY = coordConverter.lngLatToXY(mapViewPlus.topLeft);
+                                var brAsXY = coordConverter.lngLatToXY(mapViewPlus.bottomRight);
+                                tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
                             }
                         }
                     }
@@ -920,6 +925,12 @@ Item {
             var mb = inMb < 1000 ? ("~" + inMb + "Mb") : "1Gb+";
             tilePackageSizeEstimate.text = "Tiles: %1 Size: %2".arg(numTiles).arg(mb);
         }
+    }
+
+    //--------------------------------------------------------------------------
+
+    CoordinateConverter{
+        id: coordConverter
     }
 
     //--------------------------------------------------------------------------
