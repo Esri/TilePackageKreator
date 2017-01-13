@@ -28,7 +28,7 @@ QtObject {
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function lngLatToXY(point){
+    function lngLatToXY(point /* { "longitude": float, "latitude": float } */){
 
         var inX = parseFloat(point.longitude);
         var inY = parseFloat(point.latitude);
@@ -43,7 +43,7 @@ QtObject {
 
     //--------------------------------------------------------------------------
 
-    function xyToLngLat(point){
+    function xyToLngLat(point /* { "x": float, "y": float } */){
 
         var inX = parseFloat(point.x);
         var inY = parseFloat(point.y);
