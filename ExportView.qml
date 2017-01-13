@@ -191,8 +191,8 @@ Item {
 
                             onDrawingFinished: {
                                 if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null && mapViewPlus.geometryType !== "multipath"){
-                                    var tlAsXY = coordConverter.lngLatToXY(mapViewPlus.topLeft);
-                                    var brAsXY = coordConverter.lngLatToXY(mapViewPlus.bottomRight);
+                                    var tlAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.topLeft));
+                                    var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
                                     tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
                                 }
                             }
@@ -405,8 +405,8 @@ Item {
 
                         onExportZoomLevelsChanged: {
                             if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null){
-                                var tlAsXY = coordConverter.lngLatToXY(mapViewPlus.topLeft);
-                                var brAsXY = coordConverter.lngLatToXY(mapViewPlus.bottomRight);
+                                var tlAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.topLeft));
+                                var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
                                 tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
                             }
                         }
@@ -1019,6 +1019,12 @@ Item {
         else{
             return config.formElementBackground;
         }
+    }
+
+    //--------------------------------------------------------------------------
+
+    function positionToArray(position){
+        return [position.longitude, position.latitude];
     }
 
     // END /////////////////////////////////////////////////////////////////////

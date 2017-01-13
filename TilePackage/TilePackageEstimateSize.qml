@@ -39,11 +39,11 @@ QtObject {
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function calculate(topLeft /* obj {x,y} */, bottomRight /* obj {x,y} */, level /* int */){
+    function calculate(topLeft /* [x,y] as webmercator */, bottomRight /* [x,y] as webmercator */, level /* int */){
 
-        var xMeters = Math.abs(Math.floor(bottomRight.x - topLeft.x));
+        var xMeters = Math.abs(Math.floor(bottomRight[0] - topLeft[0]));
 
-        var yMeters = Math.abs(Math.floor(bottomRight.y - topLeft.y));
+        var yMeters = Math.abs(Math.floor(bottomRight[1] - topLeft[1]));
 
         var totalTiles = 1;
 

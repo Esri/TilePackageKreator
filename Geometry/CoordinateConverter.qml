@@ -28,36 +28,36 @@ QtObject {
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function lngLatToXY(point /* { "longitude": float, "latitude": float } */){
+    function lngLatToXY(coordinate /* [longitude in decimal degrees, latitude in decimal degrees] */){
 
-        var inX = parseFloat(point.longitude);
-        var inY = parseFloat(point.latitude);
+        var inLongitude = parseFloat(coordinate[0]);
+        var inLatitude = parseFloat(coordinate[1]);
 
-        var newX =  earthRadius * (inX * radiansPerDegree);
-        var newY = (earthRadius / 2) * Math.log( (1.0 + Math.sin(inY * radiansPerDegree))  / (1.0 - Math.sin(inY * radiansPerDegree)) );
+        var asX =  earthRadius * (inLongitude * radiansPerDegree);
+        var asY = (earthRadius / 2) * Math.log( (1.0 + Math.sin(inLatitude * radiansPerDegree))  / (1.0 - Math.sin(inLatitude * radiansPerDegree)) );
 
-        var newCoordinate = { "x": newX, "y": newY };
+        var newCoordinate = [asX, asY];
 
         return newCoordinate;
     }
 
     //--------------------------------------------------------------------------
 
-    function xyToLngLat(point /* { "x": float, "y": float } */){
+    function xyToLngLat(coordinate /* [x, y]*/){
 
-        var inX = parseFloat(point.x);
-        var inY = parseFloat(point.y);
+        var inX = parseFloat(coordinate[0]);
+        var inY = parseFloat(coordinate[1]);
 
         var latRadians = ( 2.0 * Math.atan(Math.exp(inY / earthRadius)) ) - (Math.PI / 2.0);
         var lonRadians = inX / earthRadius;
 
-        var lat = latRadians * degreesPerRadian;
-        var lon = lonRadians * degreesPerRadian;
+        var asLatitude = latRadians * degreesPerRadian;
+        var asLongitude = lonRadians * degreesPerRadian;
 
-        lon = _fixLongitude(lon);
-        lat = _fixLatitude(lat);
+        asLongitude = _fixLongitude(asLongitude);
+        asLatitude = _fixLatitude(asLatitude);
 
-        var newCoordinate = { "longitude": lon, "latitude": lat };
+        var newCoordinate = [asLongitude, asLatitude];
 
         return newCoordinate;
 
