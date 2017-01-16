@@ -235,6 +235,22 @@ Item {
 
     //--------------------------------------------------------------------------
 
+    DropArea {
+        id: jsonDropArea
+        anchors.fill: parent
+        enabled: !drawing
+        onEntered: {
+            // drag.urls
+        }
+        onDropped: {
+            if(isJson(drop.urls.toString())){
+                geoJsonHelper.parseGeometry(AppFramework.urlInfo(drop.urls[0]).path);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
     MouseArea {
         id: multipathDrawingMouseArea
         enabled: (drawing && drawMultipath) ? true : false
@@ -294,8 +310,9 @@ Item {
             mouse.accepted = true;
 
             if(!endDrawingByDoubleClick){
-                var asCoord = screenPositionToLatLong(mouse);
-                pathCoordinates.push({"screen": {"x": mouse.x, "y": mouse.y}, "asCoords": {"longitude": asCoord.longitude, "latitude": asCoord.latitude }});
+                var coordinate = screenPositionToLatLong(mouse);
+                pathCoordinates.push({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }});
+                //pathCoordinates.push()
                 if(pathCoordinates.length > 1){
                     addMultipathToMap("draft");
                 }
@@ -321,9 +338,9 @@ Item {
                     drawHelperLine(mouse.x, mouse.y);
                 }
                 if(mouse !== null){
-                    var asCoord = screenPositionToLatLong(mouse);
-                    mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "asCoords": {"longitude": asCoord.longitude, "latitude": asCoord.latitude }});
-                    lastKnownPosition = {"screen": {"x": mouse.x, "y": mouse.y}, "asCoords": {"longitude": asCoord.longitude, "latitude": asCoord.latitude }};
+                    var coordinate = screenPositionToLatLong(mouse);
+                    mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }});
+                    lastKnownPosition = {"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }};
                 }
             }
             else{
@@ -366,7 +383,7 @@ Item {
 
         function drawHelperLine(inX, inY){
             var lastCollectedPath = pathCoordinates[pathCoordinates.length-1];
-            var lcpAsPoint = latLongToScreenPosition(lastCollectedPath.asCoords);
+            var lcpAsPoint = latLongToScreenPosition(lastCollectedPath.coordinate);
             clearDrawingCanvas();
             mapDrawCanvas.getContext('2d').beginPath();
             mapDrawCanvas.getContext('2d').lineWidth = "1";
@@ -418,8 +435,8 @@ Item {
             mapDrawCanvas.getContext("2d").rect(drawingStartCoord.x,drawingStartCoord.y,xDif, yDif);
             mapDrawCanvas.getContext("2d").stroke();
             if(mouse !== null){
-                var asCoord = screenPositionToLatLong(mouse);
-                mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "asCoords": {"longitude": asCoord.longitude, "latitude": asCoord.latitude }})
+                var coordinate = screenPositionToLatLong(mouse);
+                mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }})
             }
         }
 
@@ -464,8 +481,8 @@ Item {
 
         onPositionChanged: {
             if(mouse !== null){
-                var asCoord = screenPositionToLatLong(mouse);
-                mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "asCoords": {"longitude": asCoord.longitude, "latitude": asCoord.latitude }})
+                var coordinate = screenPositionToLatLong(mouse);
+                mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }})
             }
         }
 
@@ -477,8 +494,8 @@ Item {
         onDoubleClicked: {
             mouse.accepted = true;
             if(mouse !== null && mouse.button === Qt.RightButton){
-                var asCoord = screenPositionToLatLong(mouse);
-                mapViewPlus.map.center = QtPositioning.coordinate(asCoord.latitude, asCoord.longitude);
+                var coordinate = screenPositionToLatLong(mouse);
+                mapViewPlus.map.center = QtPositioning.coordinate(coordinate.latitude, coordinate.longitude);
                 if(mouse.modifiers === Qt.ControlModifier){
                     mapZoomOut.clicked();
                 }else{
@@ -579,6 +596,18 @@ Item {
         }
     }
 
+    //--------------------------------------------------------------------------
+
+    GeoJsonHelper{
+        id: geoJsonHelper
+
+        onSuccess: {
+            pathCoordinates = geometry.coordinatesForQML;
+            addMultipathToMap("final");
+            geometryType = "multipath"
+        }
+    }
+
     // METHODS /////////////////////////////////////////////////////////////////
 
     function getCurrentGeometry(){
@@ -656,8 +685,8 @@ Item {
             };
 
            for(var i = 0; i < pathCoordinates.length; i++){
-            //esriPolyLineObject.geometries[0]["paths"][0].push([pathCoordinates[i]['asCoords']['longitude'],pathCoordinates[i]['asCoords']['latitude']]);
-            esriPolyLineObject.geometries[0].paths[0].push([pathCoordinates[i].asCoords.longitude, pathCoordinates[i].asCoords.latitude]);
+            //esriPolyLineObject.geometries[0]["paths"][0].push([pathCoordinates[i]['coordinate']['longitude'],pathCoordinates[i]['coordinate']['latitude']]);
+            esriPolyLineObject.geometries[0].paths[0].push([pathCoordinates[i].coordinate.longitude, pathCoordinates[i].coordinate.latitude]);
 
         }
 
@@ -719,7 +748,7 @@ Item {
 
         var path = [];
         for(var i = 0; i < pathCoordinates.length; i++){
-            path.push(pathCoordinates[i]['asCoords']);
+            path.push(pathCoordinates[i]['coordinate']);
         }
 
         drawnPolyline.path = path;
@@ -819,6 +848,19 @@ Item {
     function clearDrawingCanvas(){
         mapDrawCanvas.requestPaint();
         mapDrawCanvas.getContext("2d").clearRect(0,0,mapDrawCanvas.width, mapDrawCanvas.height);
+    }
+
+    //--------------------------------------------------------------------------
+
+    function isJson(item){
+        var extension = ".json"
+        if ((item.indexOf(extension, item.lastIndexOf('/') + 1)) > -1) {
+            console.log('is json');
+            return true;
+        } else {
+            console.log('is not json');
+            return false;
+        }
     }
 
     // UNIMPLEMENTED ///////////////////////////////////////////////////////////

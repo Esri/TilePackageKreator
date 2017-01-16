@@ -56,3 +56,5 @@ _archive/OperationSelectionView.qml
 #AppStudio
 
 appmetrics.json
+
+*.qmlc

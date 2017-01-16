@@ -175,7 +175,7 @@ Item {
 
                             onPositionChanged: {
                                if(!cursorIsOffMap){
-                                    _displayCoordinates(position.asCoords);
+                                    _displayCoordinates(position.coordinate);
                                 }
                                 else{
                                     currentCursorLatLong.text = "-- --";
