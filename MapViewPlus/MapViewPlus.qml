@@ -603,8 +603,10 @@ Item {
 
         onSuccess: {
             pathCoordinates = geometry.coordinatesForQML;
+            //mapViewPlus.map.center = QtPositioning.coordinate(geometry.extent.center.latitude, geometry.extent.center.longitude);
+            //mapViewPlus.map.visibleRegion = QtPositioning.rectangle(QtPositioning.coordinate(geometry.extent.ymin, geometry.extent.xmin), QtPositioning.coordinate(geometry.extent.ymax, geometry.extent.xmax))
             addMultipathToMap("final");
-            geometryType = "multipath"
+            geometryType = "multipath";
         }
     }
 
@@ -685,9 +687,7 @@ Item {
             };
 
            for(var i = 0; i < pathCoordinates.length; i++){
-            //esriPolyLineObject.geometries[0]["paths"][0].push([pathCoordinates[i]['coordinate']['longitude'],pathCoordinates[i]['coordinate']['latitude']]);
             esriPolyLineObject.geometries[0].paths[0].push([pathCoordinates[i].coordinate.longitude, pathCoordinates[i].coordinate.latitude]);
-
         }
 
         return esriPolyLineObject;
@@ -733,7 +733,7 @@ Item {
         // Add Clear Button
         previewMap.map.addMapItem(clearExtentMapItem)
         clearExtentMapItem.anchorPoint = Qt.point(-3,-3);
-        clearExtentMapItem.coordinate = QtPositioning.coordinate(topLeft.latitude, topLeft.longitude); // screenPositionToLatLong({"x": drawingStartCoord.x + drawnExtent.border.width, "y": drawingStartCoord.y + drawnExtent.border.width});
+        clearExtentMapItem.coordinate = QtPositioning.coordinate(topLeft.latitude, topLeft.longitude);
         clearExtentMapItem.visible = true;
         clearExtentMapItem.enabled = true;
 
@@ -761,11 +761,13 @@ Item {
 
             previewMap.map.addMapItem(clearExtentMapItem)
             clearExtentMapItem.anchorPoint = Qt.point(15,15);
-            clearExtentMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude); //screenPositionToLatLong({"x": pathCoordinates[0].screen.x - 15, "y": pathCoordinates[0].screen.y - 15});
+            clearExtentMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude);
             clearExtentMapItem.visible = true;
             clearExtentMapItem.enabled = true;
 
             drawingFinished();
+
+            mapViewPlus.map.fitViewportToMapItems();
         }
     }
 

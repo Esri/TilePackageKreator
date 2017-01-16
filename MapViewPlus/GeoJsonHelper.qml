@@ -26,7 +26,8 @@ Item{
         "type": "",
         "spatialReference": 4326, // geojson specification
         "coordinates": [],
-        "coordinatesForQML": []
+        "coordinatesForQML": [],
+        "extent": null
     }
 
     property int inSR
@@ -121,8 +122,9 @@ Item{
                 }
 
 
-                returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolyline(returnGeometry.coordinates)
+                returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolyline(returnGeometry.coordinates);
 
+                // returnGeometry.extent = geomUtilities.getExtent(returnGeometry.coordinates);
 
                 if(features.geometry.hasOwnProperty("type")){
                     if(features.geometry.type === "Polygon"){
@@ -136,7 +138,6 @@ Item{
                 if(json.hasOwnProperty("geometryType")){
                     returnGeometry.type = json.geometryType;
                 }
-
 
             }
 
@@ -183,6 +184,12 @@ Item{
 
     CoordinateConverter{
         id:converter
+    }
+
+    //--------------------------------------------------------------------------
+
+    GeometryUtilities{
+        id: geomUtilities
     }
 
     // END /////////////////////////////////////////////////////////////////////
