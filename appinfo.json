@@ -70,7 +70,7 @@
     "urlScheme": "arcgis-tilepackage",
     "version": {
         "major": 1,
-        "micro": 92,
+        "micro": 95,
         "minor": 0
     }
 }

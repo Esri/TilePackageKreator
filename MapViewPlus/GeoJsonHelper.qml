@@ -46,15 +46,11 @@ Item{
                 _normalize(json);
             }
             catch(error){
-                error(error.toString());
+                error("There was an error reading the JSON file.");
             }
-            finally{
-                success(returnGeometry);
-            }
-
         }
         else{
-            error("file doesn't exist");
+            error("JSON file doesn't exist");
         }
 
     }
@@ -85,6 +81,7 @@ Item{
                 }
                 else{
                     returnGeometry.spatialRefernce = null;
+                    error("Spatial reference cannot be determined for geojson file.")
                 }
             }
 
@@ -134,36 +131,27 @@ Item{
 
                 // NOTE: Might need to throw an error if coordinate count is way way too large. Needs testing.
 
-                if(isWebMercator){
-                    var newCoordsInLngLat = [];
-                    for(var i = 0; i < returnGeometry.coordinates.length; i++){
-                       newCoordsInLngLat.push(converter.xyToLngLat(returnGeometry.coordinates[i]));
+                if(returnGeometry.coordinates.length > 0){
+                    if(isWebMercator){
+                        var newCoordsInLngLat = [];
+                        for(var i = 0; i < returnGeometry.coordinates.length; i++){
+                           newCoordsInLngLat.push(converter.xyToLngLat(returnGeometry.coordinates[i]));
+                        }
+
+                        returnGeometry.coordinates = newCoordsInLngLat;
                     }
 
-                    returnGeometry.coordinates = newCoordsInLngLat;
+                    returnGeometry.coordinatesForQML = _prepareGeometryForQMLMap(returnGeometry.coordinates);
+
+                    success(returnGeometry);
                 }
-
-
-
-                // Fix coords for QML based on type ----------------------------
-
-               /*
-                if(returnGeometry.type === "esriGeometryPolygon"){
-                    returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolygon(returnGeometry.coordinates);
+                else{
+                    error("JSON is missing geometry");
                 }
-
-                if(returnGeometry.type === "esriGeometryPolyline"){
-                    returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolyline(returnGeometry.coordinates);
-                }
-                */
-
-                returnGeometry.coordinatesForQML = _prepareGeometryForQMLMap(returnGeometry.coordinates);
-
             }
-
         }
         else{
-            error("Missing Feature Geometry");
+            error("JSON is missing 'features' attribute");
         }
 
     }

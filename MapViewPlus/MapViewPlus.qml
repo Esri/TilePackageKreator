@@ -72,6 +72,7 @@ Item {
     signal drawingStarted()
     signal drawingFinished()
     signal drawingCleared()
+    signal drawingError(string error)
     signal zoomLevelChanged(var level)
     signal positionChanged(var position)
 
@@ -627,6 +628,10 @@ Item {
 
             //addMultipathToMap("final");
             mapViewPlus.map.fitViewportToMapItems();
+        }
+
+        onError: {
+            drawingError(message);
         }
     }
 

@@ -196,6 +196,12 @@ Item {
                                     tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
                                 }
                             }
+
+                            onDrawingError: {
+                                exportStatusIndicator.messageType = exportStatusIndicator.error;
+                                exportStatusIndicator.message = error;
+                                exportStatusIndicator.show();
+                            }
                         }
 
                         // MAP TOOL BAR ////////////////////////////////////////
