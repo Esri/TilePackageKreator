@@ -63,6 +63,7 @@ Item {
 
     property string geometryType: ""
     property bool drawEnvelope: geometryType === "envelope" ? true : false
+    property bool drawPolygon: geometryType === "polygon" ? true : false
     property bool drawMultipath: geometryType === "multipath" ? true : false
 
     readonly property alias map: previewMap.map
@@ -558,6 +559,15 @@ Item {
 
     //--------------------------------------------------------------------------
 
+    MapPolygon{
+        id:drawnPolygon
+        color: drawingExtentFillColor
+        border.width: 2 * AppFramework.displayScaleFactor
+        border.color: drawnExtentOutlineColor
+    }
+
+    //--------------------------------------------------------------------------
+
     MapQuickItem {
         id: clearExtentMapItem
         visible: false
@@ -601,11 +611,21 @@ Item {
         id: geoJsonHelper
 
         onSuccess: {
+            drawingStarted();
             pathCoordinates = geometry.coordinatesForQML;
-            //mapViewPlus.map.center = QtPositioning.coordinate(geometry.extent.center.latitude, geometry.extent.center.longitude);
-            //mapViewPlus.map.visibleRegion = QtPositioning.rectangle(QtPositioning.coordinate(geometry.extent.ymin, geometry.extent.xmin), QtPositioning.coordinate(geometry.extent.ymax, geometry.extent.xmax))
-            addMultipathToMap("final");
-            geometryType = "multipath";
+            if(geometry.type !== ""){
+                if(geometry.type === "esriGeometryPolygon"){
+                    geometryType = "polygon";
+                    addPolygonToMap("final");
+                }
+
+                if(geometry.type === "esriGeometryPolyline"){
+                    geometryType = "multipath";
+                    addMultipathToMap("final");
+                }
+            }
+
+            //addMultipathToMap("final");
             mapViewPlus.map.fitViewportToMapItems();
         }
     }
@@ -623,6 +643,11 @@ Item {
             console.log("drawEnvelope ", drawEnvelope)
             g = getEnvelopeGeometry();
         }
+        else if(drawPolygon){
+            console.log("drawPolygon ", drawPolygon)
+            g = getPolygonGeometry();
+        }
+
         else{
             console.log('no geometry');
             g = null;
@@ -664,9 +689,29 @@ Item {
             "geometries" : envelope
         }
 
-        //return extent;
-        console.log(JSON.stringify(envelopeGeometry));
         return envelopeGeometry;
+    }
+
+    //--------------------------------------------------------------------------
+
+    function getPolygonGeometry(){
+
+        var esriPolygonObject = {
+            "geometryType": "esriGeometryPolygon",
+            "geometries" : [{
+                "rings":[[]],
+                "spatialReference": {
+                    "wkid": mapSpatialReference
+                }
+            }]
+        };
+
+        for(var i = 0; i < pathCoordinates.length; i++){
+            esriPolygonObject.geometries[0].rings[0].push([pathCoordinates[i].coordinate.longitude, pathCoordinates[i].coordinate.latitude]);
+        }
+
+        return esriPolygonObject;
+
     }
 
     //--------------------------------------------------------------------------
@@ -686,9 +731,9 @@ Item {
 
             };
 
-           for(var i = 0; i < pathCoordinates.length; i++){
-            esriPolyLineObject.geometries[0].paths[0].push([pathCoordinates[i].coordinate.longitude, pathCoordinates[i].coordinate.latitude]);
-        }
+            for(var i = 0; i < pathCoordinates.length; i++){
+                esriPolyLineObject.geometries[0].paths[0].push([pathCoordinates[i].coordinate.longitude, pathCoordinates[i].coordinate.latitude]);
+            }
 
         return esriPolyLineObject;
     }
@@ -767,6 +812,36 @@ Item {
 
             drawingFinished();
         }
+    }
+
+    //--------------------------------------------------------------------------
+
+    function addPolygonToMap(typeOfPath){
+
+        clearMap();
+
+        var path = [];
+        for(var i = 0; i < pathCoordinates.length; i++){
+            path.push(pathCoordinates[i]['coordinate']);
+        }
+
+        drawnPolygon.path = path;
+
+        mapViewPlus.map.addMapItem(drawnPolygon);
+
+        if(typeOfPath === "final"){
+            userDrawnExtent = true;
+            clearDrawingCanvas();
+
+            mapViewPlus.map.addMapItem(clearExtentMapItem);
+            clearExtentMapItem.anchorPoint = Qt.point(15,15);
+            clearExtentMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude);
+            clearExtentMapItem.visible = true;
+            clearExtentMapItem.enabled = true;
+
+            drawingFinished();
+        }
+
     }
 
     //--------------------------------------------------------------------------

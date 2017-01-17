@@ -72,7 +72,7 @@ Item{
                 features = json.features[0];
             }
 
-            // Esri geojson
+            // Esri geojson has crs property -----------------------------------
 
             if(json.hasOwnProperty("crs")){
                 var sr = json.crs.properties.name;
@@ -88,7 +88,7 @@ Item{
                 }
             }
 
-            // Esri json
+            // Esri json has spatialReference property -------------------------
 
             if(json.hasOwnProperty("spatialReference")){
                 if(json.spatialReference.wkid === 102100 || json.spatialReference.wkid === 3857 || json.spatialReference.latestWkid === 3857){
@@ -97,14 +97,35 @@ Item{
                 }
             }
 
+            // Normalize type, for convenience normalize to esri types -----
+
+            if(features.geometry.hasOwnProperty("type")){
+                if(features.geometry.type === "Polygon"){
+                    returnGeometry.type = "esriGeometryPolygon";
+                }
+                if(features.geometry.type === "LineString"){
+                    returnGeometry.type = "esriGeometryPolyline";
+                }
+            }
+
+            if(json.hasOwnProperty("geometryType")){
+                returnGeometry.type = json.geometryType;
+            }
+
+
             if(features.hasOwnProperty("geometry")){
 
                 if(features.geometry.hasOwnProperty("coordinates")){
-                    returnGeometry.coordinates = features.geometry.coordinates;
+                    returnGeometry.coordinates = (returnGeometry.type === "esriGeometryPolygon") ? features.geometry.coordinates[0]: features.geometry.coordinates;
                 }
                 else if(features.geometry.hasOwnProperty("paths")){
                     if(features.geometry.paths.length > 0){
                         returnGeometry.coordinates = features.geometry.paths[0];
+                    }
+                }
+                else if(features.geometry.hasOwnProperty("rings")){
+                    if(features.geometry.rings.length > 0){
+                        returnGeometry.coordinates = features.geometry.rings[0];
                     }
                 }
                 else{
@@ -122,22 +143,21 @@ Item{
                     returnGeometry.coordinates = newCoordsInLngLat;
                 }
 
-                // returnGeometry.extent = geomUtilities.getExtent(returnGeometry.coordinates);
 
-                if(features.geometry.hasOwnProperty("type")){
-                    if(features.geometry.type === "Polygon"){
-                        error("TPK only handles polyline geometry currently.");
-                        returnGeometry.type = "esriGeometryPolygon";
-                    }
-                    if(features.geometry.type === "LineString"){
-                        returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolyline(returnGeometry.coordinates);
-                        returnGeometry.type = "esriGeometryPolyline";
-                    }
+
+                // Fix coords for QML based on type ----------------------------
+
+               /*
+                if(returnGeometry.type === "esriGeometryPolygon"){
+                    returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolygon(returnGeometry.coordinates);
                 }
 
-                if(json.hasOwnProperty("geometryType")){
-                    returnGeometry.type = json.geometryType;
+                if(returnGeometry.type === "esriGeometryPolyline"){
+                    returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolyline(returnGeometry.coordinates);
                 }
+                */
+
+                returnGeometry.coordinatesForQML = _prepareGeometryForQMLMap(returnGeometry.coordinates);
 
             }
 
@@ -150,7 +170,7 @@ Item{
 
     //--------------------------------------------------------------------------
 
-    function _prepareGeometryForQMLMapPolyline(coords){
+    function _prepareGeometryForQMLMap(coords){
 
         var qmlGeometry = [];
 
@@ -174,13 +194,6 @@ Item{
 
         return qmlGeometry;
     }
-
-    //--------------------------------------------------------------------------
-
-    function _prepareGeometryForQMLMapPolygon(coords){
-        // if length is 5 and first coord matches last coord then it is an envelope/Rectangle
-    }
-
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 
