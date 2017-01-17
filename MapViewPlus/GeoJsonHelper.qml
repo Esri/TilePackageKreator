@@ -38,14 +38,11 @@ Item{
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function parseGeometry(filepath, outSR /* only 4326 or 3857 are valid */){
+    function parseGeometry(filepath){
 
         if(geoJsonFileFolder.fileExists(filepath)){
             try{
                 var json = geoJsonFileFolder.readJsonFile(filepath)
-                if(outSR !== null && outSR !== undefined && outSR !== ""){
-
-                }
                 _normalize(json);
             }
             catch(error){
@@ -75,6 +72,8 @@ Item{
                 features = json.features[0];
             }
 
+            // Esri geojson
+
             if(json.hasOwnProperty("crs")){
                 var sr = json.crs.properties.name;
                 if(sr.indexOf("3857") > -1 || sr.indexOf("102100") > -1){
@@ -87,9 +86,9 @@ Item{
                 else{
                     returnGeometry.spatialRefernce = null;
                 }
-
-                // "EPSG:4326" or "EPSG:3857"
             }
+
+            // Esri json
 
             if(json.hasOwnProperty("spatialReference")){
                 if(json.spatialReference.wkid === 102100 || json.spatialReference.wkid === 3857 || json.spatialReference.latestWkid === 3857){
@@ -112,25 +111,26 @@ Item{
                     returnGeometry.coordinates = [];
                 }
 
+                // NOTE: Might need to throw an error if coordinate count is way way too large. Needs testing.
+
                 if(isWebMercator){
-                    var newCoords = [];
+                    var newCoordsInLngLat = [];
                     for(var i = 0; i < returnGeometry.coordinates.length; i++){
-                       newCoords.push(converter.xyToLngLat(returnGeometry.coordinates[i]));
+                       newCoordsInLngLat.push(converter.xyToLngLat(returnGeometry.coordinates[i]));
                     }
 
-                    returnGeometry.coordinates = newCoords;
+                    returnGeometry.coordinates = newCoordsInLngLat;
                 }
-
-
-                returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolyline(returnGeometry.coordinates);
 
                 // returnGeometry.extent = geomUtilities.getExtent(returnGeometry.coordinates);
 
                 if(features.geometry.hasOwnProperty("type")){
                     if(features.geometry.type === "Polygon"){
+                        error("TPK only handles polyline geometry currently.");
                         returnGeometry.type = "esriGeometryPolygon";
                     }
                     if(features.geometry.type === "LineString"){
+                        returnGeometry.coordinatesForQML = _prepareGeometryForQMLMapPolyline(returnGeometry.coordinates);
                         returnGeometry.type = "esriGeometryPolyline";
                     }
                 }
@@ -168,11 +168,19 @@ Item{
                     "y": null
                 }
             };
+
             qmlGeometry.push(thisPoint);
         }
 
         return qmlGeometry;
     }
+
+    //--------------------------------------------------------------------------
+
+    function _prepareGeometryForQMLMapPolygon(coords){
+        // if length is 5 and first coord matches last coord then it is an envelope/Rectangle
+    }
+
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 

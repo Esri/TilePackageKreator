@@ -244,7 +244,8 @@ Item {
         }
         onDropped: {
             if(isJson(drop.urls.toString())){
-                geoJsonHelper.parseGeometry(AppFramework.urlInfo(drop.urls[0]).path);
+                var path = AppFramework.resolvedPath(AppFramework.resolvedUrl(drop.urls[0]));
+                geoJsonHelper.parseGeometry(path);
             }
         }
     }
@@ -312,7 +313,6 @@ Item {
             if(!endDrawingByDoubleClick){
                 var coordinate = screenPositionToLatLong(mouse);
                 pathCoordinates.push({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }});
-                //pathCoordinates.push()
                 if(pathCoordinates.length > 1){
                     addMultipathToMap("draft");
                 }
@@ -539,9 +539,6 @@ Item {
 
     }
 
-
-
-
     // COMPONENTS //////////////////////////////////////////////////////////////
 
     MapRectangle {
@@ -550,6 +547,8 @@ Item {
         border.width: 2 * AppFramework.displayScaleFactor
         border.color: drawnExtentOutlineColor
     }
+
+    //--------------------------------------------------------------------------
 
     MapPolyline{
         id: drawnPolyline
@@ -607,6 +606,7 @@ Item {
             //mapViewPlus.map.visibleRegion = QtPositioning.rectangle(QtPositioning.coordinate(geometry.extent.ymin, geometry.extent.xmin), QtPositioning.coordinate(geometry.extent.ymax, geometry.extent.xmax))
             addMultipathToMap("final");
             geometryType = "multipath";
+            mapViewPlus.map.fitViewportToMapItems();
         }
     }
 
@@ -766,8 +766,6 @@ Item {
             clearExtentMapItem.enabled = true;
 
             drawingFinished();
-
-            mapViewPlus.map.fitViewportToMapItems();
         }
     }
 
