@@ -933,8 +933,9 @@ Item {
     //--------------------------------------------------------------------------
 
     function isJson(item){
-        var extension = ".json"
-        if ((item.indexOf(extension, item.lastIndexOf('/') + 1)) > -1) {
+        var jsonExtension = ".json";
+        var geoJsonExtension = ".geojson";
+        if ( (item.indexOf(jsonExtension, item.lastIndexOf('/') + 1)) > -1 || (item.indexOf(geoJsonExtension, item.lastIndexOf('/') + 1)) > -1  ) {
             console.log('is json');
             return true;
         } else {
