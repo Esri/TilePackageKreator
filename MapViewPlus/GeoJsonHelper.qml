@@ -38,7 +38,7 @@ Item{
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function parseGeometry(filepath){
+    function parseGeometryFromFile(filepath){
 
         if(geoJsonFileFolder.fileExists(filepath)){
             try{
@@ -52,7 +52,12 @@ Item{
         else{
             error("JSON file doesn't exist");
         }
+    }
 
+    //--------------------------------------------------------------------------
+
+    function parseGeometry(json){
+        _normalize(json);
     }
 
     //--------------------------------------------------------------------------

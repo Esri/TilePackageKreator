@@ -109,6 +109,8 @@ Item {
         drawingMenu.drawingRequestComplete();
     }
 
+
+
     // UI //////////////////////////////////////////////////////////////////////
 
     MapDrawingMenu{
@@ -247,7 +249,7 @@ Item {
         onDropped: {
             if(isJson(drop.urls.toString())){
                 var path = AppFramework.resolvedPath(AppFramework.resolvedUrl(drop.urls[0]));
-                geoJsonHelper.parseGeometry(path);
+                geoJsonHelper.parseGeometryFromFile(path);
             }
         }
     }
@@ -518,6 +520,7 @@ Item {
         mapService: mapTileService
         useToken: mapTileServiceUsesToken
         z: 50000
+        focus: !drawing
 
         onZoomLevelChanged: {
             mapViewPlus.zoomLevelChanged(level);
@@ -539,6 +542,20 @@ Item {
             }
         }
 
+        Keys.onPressed: {
+            if( (event.key === Qt.Key_V) && (event.modifiers === Qt.ControlModifier) ){
+                console.log("paste")
+                if(AppFramework.clipboard.dataAvailable){
+                    try{
+                        var json = JSON.parse(AppFramework.clipboard.text)
+                        geoJsonHelper.parseGeometry(json);
+                    }
+                    catch(e){
+                        console.log("not json")
+                    }
+                }
+            }
+        }
     }
 
     // COMPONENTS //////////////////////////////////////////////////////////////
