@@ -43,6 +43,7 @@ Item {
         parentApp: mainView.parentApp
         debug: true
         onAvailableUpdatesChanged: {
+            console.log(availableUpdates);
             if(availableUpdates.length > 0){
                 for(var i = 0; i < availableUpdates.length; i++){
                     uD.updates.append(availableUpdates[i]);

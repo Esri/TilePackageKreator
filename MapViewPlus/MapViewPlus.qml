@@ -477,6 +477,9 @@ Item {
             if(mouse.button === Qt.LeftButton){
                 mouse.accepted = false;
             }
+            if(!drawing){
+               previewMap.focus = true;
+            }
         }
 
         onEntered: {

@@ -137,7 +137,7 @@ Item {
                     textFormat: Text.RichText
                     text: ""
                     font.family: notoRegular.name
-                    Accessible.role: Accessible.Header
+                    Accessible.role: Accessible.Heading
                     Accessible.name: text
                 }
             }
