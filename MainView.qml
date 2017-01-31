@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,12 +43,13 @@ Item {
         parentApp: mainView.parentApp
         debug: true
         onAvailableUpdatesChanged: {
-            console.log(availableUpdates);
             if(availableUpdates.length > 0){
                 for(var i = 0; i < availableUpdates.length; i++){
-                    uD.updates.append(availableUpdates[i]);
+                    if(!availableUpdates[i].restricted_to_tags){
+                        uD.updates.append(availableUpdates[i]);
+                    }
                 }
-                mainToolBar.updateCount = availableUpdates.length;
+                mainToolBar.updateCount = uD.updates.count;
             }
         }
     }
