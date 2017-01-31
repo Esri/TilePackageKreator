@@ -1,7 +1,7 @@
 # Tile Package Kreator
 ![App](./thumbnail.png)
 
-Tile Package Kreator is a simple desktop utility that makes creating Tile Package files simple and quick.  Tile Package files are used by out of the box mobile apps like Survey123 for ArcGIS and Collector for ArcGIS to take basemaps offline. Custom apps built with the ArcGIS Runtime SDK can also work with Tile Package files. Typically, Tile Package files are used to help bring basemaps for offline use. 
+Tile Package Kreator is a desktop utility that guides you in creating Tile Package files. Tile Package files are used by out of the box mobile apps like Survey123 for ArcGIS and Collector for ArcGIS to take basemaps offline. Custom apps built with the ArcGIS Runtime SDK can also work with Tile Package files. Typically, Tile Package files are used to help bring basemaps for offline use. 
 
 
 ## How to use the app
@@ -15,7 +15,7 @@ http://links.esri.com/esrilabs/tile-package-kreator-mac
 http://links.esri.com/esrilabs/tile-package-kreator-ubuntu
 
 
-Once downloaded on your Mac, Windows or Ubuntu Linux system, Tile Package Kreator will let you login into your own ArcGIS organization (ArcGIS Online or ArcGIS Enterprise) and let you easily define the area of interest as well as the number of levels of detail of your offline map.  Tile Package Kreator  lets you define areas of interest based on a rectangle or along a predefined linear feature such as a road, river, pipe etc.  Tile Package Kreator will request the creation of the Tile Package file from the selected Tiled Map service and let you store it locally or in your own ArcGIS organization. Once a Tile Package file is created, it can be used with Survey123 for ArcGIS and Collector for ArcGIS as well as ArcGIS Pro, ArcMap and custom apps built with the ArcGIS Runtime SDKs.
+Once downloaded on your Mac, Windows or Ubuntu Linux system, Tile Package Kreator will let you login into your own ArcGIS organization (ArcGIS Online or ArcGIS Enterprise) and easily define your area of interest as well as the number of levels of detail for your offline map.  You can define an area of interest based on a rectangle or along a predefined linear feature such as a road, river, pipe etc.  Tile Package Kreator will request the creation of the Tile Package file from the selected Tiled Map service and let you store it locally or in your own ArcGIS organization. Once a Tile Package file is created, it can be used with Survey123 for ArcGIS and Collector for ArcGIS as well as ArcGIS Pro, ArcMap and custom apps built with the ArcGIS Runtime SDKs.
 
 
 ## Requirements
