@@ -17,6 +17,7 @@ http://links.esri.com/esrilabs/tile-package-kreator-ubuntu
 
 Once downloaded on your Mac, Windows or Ubuntu Linux system, Tile Package Kreator will let you login into your own ArcGIS organization (ArcGIS Online or ArcGIS Enterprise) and easily define your area of interest as well as the number of levels of detail for your offline map.  You can define an area of interest based on a rectangle or along a predefined linear feature such as a road, river, pipe etc.  Tile Package Kreator will request the creation of the Tile Package file from the selected Tiled Map service and let you store it locally or in your own ArcGIS organization. Once a Tile Package file is created, it can be used with Survey123 for ArcGIS and Collector for ArcGIS as well as ArcGIS Pro, ArcMap and custom apps built with the ArcGIS Runtime SDKs.
 
+Download this [PDF document](http://links.esri.com/esrilabs/tile-package-kreator-help) for a handy help guide for using Tile Package Kreator.
 
 ## Requirements
 
