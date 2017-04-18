@@ -49,6 +49,5 @@ limitations under the License.
 
 A copy of the license is available in the repository's [LICENSE](./LICENSE) file.
 
-[](Esri Tags: TilePackageKreator, AppStudio for ArcGIS) 
-[](Esri Language: QML)
+
 
