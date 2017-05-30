@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
@@ -37,19 +36,17 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Stack.onStatusChanged: {
+    StackView.onDeactivating: {
+        mainView.appToolBar.toolBarTitleLabel = "";
 
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
+    }
 
-        if(Stack.status === Stack.Activating){
-            mainView.appToolBar.enabled = true;
-            mainView.appToolBar.backButtonEnabled = false;
-            mainView.appToolBar.backButtonVisible = false;
-            mainView.appToolBar.historyButtonEnabled = true;
-            mainView.appToolBar.toolBarTitleLabel = qsTr("Select an Operation")
-        }
+    StackView.onActivating: {
+        mainView.appToolBar.enabled = true;
+        mainView.appToolBar.backButtonEnabled = false;
+        mainView.appToolBar.backButtonVisible = false;
+        mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.toolBarTitleLabel = qsTr("Select an Operation")
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -62,49 +59,45 @@ Item {
         Rectangle {
             id: buttonContainer
             anchors.centerIn: parent
-            width: 710 * AppFramework.displayScaleFactor
-            height: 230 * AppFramework.displayScaleFactor
+            width: sf(710)
+            height: sf(230)
             color:  "white"
 
             RowLayout {
                 anchors.fill: parent
-                spacing: 10 * AppFramework.displayScaleFactor
+                spacing: sf(10)
 
                 // Button 1 ----------------------------------------------------
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 230 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(230)
                     color: app.info.properties.mainButtonBackgroundColor
 
                     Button {
                         id: uploadLocalTPKBtn
                         anchors.fill: parent
 
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.buttonStates(control, "major")
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                border.color: app.info.properties.mainButtonBorderColor
-                                radius: app.info.properties.mainButtonRadius
-                                Accessible.ignored: true
-                            }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: config.buttonStates(control, "major")
+                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: app.info.properties.mainButtonBorderColor
+                            radius: app.info.properties.mainButtonRadius
+                            Accessible.ignored: true
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
                             Accessible.ignored: true
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                color: "transparent"
 
                                 Image {
                                     id: uploadTPKIcon
@@ -114,11 +107,10 @@ Item {
                                     fillMode: Image.PreserveAspectFit
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 25 * AppFramework.displayScaleFactor
-                                Layout.topMargin: 15  * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(25)
+                                Layout.topMargin: sf(15)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
@@ -130,10 +122,9 @@ Item {
                                     font.family: notoRegular.name
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
@@ -145,10 +136,9 @@ Item {
                                     font.family: notoRegular.name
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
                         }
 
@@ -170,37 +160,33 @@ Item {
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 230 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(230)
                     color: app.info.properties.mainButtonBackgroundColor
 
                     Button {
                         id: createNewTPKBtn
                         anchors.fill: parent
 
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.buttonStates(control, "major")
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                border.color: app.info.properties.mainButtonBorderColor
-                                radius: app.info.properties.mainButtonRadius
-                                Accessible.ignored: true
-                            }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: config.buttonStates(control, "major")
+                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: app.info.properties.mainButtonBorderColor
+                            radius: app.info.properties.mainButtonRadius
+                            Accessible.ignored: true
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
                             Accessible.ignored: true
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                color: "transparent"
 
                                 Image {
                                     id: createNewTPKIcon
@@ -210,11 +196,10 @@ Item {
                                     fillMode: Image.PreserveAspectFit
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 25 * AppFramework.displayScaleFactor
-                                Layout.topMargin: 15  * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(25)
+                                Layout.topMargin: sf(15)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
@@ -226,10 +211,9 @@ Item {
                                     font.family: notoRegular.name
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
@@ -241,10 +225,9 @@ Item {
                                     font.family: notoRegular.name
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
                         }
 
@@ -266,37 +249,33 @@ Item {
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 230 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(230)
                     color: app.info.properties.mainButtonBackgroundColor
 
                     Button {
                         id: browseOrgTpkBtn
                         anchors.fill: parent
 
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.buttonStates(control, "major")
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                border.color: app.info.properties.mainButtonBorderColor
-                                radius: app.info.properties.mainButtonRadius
-                                Accessible.ignored: true
-                            }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: config.buttonStates(control, "major")
+                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: app.info.properties.mainButtonBorderColor
+                            radius: app.info.properties.mainButtonRadius
+                            Accessible.ignored: true
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
                             Accessible.ignored: true
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                color: "transparent"
 
                                 Image {
                                     id: browseOrgTpkIcon
@@ -306,11 +285,10 @@ Item {
                                     fillMode: Image.PreserveAspectFit
                                 }
                              }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 25 * AppFramework.displayScaleFactor
-                                Layout.topMargin: 15 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(25)
+                                Layout.topMargin: sf(15)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
@@ -322,10 +300,9 @@ Item {
                                     font.family: notoRegular.name
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
@@ -337,10 +314,9 @@ Item {
                                     font.family: notoRegular.name
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
                         }
 

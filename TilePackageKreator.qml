@@ -27,8 +27,8 @@ App {
     // PROPERTIES //////////////////////////////////////////////////////////////
 
     id: app
-    width: 900 * AppFramework.displayScaleFactor
-    height: 675 * AppFramework.displayScaleFactor
+    width: sf(900)
+    height: sf(675)
 
     property bool calledFromAnotherApp: false
     property url incomingUrl
@@ -82,6 +82,12 @@ App {
 
     IconFont{
         id: icons
+    }
+
+    // -------------------------------------------------------------------------
+
+    function sf(val){
+        return val * AppFramework.displayScaleFactor;s
     }
 
     // END /////////////////////////////////////////////////////////////////////

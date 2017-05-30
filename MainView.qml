@@ -15,11 +15,10 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "Portal"
 import "HistoryManager"
@@ -71,7 +70,7 @@ Item {
             portal: mainView.portal
             updates: uD
             Layout.fillWidth: true
-            Layout.preferredHeight: 50 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(50)
             toolBarBackground: app.info.properties.toolBarBackgroundColor
             toolBarBorderColor: app.info.properties.toolBarBorderColor
             toolBarFontColor: app.info.properties.toolBarFontColor
@@ -110,7 +109,7 @@ Item {
                 appMetrics.checkForUpdates();
 
                 if(!calledFromAnotherApp){
-                    mainStackView.push({item:osv, immediate: true});
+                    mainStackView.push(osv, {}, StackView.Immediate);
                 }
                 else{
                     getViewForAction();

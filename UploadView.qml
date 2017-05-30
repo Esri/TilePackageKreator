@@ -15,14 +15,12 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 import QtQuick.Dialogs 1.2
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "Portal"
 import "TilePackage"
@@ -66,16 +64,15 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Stack.onStatusChanged: {
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
-        if(Stack.status === Stack.Activating){
-            mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false
-            mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false
-            mainView.appToolBar.historyButtonEnabled = true;
-            mainView.appToolBar.toolBarTitleLabel = qsTr("Upload Local Tile Package")
-        }
+    StackView.onDeactivating: {
+        mainView.appToolBar.toolBarTitleLabel = "";
+    }
+
+    StackView.onActivating: {
+        mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false
+        mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false
+        mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.toolBarTitleLabel = qsTr("Upload Local Tile Package")
     }
 
     //--------------------------------------------------------------------------
@@ -123,7 +120,7 @@ Item {
         ColumnLayout {
             id: uploadTPKViewColumnLayout
             anchors.fill: parent
-            spacing: 1 * AppFramework.displayScaleFactor
+            spacing: sf(1)
 
             // MAIN SECTION ////////////////////////////////////////////////////
 
@@ -136,7 +133,7 @@ Item {
                 RowLayout {
                     id: tpkForm
                     anchors.fill: parent
-                    spacing: 1
+                    spacing: sf(1)
                     enabled: uploading ? false : true
 
                     // DRAG AND DROP AREA //////////////////////////////////////
@@ -152,14 +149,13 @@ Item {
                             anchors.right: parent.right
                             anchors.bottom: parent.bottom
                             anchors.left: parent.left
-                            anchors.margins: 12 * AppFramework.displayScaleFactor
+                            anchors.margins: sf(12)
 
-                            Rectangle {
+                            Item {
                                 id: selectTPK
-                                width: 200 * AppFramework.displayScaleFactor
-                                height: 200 * AppFramework.displayScaleFactor
+                                width: sf(200)
+                                height: sf(200)
                                 anchors.centerIn: parent
-                                color: "transparent"
                                 enabled: fileAcceptedForUpload ? false : true
                                 visible: fileAcceptedForUpload ? false : true
 
@@ -194,17 +190,15 @@ Item {
                                         Button {
                                             id: openFileChooserBtn
                                             anchors.fill: parent
-                                            anchors.margins: 10 * AppFramework.displayScaleFactor
+                                            anchors.margins: sf(10)
                                             enabled: uploading ? false : true
 
-                                            style: ButtonStyle {
-                                                background: Rectangle {
-                                                    anchors.fill: parent
-                                                    color:config.buttonStates(control)
-                                                    radius: app.info.properties.mainButtonRadius
-                                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                                    border.color: app.info.properties.mainButtonBorderColor
-                                                }
+                                            background: Rectangle {
+                                                anchors.fill: parent
+                                                color:config.buttonStates(control)
+                                                radius: app.info.properties.mainButtonRadius
+                                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                                border.color: app.info.properties.mainButtonBorderColor
                                             }
 
                                             Text {
@@ -224,12 +218,11 @@ Item {
                                 }
                             }
 
-                            Rectangle {
+                            Item {
                                 id: selectedTPK
-                                width: 200 * AppFramework.displayScaleFactor
-                                height: 200 * AppFramework.displayScaleFactor
+                                width: sf(200)
+                                height: sf(200)
                                 anchors.centerIn: parent
-                                color: "transparent"
                                 visible: fileAcceptedForUpload ? true : false
                                 enabled: fileAcceptedForUpload ? true : false
 
@@ -268,8 +261,8 @@ Item {
                                         id: statusWebMercCheck
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectedTPK.height / 4 - 10
-                                        statusTextLeftMargin:10 * AppFramework.displayScaleFactor
-                                        iconContainerLeftMargin: 5 * AppFramework.displayScaleFactor
+                                        statusTextLeftMargin: sf(10)
+                                        iconContainerLeftMargin: sf(5)
                                         iconContainerHeight: this.containerHeight - 5
                                         containerHeight: selectedTPK.height / 4 - 10
                                         statusText.horizontalAlignment: Text.AlignHCenter
@@ -283,16 +276,14 @@ Item {
                                         Button {
                                             id: changeTPKFileBtn
                                             anchors.fill: parent
-                                            anchors.margins: 10 * AppFramework.displayScaleFactor
+                                            anchors.margins: sf(10)
 
-                                            style: ButtonStyle {
-                                                background: Rectangle {
-                                                    anchors.fill: parent
-                                                    color: "transparent"
-                                                    radius: app.info.properties.mainButtonRadius
-                                                    border.width: 0
-                                                    border.color: app.info.properties.mainButtonBorderColor
-                                                }
+                                            background: Rectangle {
+                                                anchors.fill: parent
+                                                color: "transparent"
+                                                radius: app.info.properties.mainButtonRadius
+                                                border.width: 0
+                                                border.color: app.info.properties.mainButtonBorderColor
                                             }
 
                                             Text {
@@ -340,7 +331,7 @@ Item {
 
                     Rectangle {
                         Layout.fillHeight: true
-                        Layout.preferredWidth: 350 * AppFramework.displayScaleFactor
+                        Layout.preferredWidth: sf(350)
                         color: "#fff"
 
                         DetailsForm {
@@ -370,7 +361,7 @@ Item {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 60 * AppFramework.displayScaleFactor
+                Layout.preferredHeight: sf(60)
                 color: "#fff"
 
                 RowLayout {
@@ -385,7 +376,7 @@ Item {
                         Rectangle{
                             id: uploadStatusContainer
                             anchors.fill: parent
-                            anchors.margins: 10 * AppFramework.displayScaleFactor
+                            anchors.margins: sf(10)
 
                             StatusIndicator{
                                 id: uploadStatusIndicator
@@ -399,22 +390,20 @@ Item {
 
                     Rectangle {
                         Layout.fillHeight: true
-                        Layout.preferredWidth: 140 * AppFramework.displayScaleFactor
+                        Layout.preferredWidth: sf(140)
                         color: "#fff"
 
                         Button {
                             id: uploadTPKBtn
                             enabled: (!fileAcceptedForUpload || uploading) ? false : true
                             anchors.fill: parent
-                            anchors.margins: 10 * AppFramework.displayScaleFactor
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: config.buttonStates(control)
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                    border.color: app.info.properties.mainButtonBorderColor
-                                }
+                            anchors.margins: sf(10)
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: config.buttonStates(control)
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: app.info.properties.mainButtonBorderColor
                             }
                             RowLayout{
                                 spacing:0
@@ -457,23 +446,21 @@ Item {
 
                     Rectangle {
                         Layout.fillHeight: true
-                        Layout.preferredWidth: 140 * AppFramework.displayScaleFactor
+                        Layout.preferredWidth: sf(140)
                         color: "#fff"
                         visible: uploading
                         Button {
                             id: uploadCancelBtn
                             anchors.fill: parent
-                            anchors.margins: 10
+                            anchors.margins: sf(10)
                             enabled: uploading ? (tpkPackage.aborted ? false : true) : false
 
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: config.buttonStates(control, "clear")
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                    border.color: "#fff"
-                                }
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: config.buttonStates(control, "clear")
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: "#fff"
                             }
 
                             Text {

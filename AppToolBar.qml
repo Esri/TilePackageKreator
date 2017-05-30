@@ -15,13 +15,11 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "Portal"
 import "AboutDialog"
@@ -40,16 +38,16 @@ Item {
 
     property string toolBarBackground: "#222"
     property string toolBarFontColor: "#fff"
-    property double toolBarFontPointSize: 15 * AppFramework.displayScaleFactor
+    property double toolBarFontPointSize: sf(15)
     property string toolBarBorderColor: "#fff"
     property string toolBarButtonColor: "#fff"
     property string toolBarButtonBackgroundColor: "transparent"
     property string toolBarButtonHoverColor: "gold"
     property string toolBarButtonPressedColor: "orange"
     property string toolBarButtonDisabledColor: "#aaa"
-    property int toolBarHeight: 50 * AppFramework.displayScaleFactor
+    property int toolBarHeight: sf(50)
     property int toolBarWidth
-    property int iconHeight: toolBarHeight - (25 * AppFramework.displayScaleFactor)
+    property int iconHeight: toolBarHeight - sf(25)
     property int updateCount: 0
 
     // -------------------------------------------------------------------------
@@ -79,7 +77,7 @@ Item {
 
         RowLayout {
             anchors.fill: parent
-            spacing: 1 * AppFramework.displayScaleFactor
+            spacing: sf(1)
 
             //------------------------------------------------------------------
 
@@ -87,13 +85,12 @@ Item {
                 id:backButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("Back")
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                ToolTip.text: qsTr("Back")
+
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
                 Text{
@@ -148,15 +145,13 @@ Item {
                 id: updatesButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("Updates Available")
+                ToolTip.text: qsTr("Updates Available")
                 enabled: false
                 visible: false
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
                 Text{
@@ -208,14 +203,12 @@ Item {
                 id: feedbackButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("Feedback")
+                ToolTip.text: qsTr("Feedback")
                 enabled: true
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
                 Text{
@@ -246,13 +239,11 @@ Item {
                 id: aboutButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("About and Help")
+                ToolTip.text: qsTr("About and Help")
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
                 Text{
@@ -283,13 +274,11 @@ Item {
                 id: historyButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("History")
+                ToolTip.text: qsTr("History")
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
                 Text{
@@ -301,7 +290,7 @@ Item {
                 }
 
                 onClicked: {
-                    stackView.push({item: hv});
+                    stackView.push(hv);
                 }
 
                 Accessible.role: Accessible.Button
@@ -320,14 +309,12 @@ Item {
                 id: userButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: (portal.user !== null && portal.user !== "" && portal.user !== undefined) ? qsTr("Sign out") + ": " + portal.user.fullName : "User Unknown"
+                ToolTip.text: (portal.user !== null && portal.user !== "" && portal.user !== undefined) ? qsTr("Sign out") + ": " + portal.user.fullName : "User Unknown"
                 enabled: true
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
                 Text{
@@ -340,7 +327,8 @@ Item {
 
                 onClicked: {
                     portal.signOut();
-                    stackView.push({item: startView, replace: true});
+                    stackView.replace(null,startView);
+                    //stackView.push({item: startView, replace: true});
                 }
 
                 Accessible.role: Accessible.Button
