@@ -49,6 +49,10 @@ Item {
         onLoadingChanged: {
             //console.log("webView.title", title);
 
+            if (loadRequest.status == WebView.LoadSucceededStatus) {
+                forceActiveFocus();
+            }
+
             if (title.indexOf("SUCCESS code=") > -1) {
                 var authorizationCode = title.replace("SUCCESS code=", "");
                 accepted(authorizationCode);
