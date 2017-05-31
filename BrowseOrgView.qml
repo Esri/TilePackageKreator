@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
@@ -56,17 +55,16 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Stack.onStatusChanged: {
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
-        if(Stack.status === Stack.Activating){
-            mainView.appToolBar.enabled = true;
-            mainView.appToolBar.historyButtonEnabled = true;
-            mainView.appToolBar.backButtonEnabled = true;
-            mainView.appToolBar.backButtonVisible = true;
-            mainView.appToolBar.toolBarTitleLabel = qsTr("Browse Organization Tile Packages")
-        }
+    StackView.onDeactivating: {
+        mainView.appToolBar.toolBarTitleLabel = "";
+    }
+
+    StackView.onActivating: {
+        mainView.appToolBar.enabled = true;
+        mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.backButtonEnabled = true;
+        mainView.appToolBar.backButtonVisible = true;
+        mainView.appToolBar.toolBarTitleLabel = qsTr("Browse Organization Tile Packages")
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -86,11 +84,10 @@ Item {
             z: 1000
             Accessible.role: Accessible.Pane
 
-            Rectangle{
-                width: 80 * AppFramework.displayScaleFactor
-                height: 80 * AppFramework.displayScaleFactor
+            Item{
+                width: sf(80)
+                height: sf(80)
                 anchors.centerIn: parent
-                color: "transparent"
                 Accessible.role: Accessible.Pane
 
                 Text{
@@ -172,7 +169,7 @@ Item {
                     Rectangle {
                         id: innerTile
                         anchors.fill: parent
-                        anchors.margins: gridMargin / 2 + 5
+                        anchors.margins: gridMargin / 2 + sf(5)
                         Accessible.role: Accessible.Pane
 
                         ColumnLayout {
@@ -216,7 +213,7 @@ Item {
                             Rectangle {
                                 id: tileMenu
                                 color: "white"
-                                Layout.preferredHeight: 30
+                                Layout.preferredHeight: sf(30)
                                 Layout.fillWidth: true
                                 Accessible.role: Accessible.Pane
 
@@ -232,7 +229,7 @@ Item {
                                         Text {
                                             id: tileWebMercIndicator
                                             anchors.fill: parent
-                                            anchors.leftMargin: 10 * AppFramework.displayScaleFactor
+                                            anchors.leftMargin: sf(10)
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignLeft
                                             font.pointSize: config.xSmallFontSizePoint
@@ -270,27 +267,26 @@ Item {
                                         Layout.fillHeight: true
                                         Layout.preferredWidth: parent.height
 
-                                        style: ButtonStyle {
-                                            background: Rectangle {
-                                                anchors.fill: parent
-                                                color: "white"
-                                                radius: 0
-                                                Image {
-                                                    id: tileMenuBtnIcon
-                                                    source: "images/menu.png"
-                                                    width: 20
-                                                    height: 20
-                                                    anchors.centerIn: parent
-                                                    Accessible.ignored: true
-                                                }
-                                                ColorOverlay {
-                                                    anchors.fill: tileMenuBtnIcon
-                                                    source: tileMenuBtnIcon
-                                                    color: control.hovered ? app.info.properties.mainButtonBackgroundColor : "#ccc"
-                                                    Accessible.ignored: true
-                                                }
+                                        background: Rectangle {
+                                            anchors.fill: parent
+                                            color: "white"
+                                            radius: 0
+                                            Image {
+                                                id: tileMenuBtnIcon
+                                                source: "images/menu.png"
+                                                width: sf(20)
+                                                height: sf(20)
+                                                anchors.centerIn: parent
+                                                Accessible.ignored: true
+                                            }
+                                            ColorOverlay {
+                                                anchors.fill: tileMenuBtnIcon
+                                                source: tileMenuBtnIcon
+                                                color: hovered ? app.info.properties.mainButtonBackgroundColor : "#ccc"
+                                                Accessible.ignored: true
                                             }
                                         }
+
                                         onClicked: {
                                             tileMenuMenu.popup();
                                         }
@@ -377,17 +373,17 @@ Item {
         contentItem: Rectangle {
             color: config.subtleBackground
             anchors.fill: parent
-            width: browseOrganizationTpksView.parent.width - 10
-            height: browseOrganizationTpksView.parent.height - 10
-            implicitWidth: browseOrganizationTpksView.parent.width - 10
-            implicitHeight: browseOrganizationTpksView.parent.height - 10
+            width: browseOrganizationTpksView.parent.width - sf(10)
+            height: browseOrganizationTpksView.parent.height - sf(10)
+            implicitWidth: browseOrganizationTpksView.parent.width - sf(10)
+            implicitHeight: browseOrganizationTpksView.parent.height - sf(10)
 
             ColumnLayout {
                 spacing: 1
                 anchors.fill: parent
 
                 Rectangle {
-                    Layout.preferredHeight: 60
+                    Layout.preferredHeight: sf(60)
                     Layout.fillWidth: true
                     Accessible.role: Accessible.Pane
 
@@ -409,30 +405,28 @@ Item {
 
                         Button {
                             id: closeBtn
-                            Layout.preferredWidth: 60
+                            Layout.preferredWidth: sf(60)
                             Layout.fillHeight: true
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: "white"
-                                    radius: 0
-
-                                    Image {
-                                        id: closeBtnIcon
-                                        source: "images/process_failed.png"
-                                        width: parent.width - 40
-                                        fillMode: Image.PreserveAspectFit
-                                        anchors.centerIn: parent
-                                        Accessible.ignored: true
-                                    }
-                                    ColorOverlay {
-                                        anchors.fill: closeBtnIcon
-                                        source: closeBtnIcon
-                                        color: closeBtn.pressed ? app.info.properties.mainButtonPressedColor : app.info.properties.mainButtonBackgroundColor
-                                        Accessible.ignored: true
-                                    }
+                            background: Rectangle {
+                            anchors.fill: parent
+                            color: "white"
+                            radius: 0
+                                Image {
+                                    id: closeBtnIcon
+                                    source: "images/process_failed.png"
+                                    width: parent.width - sf(40)
+                                    fillMode: Image.PreserveAspectFit
+                                    anchors.centerIn: parent
+                                    Accessible.ignored: true
+                                }
+                                ColorOverlay {
+                                    anchors.fill: closeBtnIcon
+                                    source: closeBtnIcon
+                                    color: closeBtn.pressed ? app.info.properties.mainButtonPressedColor : app.info.properties.mainButtonBackgroundColor
+                                    Accessible.ignored: true
                                 }
                             }
+
                             onClicked: {
                                 metadataTextArea.text = "";
                                 metadataTitle.text = "Metadata";
@@ -457,11 +451,10 @@ Item {
                     TextArea {
                         id: metadataTextArea
                         anchors.fill: parent
-                        anchors.margins: 10
+                        anchors.margins: sf(10)
                         text: ""
-                        textColor: app.info.properties.toolBarBackgroundColor
+                        color: app.info.properties.toolBarBackgroundColor
                         readOnly: true
-                        frameVisible: false
                         textFormat: Text.RichText
                         onLinkActivated: {
                             Qt.openUrlExternally(link);
@@ -483,8 +476,8 @@ Item {
 
         Rectangle {
             color: "transparent"
-            width: servicesGridView.cellWidth * AppFramework.displayScaleFactor
-            height: servicesGridView.cellHeight * AppFramework.displayScaleFactor
+            width: sf(servicesGridView.cellWidth)
+            height: sf(servicesGridView.cellHeight)
             x: servicesGridView.currentItem.x
             y: servicesGridView.currentItem.y
             z: 1000
@@ -494,25 +487,25 @@ Item {
                 id: highlightRect
                 color: "transparent"
                 anchors.fill: parent
-                anchors.margins: (gridMargin / 2) * AppFramework.displayScaleFactor
+                anchors.margins: sf(gridMargin / 2)
                 visible: true
-                border.width: 1 * AppFramework.displayScaleFactor
+                border.width: sf(1)
                 border.color: config.availableServicesView.highlightColor
             }
 
             Rectangle {
-                width: servicesGridView.cellWidth / 6 * AppFramework.displayScaleFactor
-                height: servicesGridView.cellWidth / 6 * AppFramework.displayScaleFactor
-                radius: (servicesGridView.cellWidth / 6) / 2 * AppFramework.displayScaleFactor
+                width: sf(servicesGridView.cellWidth / 6)
+                height: sf(servicesGridView.cellWidth / 6)
+                radius: width / 2
                 anchors.top: parent.top
                 anchors.left: parent.left
-                anchors.topMargin: 15 * AppFramework.displayScaleFactor
-                anchors.leftMargin: 15 * AppFramework.displayScaleFactor
+                anchors.topMargin: sf(15)
+                anchors.leftMargin: sf(15)
                 Image {
                     id: tileSelectedIcon
                     source: "images/checkmark_inverted.png"
-                    width: parent.width - 2 * AppFramework.displayScaleFactor
-                    height: parent.width - 2 * AppFramework.displayScaleFactor
+                    width: parent.width - sf(2)
+                    height: parent.width - sf(2)
                     anchors.centerIn: parent
                     visible: true
                 }

@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
@@ -28,12 +27,12 @@ Rectangle {
 
     readonly property string componentPath: app.folder.path + "/ProgressIndicator"
 
-    property int containerHeight: 50 * AppFramework.displayScaleFactor
+    property int containerHeight: sf(50)
     property string progressIndicatorBackground: "#fff"
 
     property int statusTextFontSize: 14
     property int statusTextMinimumFontSize: 9
-    property int statusTextLeftMargin: 20 * AppFramework.displayScaleFactor
+    property int statusTextLeftMargin: sf(20)
 
     property string iconContainerBackground: progressIndicatorBackground
     property string successBackground: "green"

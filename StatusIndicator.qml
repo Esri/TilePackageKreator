@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
@@ -103,19 +102,17 @@ Rectangle {
             Layout.fillHeight: true
             Layout.preferredWidth: parent.height
 
-            style: ButtonStyle {
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: messageType.backgroundColor
-                    border.width: 1
-                    border.color: messageType.borderColor
-                }
+            background: Rectangle {
+                anchors.fill: parent
+                color: messageType.backgroundColor
+                border.width: 1
+                border.color: messageType.borderColor
             }
 
             Rectangle {
                 anchors.fill: parent
                 color: "transparent"
-                anchors.margins: 8 * AppFramework.displayScaleFactor
+                anchors.margins: sf(8)
 
                 Text{
                     anchors.centerIn: parent

@@ -16,8 +16,7 @@
 
 import QtQml 2.2
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import QtLocation 5.3
@@ -82,7 +81,7 @@ Item {
 
     ColumnLayout{
         anchors.fill: parent
-        anchors.margins: 10 * AppFramework.displayScaleFactor
+        anchors.margins: sf(10)
         spacing: 0
 
         //----------------------------------------------------------------------
@@ -90,7 +89,7 @@ Item {
         Rectangle {
             color: "#fff"
             Layout.fillWidth: true
-            Layout.preferredHeight: 70 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(70)
             visible: exportAndUpload
             enabled: exportAndUpload
 
@@ -110,7 +109,7 @@ Item {
                 }
                 Rectangle{
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 50 * AppFramework.displayScaleFactor
+                    Layout.preferredHeight: sf(50)
 
                     RowLayout{
                         anchors.fill: parent
@@ -118,12 +117,11 @@ Item {
 
                         Slider {
                             id: desiredLevelsSlider
-                            minimumValue: 0
-                            maximumValue: maxLevels
+                            from: 0
+                            to: maxLevels
                             stepSize: 1
-                            tickmarksEnabled: false
                             Layout.fillWidth: true
-                            Layout.rightMargin: 10 * AppFramework.displayScaleFactor
+                            Layout.rightMargin: sf(10)
                             anchors.verticalCenter: parent.verticalCenter
 
                             onPressedChanged: {
@@ -145,24 +143,20 @@ Item {
                        TextField {
                             id: desiredLevels
                             Layout.fillHeight: true
-                            Layout.preferredWidth: 40 * AppFramework.displayScaleFactor
+                            Layout.preferredWidth: sf(40)
                             readOnly: true
                             text: desiredLevelsSlider.value
                             horizontalAlignment: Text.AlignRight
                             font.pointSize: config.largeFontSizePoint
                             font.family: notoRegular.name
 
-                            style: TextFieldStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    border.width: 0
-                                    radius: 0
-                                    color: _uiEntryElementStates(control)
-                                }
-                                textColor: config.formElementFontColor
-                                font.family: notoRegular.name
+                            background: Rectangle {
+                                anchors.fill: parent
+                                border.width: 0
+                                radius: 0
+                                color: _uiEntryElementStates(parent)
                             }
-
+                            color: config.formElementFontColor
                             Accessible.role: Accessible.StaticText
                             Accessible.name: qsTr("Current number of levels: 0 to %1".arg(desiredLevelsSlider.value.toString()))
                             Accessible.readOnly: true
@@ -178,13 +172,13 @@ Item {
         StatusIndicator{
             id: levelsWarning
             Layout.fillWidth: true
-            Layout.topMargin: 5 * AppFramework.displayScaleFactor
-            containerHeight: desiredLevelsSlider.value > 15 ? 30 * AppFramework.displayScaleFactor : 1 * AppFramework.displayScaleFactor
+            Layout.topMargin: sf(5)
+            containerHeight: desiredLevelsSlider.value > 15 ? sf(30) : sf(1)
             statusTextFontSize: config.xSmallFontSizePoint
             messageType: warning
             message: qsTr("Export may fail with this many levels if extent is too large.")
             visible: (exportAndUpload && desiredLevelsSlider.value) > 15 ? true : false
-            statusTextObject.anchors.margins: 10 * AppFramework.displayScaleFactor
+            statusTextObject.anchors.margins: sf(10)
             statusTextObject.wrapMode: Text.Wrap
 
             Accessible.role: Accessible.AlertMessage
@@ -193,8 +187,8 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 1 * AppFramework.displayScaleFactor
-            Layout.topMargin: 5 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(1)
+            Layout.topMargin: sf(5)
             color: config.subtleBackground
             visible: exportAndUpload
             Accessible.ignored: true
@@ -205,8 +199,8 @@ Item {
         Rectangle {
             color: "#fff"
             Layout.fillWidth: true
-            Layout.preferredHeight: 70 * AppFramework.displayScaleFactor
-            Layout.topMargin: 10 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(70)
+            Layout.topMargin: sf(10)
             visible: exportAndUpload && exportPathBuffering
             enabled: exportAndUpload && exportPathBuffering
 
@@ -225,7 +219,7 @@ Item {
                 }
                 Rectangle{
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 50 * AppFramework.displayScaleFactor
+                    Layout.preferredHeight: sf(50)
 
                     RowLayout{
                         anchors.fill: parent
@@ -235,7 +229,7 @@ Item {
                             id: desiredBufferInput
                             Layout.fillHeight: true
                             Layout.fillWidth: true
-                            Layout.rightMargin: 10 * AppFramework.displayScaleFactor
+                            Layout.rightMargin: sf(10)
 
                             property int unitInMeters: 1
 
@@ -243,17 +237,15 @@ Item {
 
                             validator: IntValidator { bottom: 1; top: distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max;}
 
-                            style: TextFieldStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    border.width: config.formElementBorderWidth
-                                    border.color: config.formElementBorderColor
-                                    radius: config.formElementRadius
-                                    color: _uiEntryElementStates(control)
-                                }
-                                textColor: config.formElementFontColor
-                                font.family: notoRegular.name
+                            background: Rectangle {
+                                anchors.fill: parent
+                                border.width: config.formElementBorderWidth
+                                border.color: config.formElementBorderColor
+                                radius: config.formElementRadius
+                                color: _uiEntryElementStates(parent)
                             }
+                            color: config.formElementFontColor
+                            font.family: notoRegular.name
 
                             onTextChanged: {
                                 currentBufferInMeters = (text !== "") ? Math.ceil(text * distanceUnits.get(desiredBufferDistanceUnit.currentIndex).conversionFactor) : 1;
@@ -267,12 +259,13 @@ Item {
                         ComboBox {
                             id: desiredBufferDistanceUnit
                             Layout.fillHeight: true
-                            Layout.fillWidth: true
+                            //Layout.fillWidth: true
+                            Layout.preferredWidth: sf(50)
 
                             currentIndex: usesMetric ? 0 : 2
+                            textRole: "text"
 
                             model: ListModel {
-                                id: distanceUnits
                                 ListElement { text: "m"; max: 3000; conversionFactor: 1 }
                                 ListElement { text: "km"; max: 5; conversionFactor: 1000}
                                 ListElement { text: "ft"; max: 4000; conversionFactor: 0.3048 }
@@ -343,8 +336,8 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 1 * AppFramework.displayScaleFactor
-            Layout.topMargin: 5 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(1)
+            Layout.topMargin: sf(5)
             color: config.subtleBackground
             visible: exportAndUpload && exportPathBuffering
             Accessible.ignored: true
@@ -352,15 +345,13 @@ Item {
 
         //----------------------------------------------------------------------
 
-        ExclusiveGroup{
-            id: destinationExclusiveGroup
-        }
+        ButtonGroup { id: destinationExclusiveGroup }
 
         //----------------------------------------------------------------------
 
         Rectangle{
             Layout.fillWidth: true
-            Layout.preferredHeight: 30 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(30)
             color:"#fff"
 
             RowLayout{
@@ -387,25 +378,24 @@ Item {
 
          Rectangle{
              Layout.fillWidth: true
-             Layout.preferredHeight: 40 * AppFramework.displayScaleFactor
-             Layout.bottomMargin: 5 * AppFramework.displayScaleFactor
+             Layout.preferredHeight: sf(40)
+             Layout.bottomMargin: sf(5)
 
             TextField {
                 id: tpkTitleTextField
                 anchors.fill: parent
                 placeholderText: qsTr("Enter a title")
 
-                style: TextFieldStyle {
-                    background: Rectangle {
-                        anchors.fill: parent
-                        border.width: config.formElementBorderWidth
-                        border.color: config.formElementBorderColor
-                        radius: config.formElementRadius
-                        color: _uiEntryElementStates(control)
-                    }
-                    textColor: config.formElementFontColor
-                    font.family: notoRegular.name
+                background: Rectangle {
+                    anchors.fill: parent
+                    border.width: config.formElementBorderWidth
+                    border.color: config.formElementBorderColor
+                    radius: config.formElementRadius
+                    color: _uiEntryElementStates(parent)
                 }
+                color: config.formElementFontColor
+                font.family: notoRegular.name
+
                 onTextChanged: {
                     if(tpkTitleTextField.length > 0){
                         _sanatizeTitle(text);
@@ -424,8 +414,8 @@ Item {
 
         Rectangle{
             Layout.fillWidth:true
-            Layout.preferredHeight: 10 * AppFramework.displayScaleFactor
-            Layout.bottomMargin: 5 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(10)
+            Layout.bottomMargin: sf(5)
             visible: false
             Accessible.ignored: true
             Text{
@@ -449,7 +439,7 @@ Item {
 
         Rectangle{
             Layout.fillWidth: true
-            Layout.preferredHeight: 40 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(40)
             color:"#fff"
             visible: exportAndUpload
             enabled: exportAndUpload
@@ -460,7 +450,7 @@ Item {
 
                 RadioButton {
                     id: saveToLocation
-                    exclusiveGroup: destinationExclusiveGroup
+                    ButtonGroup.group: destinationExclusiveGroup
                     onCheckedChanged: {
                         currentSaveToLocation = (dlr.saveToPath !== null) ? defaultSaveToLocation : null;
                         saveToLocationFolder.text = _extractFolderDirectory(defaultSaveToLocation);
@@ -489,8 +479,8 @@ Item {
             id: saveToLocationDetails
             color:"#fff"
             Layout.fillWidth: true
-            Layout.bottomMargin: 10 * AppFramework.displayScaleFactor
-            implicitHeight: 30 * AppFramework.displayScaleFactor
+            Layout.bottomMargin: sf(10)
+            implicitHeight: sf(30)
             visible: false
             RowLayout{
                 anchors.fill: parent
@@ -498,19 +488,17 @@ Item {
                 Button{
                     Layout.preferredWidth: parent.width/3
                     Layout.fillHeight: true
-                    style: ButtonStyle {
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: config.buttonStates(control)
-                            radius: app.info.properties.mainButtonRadius
-                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                            border.color: app.info.properties.mainButtonBorderColor
-                            Text{
-                                text: qsTr("Save To")
-                                color: app.info.properties.mainButtonFontColor
-                                font.family: notoRegular.name
-                                anchors.centerIn: parent
-                            }
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: config.buttonStates(parent)
+                        radius: app.info.properties.mainButtonRadius
+                        border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                        border.color: app.info.properties.mainButtonBorderColor
+                        Text{
+                            text: qsTr("Save To")
+                            color: app.info.properties.mainButtonFontColor
+                            font.family: notoRegular.name
+                            anchors.centerIn: parent
                         }
                     }
                     onClicked: {
@@ -530,7 +518,7 @@ Item {
                 Rectangle{
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.leftMargin: 10 * AppFramework.displayScaleFactor
+                    Layout.leftMargin: sf(10)
                     Text{
                         anchors.fill: parent
                         id: saveToLocationFolder
@@ -553,7 +541,7 @@ Item {
 
         Rectangle{
             Layout.fillWidth: true
-            Layout.preferredHeight: 40 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(40)
             color: "#fff"
             visible: exportAndUpload
 
@@ -563,7 +551,7 @@ Item {
 
                 RadioButton {
                     id: uploadToPortalCheckbox
-                    exclusiveGroup: destinationExclusiveGroup
+                    ButtonGroup.group: destinationExclusiveGroup
                     checked: true
                     onCheckedChanged: {
                         uploadToPortal = (checked) ? true : false;
@@ -603,7 +591,7 @@ Item {
 
                         Rectangle{
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 30 * AppFramework.displayScaleFactor
+                            Layout.preferredHeight: sf(30)
                             RowLayout{
                                        id:tpkDescriptionLabels
                                        spacing:0
@@ -643,22 +631,21 @@ Item {
                         TextArea {
                             id: tpkDescriptionTextArea
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 60 * AppFramework.displayScaleFactor
-                            Layout.bottomMargin: 10 * AppFramework.displayScaleFactor
+                            Layout.preferredHeight: sf(60)
+                            Layout.bottomMargin: sf(10)
                             property int maximumLength: 4000
                             readOnly: uploadToPortal ? false : true
 
-                            style: TextAreaStyle {
-                                backgroundColor: _uiEntryElementStates(control)
-                                textColor: config.formElementFontColor
-                                font.family: notoRegular.name
-                                frame: Rectangle {
-                                    border.width: config.formElementBorderWidth
-                                    border.color: config.formElementBorderColor
-                                    radius: config.formElementRadius
-                                    anchors.fill: parent
-                                }
+                            color: config.formElementFontColor
+                            font.family: notoRegular.name
+                            background: Rectangle {
+                                color: _uiEntryElementStates(parent)
+                                border.width: config.formElementBorderWidth
+                                border.color: config.formElementBorderColor
+                                radius: config.formElementRadius
+                                anchors.fill: parent
                             }
+
                             onTextChanged: {
                                 tpkDescriptionCharacterCount.text =  (maximumLength - text.length).toString();
                                    if (text.length > maximumLength) {
@@ -675,7 +662,7 @@ Item {
 
                         Rectangle{
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
+                            Layout.preferredHeight: sf(20)
                             Label {
                                 text: qsTr("Share this item with:")
                                 font.pointSize: config.smallFontSizePoint
@@ -696,41 +683,44 @@ Item {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
 
-                            ExclusiveGroup {
+                            ButtonGroup {
                                 id: sharingExclusiveGroup
                             }
 
                             RadioButton {
                                 id: tpkSharingNotShared
-                                exclusiveGroup: sharingExclusiveGroup
+                                ButtonGroup.group: sharingExclusiveGroup
                                 anchors.top: parent.top
                                 anchors.right: parent.right
                                 anchors.left: parent.left
-                                anchors.topMargin: 10 * AppFramework.displayScaleFactor
+                                anchors.topMargin: sf(10)
                                 checked: uploadToPortal ? true : false
                                 enabled: uploadToPortal ? true : false
-                                style: RadioButtonStyle {
-                                    indicator: Rectangle {
-                                        implicitWidth: 16 * AppFramework.displayScaleFactor
-                                        implicitHeight: 16 * AppFramework.displayScaleFactor
-                                        radius: 9 * AppFramework.displayScaleFactor
-                                        border.width: config.formElementBorderWidth
-                                        border.color: config.formElementBorderColor
-                                        color: _uiEntryElementStates(control)
-                                        Rectangle {
-                                            anchors.fill: parent
-                                            visible: control.checked
-                                            color: config.formElementFontColor
-                                            radius: 9 * AppFramework.displayScaleFactor
-                                            anchors.margins: 4 * AppFramework.displayScaleFactor
-                                        }
-                                    }
-                                    label: Text{
-                                        text: qsTr("Do not share")
-                                        font.family: notoRegular.name
-                                        color: config.mainLabelFontColor
+                                indicator: Rectangle {
+                                    implicitWidth: sf(16)
+                                    implicitHeight: sf(16)
+                                    x: 0
+                                    y: parent.height / 2 - height / 2
+                                    radius: sf(8)
+                                    border.width: config.formElementBorderWidth
+                                    border.color: config.formElementBorderColor
+                                    color: _uiEntryElementStates(parent)
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        visible: parent.parent.checked
+                                        color: config.formElementFontColor
+                                        radius: sf(9)
+                                        anchors.margins: sf(4)
                                     }
                                 }
+                                contentItem: Text{
+                                    text: qsTr("Do not share")
+                                    font.family: notoRegular.name
+                                    color: config.mainLabelFontColor
+                                    verticalAlignment: Text.AlignVCenter
+                                    leftPadding: tpkSharingNotShared.indicator.width + sf(5)
+                                }
+
                                 onCheckedChanged: {
                                     if(checked){
                                         currentSharing = "";
@@ -742,34 +732,37 @@ Item {
 
                             RadioButton {
                                 id: tpkSharingOrg
-                                exclusiveGroup: sharingExclusiveGroup
+                                ButtonGroup.group: sharingExclusiveGroup
                                 anchors.top: tpkSharingNotShared.bottom
                                 anchors.right: parent.right
                                 anchors.left: parent.left
-                                anchors.topMargin: 8 * AppFramework.displayScaleFactor
+                                anchors.topMargin: sf(8)
                                 enabled: uploadToPortal ? true : false
-                                style: RadioButtonStyle {
-                                    indicator: Rectangle {
-                                        implicitWidth: 16 * AppFramework.displayScaleFactor
-                                        implicitHeight: 16 * AppFramework.displayScaleFactor
-                                        radius: 9 * AppFramework.displayScaleFactor
-                                        border.width: config.formElementBorderWidth
-                                        border.color: config.formElementBorderColor
-                                        color: _uiEntryElementStates(control)
-                                        Rectangle {
-                                            anchors.fill: parent
-                                            visible: control.checked
-                                            color: config.formElementFontColor
-                                            radius: 9 * AppFramework.displayScaleFactor
-                                            anchors.margins: 4 * AppFramework.displayScaleFactor
-                                        }
-                                    }
-                                    label: Text{
-                                        text: qsTr("Your organization")
-                                        font.family: notoRegular.name
-                                        color: config.mainLabelFontColor
+                                indicator: Rectangle {
+                                    implicitWidth: sf(16)
+                                    implicitHeight: sf(16)
+                                    x: 0
+                                    y: parent.height / 2 - height / 2
+                                    radius: sf(8)
+                                    border.width: config.formElementBorderWidth
+                                    border.color: config.formElementBorderColor
+                                    color: _uiEntryElementStates(parent)
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        visible: parent.parent.checked
+                                        color: config.formElementFontColor
+                                        radius: sf(9)
+                                        anchors.margins: sf(4)
                                     }
                                 }
+                                contentItem: Text{
+                                    text: qsTr("Your organization")
+                                    font.family: notoRegular.name
+                                    color: config.mainLabelFontColor
+                                    verticalAlignment: Text.AlignVCenter
+                                    leftPadding: tpkSharingOrg.indicator.width + sf(5)
+                                }
+
                                 onCheckedChanged: {
                                     if(checked){
                                         currentSharing = "org";
@@ -781,34 +774,37 @@ Item {
 
                             RadioButton {
                                 id: tpkSharingEveryone
-                                exclusiveGroup: sharingExclusiveGroup
+                                ButtonGroup.group: sharingExclusiveGroup
                                 anchors.top: tpkSharingOrg.bottom
                                 anchors.right: parent.right
                                 anchors.left: parent.left
-                                anchors.topMargin: 8 * AppFramework.displayScaleFactor
+                                anchors.topMargin: sf(8)
                                 enabled: uploadToPortal ? true : false
-                                style: RadioButtonStyle {
-                                    indicator: Rectangle {
-                                        implicitWidth: 16 * AppFramework.displayScaleFactor
-                                        implicitHeight: 16 * AppFramework.displayScaleFactor
-                                        radius: 9 * AppFramework.displayScaleFactor
-                                        border.width: config.formElementBorderWidth
-                                        border.color: config.formElementBorderColor
-                                        color: _uiEntryElementStates(control)
-                                        Rectangle {
-                                            anchors.fill: parent
-                                            visible: control.checked
-                                            color: config.formElementFontColor
-                                            radius: 9 * AppFramework.displayScaleFactor
-                                            anchors.margins: 4 * AppFramework.displayScaleFactor
-                                        }
-                                    }
-                                    label: Text{
-                                        text: qsTr("Everyone (Public)")
-                                        font.family: notoRegular.name
-                                        color: config.mainLabelFontColor
+                                indicator: Rectangle {
+                                    implicitWidth: sf(16)
+                                    implicitHeight: sf(16)
+                                    x: 0
+                                    y: parent.height / 2 - height / 2
+                                    radius: sf(8)
+                                    border.width: config.formElementBorderWidth
+                                    border.color: config.formElementBorderColor
+                                    color: _uiEntryElementStates(parent)
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        visible: parent.parent.checked
+                                        color: config.formElementFontColor
+                                        radius: sf(9)
+                                        anchors.margins: sf(4)
                                     }
                                 }
+                                contentItem: Text{
+                                    text: qsTr("Everyone (Public)")
+                                    font.family: notoRegular.name
+                                    color: config.mainLabelFontColor
+                                    verticalAlignment: Text.AlignVCenter
+                                    leftPadding: tpkSharingEveryone.indicator.width + sf(5)
+                                }
+
                                 onCheckedChanged: {
                                     if(checked){
                                         currentSharing = "everyone";

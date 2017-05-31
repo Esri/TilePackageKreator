@@ -80,8 +80,8 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.buttonStates(control, "major")
-                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                            color: config.buttonStates(parent, "major")
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                             border.color: app.info.properties.mainButtonBorderColor
                             radius: app.info.properties.mainButtonRadius
                             Accessible.ignored: true
@@ -169,8 +169,8 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.buttonStates(control, "major")
-                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                            color: config.buttonStates(parent, "major")
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                             border.color: app.info.properties.mainButtonBorderColor
                             radius: app.info.properties.mainButtonRadius
                             Accessible.ignored: true
@@ -258,8 +258,8 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.buttonStates(control, "major")
-                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                            color: config.buttonStates(parent, "major")
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                             border.color: app.info.properties.mainButtonBorderColor
                             radius: app.info.properties.mainButtonRadius
                             Accessible.ignored: true

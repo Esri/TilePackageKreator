@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import QtLocation 5.3
@@ -109,14 +108,12 @@ Item {
         drawingMenu.drawingRequestComplete();
     }
 
-
-
     // UI //////////////////////////////////////////////////////////////////////
 
     MapDrawingMenu{
         id: drawingMenu
         anchors.top: parent.top
-        anchors.topMargin: 10 * AppFramework.displayScaleFactor
+        anchors.topMargin: sf(10)
         anchors.horizontalCenter: parent.horizontalCenter
         z: previewMap.z + 3
         enabled: (drawing) ? false : true
@@ -142,12 +139,12 @@ Item {
 
     Rectangle{
         id: mapZoomTools
-        width: 30 * AppFramework.displayScaleFactor
+        width: sf(30)
         height: (width * 2) + 1
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        anchors.bottomMargin: 10 * AppFramework.displayScaleFactor
-        anchors.rightMargin: 10 * AppFramework.displayScaleFactor
+        anchors.bottomMargin: sf(10)
+        anchors.rightMargin: sf(10)
         z: previewMap.z + 3
         radius: 5 * AppFramework.displayScaleFactor
         color: "transparent"
@@ -160,16 +157,15 @@ Item {
                 id: mapZoomIn
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                tooltip: qsTr("Zoom In")
-                style: ButtonStyle {
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: (control.enabled) ? ( (control.pressed) ? "#bddbee" : "#fff" ) : "#eee"
-                        border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                        border.color: (control.enabled) ? app.info.properties.mainButtonBorderColor : "#ddd"
-                        radius: 3 * AppFramework.displayScaleFactor
-                    }
+                ToolTip.text: qsTr("Zoom In")
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : "#eee"
+                    border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                    border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    radius: sf(3)
                 }
+
 
                 Rectangle {
                     anchors.fill: parent
@@ -193,16 +189,14 @@ Item {
                 id: mapZoomOut
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                tooltip: qsTr("Zoom Out")
+                ToolTip.text: qsTr("Zoom Out")
 
-                style: ButtonStyle {
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: (control.enabled) ? ( (control.pressed) ? "#bddbee" : "#fff" ) : "#eee"
-                        border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                        border.color: (control.enabled) ? app.info.properties.mainButtonBorderColor : "#ddd"
-                        radius: 3 * AppFramework.displayScaleFactor
-                    }
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : "#eee"
+                    border.width: parent.enabled? app.info.properties.mainButtonBorderWidth : 0
+                    border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    radius: sf(3)
                 }
 
                 Rectangle {
@@ -566,7 +560,7 @@ Item {
     MapRectangle {
         id: drawnExtent
         color: drawingExtentFillColor
-        border.width: 2 * AppFramework.displayScaleFactor
+        border.width: sf(2)
         border.color: drawnExtentOutlineColor
     }
 
@@ -574,7 +568,7 @@ Item {
 
     MapPolyline{
         id: drawnPolyline
-        line.width: 3 * AppFramework.displayScaleFactor
+        line.width: sf(3)
         line.color: drawnExtentOutlineColor
     }
 
@@ -583,7 +577,7 @@ Item {
     MapPolygon{
         id:drawnPolygon
         color: drawingExtentFillColor
-        border.width: 2 * AppFramework.displayScaleFactor
+        border.width: sf(2)
         border.color: drawnExtentOutlineColor
     }
 
@@ -595,26 +589,24 @@ Item {
         enabled: false
 
         sourceItem: Rectangle {
-            width: 30 * AppFramework.displayScaleFactor
-            height: 30 * AppFramework.displayScaleFactor
+            width: sf(30)
+            height: sf(30)
             color: "transparent"
             Button {
                 id: clearExtentBtn
                 anchors.fill: parent
-                tooltip: qsTr("Clear Extent")
+                ToolTip.text: qsTr("Clear Extent")
 
-                style: ButtonStyle {
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: "#fff"
-                        radius: 0
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: "#fff"
+                    radius: 0
 
-                        Image {
-                            source: "images/clear_extent.png"
-                            fillMode: Image.PreserveAspectFit
-                            width: parent.width - (4 * AppFramework.displayScaleFactor)
-                            anchors.centerIn: parent
-                        }
+                    Image {
+                        source: "images/clear_extent.png"
+                        fillMode: Image.PreserveAspectFit
+                        width: parent.width - sf(4)
+                        anchors.centerIn: parent
                     }
                 }
                 onClicked: {
@@ -672,7 +664,6 @@ Item {
             console.log("drawPolygon ", drawPolygon)
             g = getPolygonGeometry();
         }
-
         else{
             console.log('no geometry');
             g = null;

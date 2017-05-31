@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import QtLocation 5.3
@@ -77,16 +76,15 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Stack.onStatusChanged: {
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
-        if(Stack.status === Stack.Activating){
-            mainView.appToolBar.backButtonEnabled = true;
-            mainView.appToolBar.backButtonVisible = true;
-            mainView.appToolBar.historyButtonEnabled = true;
-            mainView.appToolBar.toolBarTitleLabel = qsTr("Create New Tile Package")
-        }
+    StackView.onDeactivating: {
+        mainView.appToolBar.toolBarTitleLabel = "";
+    }
+
+    StackView.onActivating: {
+        mainView.appToolBar.backButtonEnabled = true;
+        mainView.appToolBar.backButtonVisible = true;
+        mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.toolBarTitleLabel = qsTr("Create New Tile Package")
     }
 
     //--------------------------------------------------------------------------
@@ -122,7 +120,7 @@ Item {
         ColumnLayout {
             id: exportTpkViewColumnLayout
             anchors.fill: parent
-            spacing: 1 * AppFramework.displayScaleFactor
+            spacing: sf(1)
 
         // MAP AND DETAILS SECTION /////////////////////////////////////////////
 
@@ -136,7 +134,7 @@ Item {
 
             RowLayout {
                 anchors.fill: parent
-                spacing: 1
+                spacing: sf(1)
 
                 // MAP SECTION /////////////////////////////////////////////////
 
@@ -147,7 +145,7 @@ Item {
 
                     ColumnLayout{
                         anchors.fill: parent
-                        spacing:0
+                        spacing: 0
 
                         // MAP CONTAINER ///////////////////////////////////////
 
@@ -208,20 +206,20 @@ Item {
 
                         Rectangle{
                             id: mapInfoToolbar
-                            Layout.preferredHeight: 50 * AppFramework.displayScaleFactor
+                            Layout.preferredHeight: sf(50)
                             Layout.fillWidth: true
                             color:config.subtleBackground
 
                             RowLayout{
                                 anchors.fill: parent
-                                spacing: 1
+                                spacing: sf(1)
 
                                 //----------------------------------------------
 
                                 Rectangle{
                                     id: zoomLevelIndicatorContainer
                                     Layout.fillHeight: true
-                                    Layout.preferredWidth: 140 * AppFramework.displayScaleFactor
+                                    Layout.preferredWidth: sf(140)
 
                                     ColumnLayout{
                                         spacing:0
@@ -392,7 +390,7 @@ Item {
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 300 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(300)
                     color: "#fff"
                     Accessible.role: Accessible.Pane
 
@@ -432,7 +430,7 @@ Item {
                     anchors.fill:parent
                     opacity: .9
                     color:config.subtleBackground
-                    z:100
+                    z: 100
                 }
 
                 ColumnLayout{
@@ -440,26 +438,26 @@ Item {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.margins: 10 * AppFramework.displayScaleFactor
-                    z:101
+                    anchors.margins: sf(10)
+                    z: 101
 
                     ProgressIndicator{
-                        id:estimateSizeProgressIndicator
-                        statusTextFontSize:config.smallFontSizePoint
-                        statusTextMinimumFontSize:6 * AppFramework.displayScaleFactor
-                        statusTextLeftMargin:10 * AppFramework.displayScaleFactor
-                        iconContainerLeftMargin: 5 * AppFramework.displayScaleFactor
-                        iconContainerHeight: this.containerHeight - 5
+                        id: estimateSizeProgressIndicator
+                        statusTextFontSize: config.smallFontSizePoint
+                        statusTextMinimumFontSize: 6
+                        statusTextLeftMargin: sf(10)
+                        iconContainerLeftMargin: sf(5)
+                        iconContainerHeight: this.containerHeight - sf(5)
                         Layout.fillWidth: true
                         visible: false
                     }
                     ProgressIndicator{
                         id:exportCompleteProgressIndicator
                         statusTextFontSize:config.smallFontSizePoint
-                        statusTextMinimumFontSize:6 * AppFramework.displayScaleFactor
-                        statusTextLeftMargin:10 * AppFramework.displayScaleFactor
-                        iconContainerLeftMargin: 5 * AppFramework.displayScaleFactor
-                        iconContainerHeight: this.containerHeight - 5
+                        statusTextMinimumFontSize: 6
+                        statusTextLeftMargin: sf(10)
+                        iconContainerLeftMargin: sf(5)
+                        iconContainerHeight: this.containerHeight - sf(5)
                         Layout.fillWidth: true
                         visible: false
                     }
@@ -467,10 +465,10 @@ Item {
                     ProgressIndicator{
                         id: downloadProgressIndicator
                         statusTextFontSize:config.smallFontSizePoint
-                        statusTextMinimumFontSize:6 * AppFramework.displayScaleFactor
-                        statusTextLeftMargin:10 * AppFramework.displayScaleFactor
-                        iconContainerLeftMargin: 5 * AppFramework.displayScaleFactor
-                        iconContainerHeight: this.containerHeight - 5
+                        statusTextMinimumFontSize: 6
+                        statusTextLeftMargin: sf(10)
+                        iconContainerLeftMargin: sf(5)
+                        iconContainerHeight: this.containerHeight - sf(5)
                         Layout.fillWidth: true
                         visible: false
                     }
@@ -478,10 +476,10 @@ Item {
                     ProgressIndicator{
                         id: uploadProgressIndicator
                         statusTextFontSize:config.smallFontSizePoint
-                        statusTextMinimumFontSize:6 * AppFramework.displayScaleFactor
-                        statusTextLeftMargin:10 * AppFramework.displayScaleFactor
-                        iconContainerLeftMargin: 5 * AppFramework.displayScaleFactor
-                        iconContainerHeight: this.containerHeight - 5
+                        statusTextMinimumFontSize: 6
+                        statusTextLeftMargin: sf(10)
+                        iconContainerLeftMargin: sf(5)
+                        iconContainerHeight: this.containerHeight - sf(5)
                         Layout.fillWidth: true
                         visible: false
                     }
@@ -489,10 +487,10 @@ Item {
                     ProgressIndicator{
                         id: exportErrorProgressIndicator
                         statusTextFontSize:config.smallFontSizePoint
-                        statusTextMinimumFontSize:6
-                        statusTextLeftMargin:10 * AppFramework.displayScaleFactor
-                        iconContainerLeftMargin: 5 * AppFramework.displayScaleFactor
-                        iconContainerHeight: this.containerHeight - 5
+                        statusTextMinimumFontSize: 6
+                        statusTextLeftMargin: sf(10)
+                        iconContainerLeftMargin: sf(5)
+                        iconContainerHeight: this.containerHeight - sf(5)
                         Layout.fillWidth: true
                         visible: false
                     }
@@ -504,7 +502,7 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 60 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(60)
             color: "#fff"
 
             RowLayout {
@@ -521,7 +519,7 @@ Item {
                     Rectangle{
                         id: exportStatusContainer
                         anchors.fill: parent
-                        anchors.margins: 10 * AppFramework.displayScaleFactor
+                        anchors.margins: sf(10)
 
                         StatusIndicator{
                             id: exportStatusIndicator
@@ -546,27 +544,25 @@ Item {
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 190 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(190)
                     color: "#fff"
                     visible: !exporting
 
                     Button {
                         id: exportTPKBtn
                         anchors.fill: parent
-                        anchors.margins: 10 * AppFramework.displayScaleFactor
+                        anchors.margins: sf(10)
                         enabled: (exportDetails.tpkTitle !== "" /*tpkTitleTextField.text !== ""*/ && mapViewPlus.userDrawnExtent) ? true : false
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.buttonStates(control)
-                                radius: app.info.properties.mainButtonRadius
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                border.color: app.info.properties.mainButtonBorderColor
-                            }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: config.buttonStates(parent)
+                            radius: app.info.properties.mainButtonRadius
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: app.info.properties.mainButtonBorderColor
                         }
 
                         RowLayout{
-                            spacing:0
+                            spacing: 0
                             anchors.fill: parent
 
                             Text {
@@ -636,7 +632,7 @@ Item {
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 140 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(140)
                     color: "#fff"
                     enabled: exporting && !tpkUpdate.active && !getPKInfo.active
                     visible: exporting && !tpkUpdate.active && !getPKInfo.active
@@ -644,16 +640,14 @@ Item {
                     Button {
                         id: cancelExport
                         anchors.fill: parent
-                        anchors.margins: 10 * AppFramework.displayScaleFactor
+                        anchors.margins: sf(10)
 
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.buttonStates(control, "clear")
-                                radius: app.info.properties.mainButtonRadius
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                border.color: "#fff"
-                            }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: config.buttonStates(parent, "clear")
+                            radius: app.info.properties.mainButtonRadius
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: "#fff"
                         }
 
                         Text {

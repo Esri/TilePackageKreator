@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
@@ -95,17 +94,16 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Stack.onStatusChanged: {
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
-        if(Stack.status === Stack.Activating){
-            mainView.appToolBar.enabled = true
-            mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false;
-            mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false;
-            mainView.appToolBar.historyButtonEnabled = true;
-            mainView.appToolBar.toolBarTitleLabel = qsTr("Create New Tile Package")
-        }
+    StackView.onDeactivating: {
+        mainView.appToolBar.toolBarTitleLabel = "";
+    }
+
+    StackView.onActivating: {
+        mainView.appToolBar.enabled = true
+        mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false;
+        mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false;
+        mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.toolBarTitleLabel = qsTr("Create New Tile Package")
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -137,8 +135,8 @@ Item {
                     Accessible.ignored: true
 
                     Rectangle{
-                        width: 80 * AppFramework.displayScaleFactor
-                        height: 80 * AppFramework.displayScaleFactor
+                        width: sf(80)
+                        height: sf(80)
                         anchors.centerIn: parent
                         color: "transparent"
 
@@ -188,7 +186,7 @@ Item {
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.left: parent.left
-            height: 60  * AppFramework.displayScaleFactor
+            height: sf(60)
             color: config.subtleBackground
             Accessible.role: Accessible.Pane
 
@@ -218,8 +216,8 @@ Item {
 
                 Rectangle{
                     Layout.fillHeight: true
-                    Layout.preferredWidth: parent.height - (20 * AppFramework.displayScaleFactor)
-                    Layout.margins: 10 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: parent.height - sf(20)
+                    Layout.margins: sf(10)
                     color: config.subtleBackground
                     visible: !addServiceEntry.visible
                     enabled: !addServiceEntry.visible
@@ -231,17 +229,15 @@ Item {
 
                         property string buttonText: qsTr("Add a tile service")
 
-                        tooltip: buttonText
+                        ToolTip.text: buttonText
 
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.subtleBackground
-                                radius: 3 * AppFramework.displayScaleFactor // app.info.properties.mainButtonRadius
-                                border.width: 1 * AppFramework.displayScaleFactor
-                                border.color: app.info.properties.mainButtonBorderColor
-                             }
-                        }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: config.subtleBackground
+                            radius: sf(3)
+                            border.width: sf(1)
+                            border.color: app.info.properties.mainButtonBorderColor
+                         }
 
                         Text{
                             anchors.centerIn: parent
@@ -279,8 +275,8 @@ Item {
 
                     RowLayout{
                         anchors.fill: parent
-                        anchors.margins: 5 * AppFramework.displayScaleFactor
-                        spacing: 5 * AppFramework.displayScaleFactor
+                        anchors.margins: sf(5)
+                        spacing: sf(5)
 
                         TextField {
                             id: tileServiceTextField
@@ -288,17 +284,15 @@ Item {
                             Layout.fillWidth: true
                             placeholderText: qsTr("Enter url (e.g. http://someservice.gov/arcgis/rest/services/example/MapServer)")
 
-                            style: TextFieldStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    border.width: config.formElementBorderWidth
-                                    border.color: config.formElementBorderColor
-                                    radius: config.formElementRadius
-                                    color: _uiEntryElementStates(control)
-                                }
-                                textColor: config.formElementFontColor
-                                font.family: notoRegular.name
+                            background: Rectangle {
+                                anchors.fill: parent
+                                border.width: config.formElementBorderWidth
+                                border.color: config.formElementBorderColor
+                                radius: config.formElementRadius
+                                color: _uiEntryElementStates(control)
                             }
+                            color: config.formElementFontColor
+                            font.family: notoRegular.name
 
                             validator: RegExpValidator{
                                 regExp: /(http(s)*:\/\/).*/g
@@ -311,19 +305,17 @@ Item {
 
                         Button{
                             Layout.fillHeight: true
-                            Layout.preferredWidth: 70 * AppFramework.displayScaleFactor
+                            Layout.preferredWidth: sf(70)
                             enabled: tileServiceTextField.length > 0 && tileServiceTextField.acceptableInput
 
                             property string buttonText: qsTr("Add")
 
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: config.buttonStates(control)
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                    border.color: app.info.properties.mainButtonBorderColor
-                                }
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: config.buttonStates(parent)
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: app.info.properties.mainButtonBorderColor
                             }
 
                             Text {
@@ -353,18 +345,16 @@ Item {
 
                         Button{
                             Layout.fillHeight: true
-                            Layout.preferredWidth: 70 * AppFramework.displayScaleFactor
+                            Layout.preferredWidth: sf(70)
 
                             property string buttonText: qsTr("Cancel")
 
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: config.buttonStates(control, "clear")
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                    border.color: "#fff"
-                                }
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: config.buttonStates(parent, "clear")
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: "#fff"
                             }
 
                             Text {
@@ -428,7 +418,7 @@ Item {
         Rectangle{
             id: viewStatusIndicatorContainer
             width: parent.width
-            height: 50 * AppFramework.displayScaleFactor
+            height: sf(50)
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -478,12 +468,7 @@ Item {
                     enabled: true
                     onClicked: {
                        servicesGridView.currentIndex = index;
-                       mainStackView.push({
-                           item: etv,
-                           properties: {
-                               currentTileService: currentTileService
-                           }
-                       });
+                       mainStackView.push(etv,{ currentTileService: currentTileService });
                     }
                     onDoubleClicked: {
                         // ISSUE #94
@@ -621,27 +606,26 @@ Item {
                                         Layout.fillHeight: true
                                         Layout.preferredWidth: parent.height
 
-                                        style: ButtonStyle {
-                                            background: Rectangle {
-                                                anchors.fill: parent
-                                                color: "white"
-                                                radius: 0
-                                                Image {
-                                                    id: tileMenuBtnIcon
-                                                    source: "images/menu.png"
-                                                    width: 20
-                                                    height: 20
-                                                    anchors.centerIn: parent
-                                                    Accessible.ignored: true
-                                                }
-                                                ColorOverlay {
-                                                    anchors.fill: tileMenuBtnIcon
-                                                    source: tileMenuBtnIcon
-                                                    color: control.hovered ? app.info.properties.mainButtonBackgroundColor : "#ccc"
-                                                    Accessible.ignored: true
-                                                }
+                                        background: Rectangle {
+                                            anchors.fill: parent
+                                            color: "white"
+                                            radius: 0
+                                            Image {
+                                                id: tileMenuBtnIcon
+                                                source: "images/menu.png"
+                                                width: sf(20)
+                                                height: sf(20)
+                                                anchors.centerIn: parent
+                                                Accessible.ignored: true
+                                            }
+                                            ColorOverlay {
+                                                anchors.fill: tileMenuBtnIcon
+                                                source: tileMenuBtnIcon
+                                                color: hovered ? app.info.properties.mainButtonBackgroundColor : "#ccc"
+                                                Accessible.ignored: true
                                             }
                                         }
+
                                         onClicked: {
                                             tileMenuMenu.popup();
                                         }
@@ -769,13 +753,13 @@ Item {
                 radius: (servicesGridView.cellWidth / 6) / 2
                 anchors.top: parent.top
                 anchors.left: parent.left
-                anchors.topMargin: 15 * AppFramework.displayScaleFactor
-                anchors.leftMargin: 15 * AppFramework.displayScaleFactor
+                anchors.topMargin: sf(15)
+                anchors.leftMargin: sf(15)
                 Image {
                     id: tileSelectedIcon
                     source: "images/checkmark_inverted.png"
-                    width: parent.width - 2
-                    height: parent.width - 2
+                    width: parent.width - sf(2)
+                    height: parent.width - sf(2)
                     anchors.centerIn: parent
                     visible: true
                 }
@@ -803,17 +787,17 @@ Item {
         contentItem: Rectangle {
             color: config.subtleBackground
             anchors.fill: parent
-            width: availableServicesView.parent.width - 10
-            height: availableServicesView.parent.height - 10
-            implicitWidth: availableServicesView.parent.width - 10
-            implicitHeight: availableServicesView.parent.height - 10
+            width: availableServicesView.parent.width - sf(10)
+            height: availableServicesView.parent.height - sf(10)
+            implicitWidth: availableServicesView.parent.width - sf(10)
+            implicitHeight: availableServicesView.parent.height - sf(10)
 
             ColumnLayout {
                 spacing: 1
                 anchors.fill: parent
 
                 Rectangle {
-                    Layout.preferredHeight: 60
+                    Layout.preferredHeight: sf(60)
                     Layout.fillWidth: true
                     Accessible.role: Accessible.Pane
 
@@ -837,30 +821,29 @@ Item {
 
                         Button {
                             id: closeBtn
-                            Layout.preferredWidth: 60 * AppFramework.displayScaleFactor
+                            Layout.preferredWidth: sf(60)
                             Layout.fillHeight: true
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: "white"
-                                    radius: 0
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: "white"
+                                radius: 0
 
-                                    Image {
-                                        id: closeBtnIcon
-                                        source: "images/process_failed.png"
-                                        width: parent.width - 40
-                                        fillMode: Image.PreserveAspectFit
-                                        anchors.centerIn: parent
-                                        Accessible.ignored: true
-                                    }
-                                    ColorOverlay {
-                                        anchors.fill: closeBtnIcon
-                                        source: closeBtnIcon
-                                        color: closeBtn.pressed ? app.info.properties.mainButtonPressedColor : app.info.properties.mainButtonBackgroundColor
-                                        Accessible.ignored: true
-                                    }
+                                Image {
+                                    id: closeBtnIcon
+                                    source: "images/process_failed.png"
+                                    width: parent.width - sf(40)
+                                    fillMode: Image.PreserveAspectFit
+                                    anchors.centerIn: parent
+                                    Accessible.ignored: true
+                                }
+                                ColorOverlay {
+                                    anchors.fill: closeBtnIcon
+                                    source: closeBtnIcon
+                                    color: closeBtn.pressed ? app.info.properties.mainButtonPressedColor : app.info.properties.mainButtonBackgroundColor
+                                    Accessible.ignored: true
                                 }
                             }
+
                             onClicked: {
                                 metadataTextArea.text = "";
                                 metadataTitle.text = "Metadata";
@@ -885,12 +868,11 @@ Item {
                     TextArea {
                         id: metadataTextArea
                         anchors.fill: parent
-                        anchors.margins: 10  * AppFramework.displayScaleFactor
+                        anchors.margins: sf(10)
                         text: ""
-                        textColor: app.info.properties.toolBarBackgroundColor
+                        color: app.info.properties.toolBarBackgroundColor
                         font.family: notoRegular.name
                         readOnly: true
-                        frameVisible: false
                         textFormat: Text.RichText
                         onLinkActivated: {
                             Qt.openUrlExternally(link);

@@ -195,9 +195,9 @@ Item {
 
                                             background: Rectangle {
                                                 anchors.fill: parent
-                                                color:config.buttonStates(control)
+                                                color:config.buttonStates(this.parent)
                                                 radius: app.info.properties.mainButtonRadius
-                                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                                 border.color: app.info.properties.mainButtonBorderColor
                                             }
 
@@ -400,9 +400,9 @@ Item {
                             anchors.margins: sf(10)
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: config.buttonStates(control)
+                                color: config.buttonStates(this.parent)
                                 radius: app.info.properties.mainButtonRadius
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
                             }
                             RowLayout{
@@ -457,9 +457,9 @@ Item {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: config.buttonStates(control, "clear")
+                                color: config.buttonStates(this.parent, "clear")
                                 radius: app.info.properties.mainButtonRadius
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: "#fff"
                             }
 

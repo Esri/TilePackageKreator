@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
@@ -45,24 +44,23 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Stack.onStatusChanged: {
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
-        if(Stack.status === Stack.Activating){
-            mainView.appToolBar.enabled = true;
-            mainView.appToolBar.historyButtonEnabled = false;
-            mainView.appToolBar.backButtonEnabled = true;
-            mainView.appToolBar.backButtonVisible = true;
-            mainView.appToolBar.toolBarTitleLabel = qsTr("Export and Upload History");
-        }
+    StackView.onDeactivating: {
+        mainView.appToolBar.toolBarTitleLabel = "";
+    }
+
+    StackView.onActivating: {
+        mainView.appToolBar.enabled = true;
+        mainView.appToolBar.historyButtonEnabled = false;
+        mainView.appToolBar.backButtonEnabled = true;
+        mainView.appToolBar.backButtonVisible = true;
+        mainView.appToolBar.toolBarTitleLabel = qsTr("Export and Upload History");
     }
 
     // UI //////////////////////////////////////////////////////////////////////
 
     RowLayout{
         anchors.fill: parent
-        anchors.margins: 10 * AppFramework.displayScaleFactor
+        anchors.margins: sf(10)
         anchors.topMargin: 0
         spacing: 0
 
@@ -73,7 +71,7 @@ Item {
 
             Rectangle{
                 anchors.fill: parent
-                anchors.rightMargin:10 * AppFramework.displayScaleFactor
+                anchors.rightMargin: sf(10)
 
                 color:"white"
 
@@ -82,7 +80,7 @@ Item {
                     anchors.fill: parent
 
                     Rectangle{
-                        Layout.preferredHeight: 50 * AppFramework.displayScaleFactor
+                        Layout.preferredHeight: sf(50)
                         Layout.fillWidth: true
 
                         RowLayout{
@@ -98,20 +96,18 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillHeight: true
-                                Layout.preferredWidth: 150 * AppFramework.displayScaleFactor
+                                Layout.preferredWidth: sf(150)
                                 Button{
                                     anchors.fill: parent
                                     enabled: exportHistoryExists
                                     visible: exportHistoryExists
 
-                                    style: ButtonStyle {
-                                        background: Rectangle {
-                                            anchors.fill: parent
-                                            color: config.buttonStates(control, "clear")
-                                            radius: app.info.properties.mainButtonRadius
-                                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                            border.color: "#fff"
-                                        }
+                                    background: Rectangle {
+                                        anchors.fill: parent
+                                        color: config.buttonStates(parent, "clear")
+                                        radius: app.info.properties.mainButtonRadius
+                                        border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                        border.color: "#fff"
                                     }
 
                                     Text {
@@ -136,9 +132,9 @@ Item {
                     // ---------------------------------------------------------
 
                     Rectangle{
-                        Layout.preferredHeight: 1 * AppFramework.displayScaleFactor
+                        Layout.preferredHeight: sf(1)
                         Layout.fillWidth: true
-                        Layout.bottomMargin: 10 * AppFramework.displayScaleFactor
+                        Layout.bottomMargin: sf(10)
                         color: "#ddd"
                     }
 
@@ -151,10 +147,8 @@ Item {
                         textFormat: Text.RichText
                         readOnly: true
                         font.pointSize: config.baseFontSizePoint
-                        textColor: app.info.properties.toolBarBackgroundColor
+                        color: app.info.properties.toolBarBackgroundColor
                         wrapMode: Text.Wrap
-                        backgroundVisible: false
-                        frameVisible: false
                         onLinkActivated: {
                             Qt.openUrlExternally(link);
                         }
@@ -169,7 +163,7 @@ Item {
         //------------------------------------------------------------------
 
         Rectangle{
-            Layout.preferredWidth: 1 * AppFramework.displayScaleFactor
+            Layout.preferredWidth: sf(1)
             Layout.fillHeight: true
             color: app.info.properties.toolBarBackgroundColor
         }
@@ -184,7 +178,7 @@ Item {
 
             Rectangle{
                 anchors.fill: parent
-                anchors.leftMargin: 10 * AppFramework.displayScaleFactor
+                anchors.leftMargin: sf(10)
                 color:"white"
 
                 ColumnLayout{
@@ -192,7 +186,7 @@ Item {
                     anchors.fill: parent
 
                     Rectangle{
-                        Layout.preferredHeight: 50 * AppFramework.displayScaleFactor
+                        Layout.preferredHeight: sf(50)
                         Layout.fillWidth: true
 
                         RowLayout{
@@ -208,20 +202,18 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillHeight: true
-                                Layout.preferredWidth: 150 * AppFramework.displayScaleFactor
+                                Layout.preferredWidth: sf(150)
 
                                 Button{
                                     anchors.fill: parent
                                     enabled: uploadHistoryExists
                                     visible: uploadHistoryExists
-                                    style: ButtonStyle {
-                                        background: Rectangle {
-                                            anchors.fill: parent
-                                            color: config.buttonStates(control, "clear")
-                                            radius: app.info.properties.mainButtonRadius
-                                            border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                            border.color: "#fff"
-                                        }
+                                    background: Rectangle {
+                                        anchors.fill: parent
+                                        color: config.buttonStates(parent, "clear")
+                                        radius: app.info.properties.mainButtonRadius
+                                        border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                        border.color: "#fff"
                                     }
 
                                     Text {
@@ -245,9 +237,9 @@ Item {
                     // ---------------------------------------------------------
 
                     Rectangle{
-                        Layout.preferredHeight: 1 * AppFramework.displayScaleFactor
+                        Layout.preferredHeight: sf(1)
                         Layout.fillWidth: true
-                        Layout.bottomMargin: 10 * AppFramework.displayScaleFactor
+                        Layout.bottomMargin: sf(10)
                         color: "#ddd"
                     }
 
@@ -260,10 +252,8 @@ Item {
                         textFormat: Text.RichText
                         readOnly: true
                         font.pointSize: config.baseFontSizePoint
-                        textColor: app.info.properties.toolBarBackgroundColor
+                        color: app.info.properties.toolBarBackgroundColor
                         wrapMode: Text.Wrap
-                        backgroundVisible: false
-                        frameVisible: false
                         onLinkActivated: {
                             Qt.openUrlExternally(link);
                         }

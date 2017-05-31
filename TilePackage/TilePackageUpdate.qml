@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.0
+import QtQuick 2.5
 import QtQuick.Dialogs 1.2
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0

@@ -15,13 +15,11 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 
 Rectangle{
@@ -30,13 +28,13 @@ Rectangle{
 
     id: mapDrawingToolMenu
 
-    width: (parent.width < 700) ? parent.width - 20 * AppFramework.displayScaleFactor : 500 * AppFramework.displayScaleFactor
-    height: 58 * AppFramework.displayScaleFactor
+    width: (parent.width < 700) ? sf(parent.width - 20) : sf(500)
+    height: sf(58)
     color: "white"
-    radius: 5 * AppFramework.displayScaleFactor
+    radius: sf(5)
     opacity: (!drawing) ? 1 : .4
 
-    property int buttonWidth: /*180*/ 50 * AppFramework.displayScaleFactor
+    property int buttonWidth: sf(50)
 
     property bool drawing: false
     property bool drawingExists: false
@@ -48,9 +46,9 @@ Rectangle{
 
     RowLayout{
         anchors.fill: parent
-        anchors.margins: 4 * AppFramework.displayScaleFactor
-        anchors.rightMargin: 6 * AppFramework.displayScaleFactor
-        spacing:0
+        anchors.margins: sf(4)
+        anchors.rightMargin: sf(6)
+        spacing: 0
 
         Rectangle{
             id: infoBar
@@ -74,7 +72,7 @@ Rectangle{
                 "borderColor": "#E4A793"
             }
             Layout.fillHeight: true
-            Layout.preferredWidth: 200 * AppFramework.displayScaleFactor
+            Layout.preferredWidth: sf(200)
 
             RowLayout{
                 anchors.fill: parent
@@ -82,8 +80,8 @@ Rectangle{
                 Rectangle{
                     color: "transparent"
                     Layout.fillHeight: true
-                    Layout.preferredWidth: parent.height - (10 * AppFramework.displayScaleFactor)
-                    Layout.rightMargin: 10 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: parent.height - sf(10)
+                    Layout.rightMargin: sf(10)
 
                     Text {
                         anchors.centerIn: parent
@@ -121,7 +119,7 @@ Rectangle{
                 anchors.fill: parent
                 model: drawingTypesModel
                 delegate: drawingButtonComponent
-                spacing: 2 * AppFramework.displayScaleFactor
+                spacing: sf(2)
                 layoutDirection: Qt.LeftToRight
                 orientation: ListView.Horizontal
             }
@@ -167,16 +165,14 @@ Rectangle{
                 enabled: available
                 visible: available
                 property string g: geometryType
-                tooltip: name
+                ToolTip.text: name
 
-                style: ButtonStyle {
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: (control.enabled) ? ( (control.pressed) ? "#bddbee" : "#fff" ) : (activeGeometryType === geometryType) ? app.info.properties.mainButtonBorderColor : "#eee"
-                        border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                        border.color: (control.enabled) ? app.info.properties.mainButtonBorderColor : "#ddd"
-                        radius: 3 * AppFramework.displayScaleFactor
-                    }
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : (activeGeometryType === geometryType) ? app.info.properties.mainButtonBorderColor : "#eee"
+                    border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                    border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    radius: sf(3)
                 }
 
                 RowLayout{
