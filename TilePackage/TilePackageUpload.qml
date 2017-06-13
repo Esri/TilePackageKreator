@@ -135,7 +135,11 @@ Item {
 
                 tpkReader.path = tpkFilePath;
 
-                if(tpkReader.extractFile(mapServerJsonZipPath, mapServerJsonTempPath)){
+                var ok = tpkReader.extractFile(mapServerJsonZipPath, mapServerJsonTempPath);
+
+                tpkReader.path = "";
+
+                if(ok){
                     var mapJson = workFolder.readJsonFile(mapServerJsonTempPath);
                     if (mapJson.hasOwnProperty("contents")) {
                         if (mapJson.contents.hasOwnProperty("spatialReference")) {
