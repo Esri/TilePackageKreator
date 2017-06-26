@@ -86,7 +86,7 @@ Rectangle{
                     Text {
                         anchors.centerIn: parent
                         font.pointSize: config.largeFontSizePoint * 1.2
-                        font.family: icons.name
+                        font.family: iconFont
                         text: (!drawing) ? ( (!drawingExists) ? icons.warning : icons.checkmark ) : icons.happy_face
                     }
                 }
@@ -97,7 +97,7 @@ Rectangle{
                     Text {
                         id: drawingNotice
                         anchors.fill: parent
-                        font.family: notoRegular.name
+                        font.family: notoRegular
                         verticalAlignment: Text.AlignVCenter
                         text: (!drawing) ? ( (!drawingExists) ? qsTr("Draw an extent or path") : qsTr("Extent / Path Drawn") ) : (activeGeometryType === "envelope") ? qsTr("Drawing Extent") : qsTr("Drawing Path")
                     }
@@ -188,7 +188,7 @@ Rectangle{
                             anchors.centerIn: parent
                             font.pointSize: config.largeFontSizePoint * 1.5
                             color: (activeGeometryType === geometryType) ? "#fff" : app.info.properties.mainButtonBorderColor
-                            font.family: icons.name
+                            font.family: iconFont
                             text: icons[fontIcon]
                         }
                     }
@@ -205,7 +205,7 @@ Rectangle{
                             textFormat: Text.RichText
                             text: name
                             font.pointSize: config.baseFontSizePoint
-                            font.family: notoRegular.name
+                            font.family: notoRegular
                         }
                     }
                 }

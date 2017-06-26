@@ -147,7 +147,7 @@ Item {
                             anchors.centerIn: parent
                             font.pointSize: config.largeFontSizePoint * 3
                             color: "#888"
-                            font.family: icons.name
+                            font.family: iconFont
                             text: icons.spinner2
 
                             Accessible.role: Accessible.Animation
@@ -165,7 +165,7 @@ Item {
                     Text{
                         anchors.fill: parent
                         id: servicesStatusText
-                        font.family: notoRegular.name
+                        font.family: notoRegular
                         font.pointSize: config.largeFontSizePoint
                         text: qsTr("Querying Services. Please wait.")
                         verticalAlignment: Text.AlignTop
@@ -207,7 +207,7 @@ Item {
                         anchors.leftMargin: 20 * AppFramework.displayScaleFactor
                         verticalAlignment: Text.AlignVCenter
                         text: qsTr("Select tile service to be used as the source for the tile package")
-                        font.family: notoRegular.name
+                        font.family: notoRegular
 
                         Accessible.role: Accessible.Heading
                         Accessible.name: text
@@ -243,7 +243,7 @@ Item {
                             anchors.centerIn: parent
                             font.pointSize: config.largeFontSizePoint * .8
                             color: app.info.properties.mainButtonBackgroundColor
-                            font.family: icons.name
+                            font.family: iconFont
                             text: icons.plus_sign
                             Accessible.ignored: true
                         }
@@ -292,7 +292,7 @@ Item {
                                 color: _uiEntryElementStates(control)
                             }
                             color: config.formElementFontColor
-                            font.family: notoRegular.name
+                            font.family: notoRegular
 
                             validator: RegExpValidator{
                                 regExp: /(http(s)*:\/\/).*/g
@@ -324,7 +324,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: parent.buttonText
                                 font.pointSize: config.baseFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                                 Accessible.ignored: true
                             }
 
@@ -363,7 +363,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: parent.buttonText
                                 font.pointSize: config.baseFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                                 Accessible.ignored: true
                             }
 
@@ -535,7 +535,7 @@ Item {
                                     anchors.fill: parent
                                     font {
                                         pointSize: config.smallFontSizePoint
-                                        family: notoRegular.name
+                                        family: notoRegular
                                     }
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
@@ -571,7 +571,7 @@ Item {
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignLeft
                                             font.pointSize: config.xSmallFontSizePoint
-                                            font.family: notoRegular.name
+                                            font.family: notoRegular
                                             text: isWebMercator  ? "Web Mercator" : "NOT Web Mercator"
                                             color: isWebMercator ? "#007ac2" : "red"
 
@@ -591,7 +591,7 @@ Item {
                                             id: tileProviderType
                                             anchors.centerIn: parent
                                             font.pointSize: config.xSmallFontSizePoint
-                                            font.family: notoRegular.name
+                                            font.family: notoRegular
                                             text: owner === "esri" ? "Esri" : "Non-Esri"
                                             color: owner === "esri" ? "#007ac2" : "darkorange"
 
@@ -813,7 +813,7 @@ Item {
                             color: app.info.properties.toolBarBackgroundColor
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.family: notoRegular.name
+                            font.family: notoRegular
 
                             Accessible.role: Accessible.Heading
                             Accessible.name: text
@@ -871,7 +871,7 @@ Item {
                         anchors.margins: sf(10)
                         text: ""
                         color: app.info.properties.toolBarBackgroundColor
-                        font.family: notoRegular.name
+                        font.family: notoRegular
                         readOnly: true
                         textFormat: Text.RichText
                         onLinkActivated: {

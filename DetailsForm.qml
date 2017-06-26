@@ -100,7 +100,7 @@ Item {
                     text: qsTr("Number of Zoom Levels")
                     color: config.formElementFontColor
                     font.pointSize: config.smallFontSizePoint
-                    font.family: notoRegular.name
+                    font.family: notoRegular
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
@@ -148,7 +148,7 @@ Item {
                             text: desiredLevelsSlider.value
                             horizontalAlignment: Text.AlignRight
                             font.pointSize: config.largeFontSizePoint
-                            font.family: notoRegular.name
+                            font.family: notoRegular
 
                             background: Rectangle {
                                 anchors.fill: parent
@@ -211,7 +211,7 @@ Item {
                     text: qsTr("Buffer Radius")
                     color: config.formElementFontColor
                     font.pointSize: config.smallFontSizePoint
-                    font.family: notoRegular.name
+                    font.family: notoRegular
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Accessible.role: Accessible.Heading
@@ -245,7 +245,7 @@ Item {
                                 color: _uiEntryElementStates(parent)
                             }
                             color: config.formElementFontColor
-                            font.family: notoRegular.name
+                            font.family: notoRegular
 
                             onTextChanged: {
                                 currentBufferInMeters = (text !== "") ? Math.ceil(text * distanceUnits.get(desiredBufferDistanceUnit.currentIndex).conversionFactor) : 1;
@@ -321,7 +321,7 @@ Item {
                                     color: _uiEntryElementStates(control)
                                 }
                                 textColor: config.formElementFontColor
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                             }
                             Accessible.role: Accessible.StaticText
                             Accessible.name: qsTr("Current buffer radius is %1".arg(text))
@@ -366,7 +366,7 @@ Item {
                     text: qsTr("Title") + "<span style=\"color:red\"> *</span>"
                     textFormat: Text.RichText
                     font.pointSize: config.smallFontSizePoint
-                    font.family: notoRegular.name
+                    font.family: notoRegular
                     color: config.mainLabelFontColor
                     verticalAlignment: Text.AlignVCenter
 
@@ -394,7 +394,7 @@ Item {
                     color: _uiEntryElementStates(parent)
                 }
                 color: config.formElementFontColor
-                font.family: notoRegular.name
+                font.family: notoRegular
 
                 onTextChanged: {
                     if(tpkTitleTextField.length > 0){
@@ -422,7 +422,7 @@ Item {
                 id: tpkFileTitleName
                 anchors.fill: parent
                 font.pointSize: config.xSmallFontSizePoint
-                font.family: notoRegular.name
+                font.family: notoRegular
                 color: config.formElementFontColor
             }
         }
@@ -468,7 +468,7 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                     color: config.formElementFontColor
                     font.pointSize: config.smallFontSizePoint
-                    font.family: notoRegular.name
+                    font.family: notoRegular
                     text: qsTr("Save tile package locally")
                     Accessible.ignored: true
                 }
@@ -497,7 +497,7 @@ Item {
                         Text{
                             text: qsTr("Save To")
                             color: app.info.properties.mainButtonFontColor
-                            font.family: notoRegular.name
+                            font.family: notoRegular
                             anchors.centerIn: parent
                         }
                     }
@@ -524,7 +524,7 @@ Item {
                         id: saveToLocationFolder
                         text: ""
                         font.pointSize: config.smallFontSizePoint
-                        font.family: notoRegular.name
+                        font.family: notoRegular
                         fontSizeMode: Text.Fit
                         minimumPointSize: 10
                         verticalAlignment: Text.AlignVCenter
@@ -568,7 +568,7 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                     color: config.formElementFontColor
                     font.pointSize: config.smallFontSizePoint
-                    font.family: notoRegular.name
+                    font.family: notoRegular
                     text: qsTr("Upload tile package to ArcGIS")
                     Accessible.ignored: true
                 }
@@ -603,7 +603,7 @@ Item {
                                            Layout.preferredWidth: parent.width/2
                                            text: qsTr("Description")
                                            font.pointSize: config.smallFontSizePoint
-                                           font.family: notoRegular.name
+                                           font.family: notoRegular
                                            color: config.mainLabelFontColor
                                            verticalAlignment: Text.AlignVCenter
                                            Accessible.role: Accessible.Heading
@@ -615,7 +615,7 @@ Item {
                                            Layout.fillWidth: true
                                            text: "4000"
                                            font.pointSize: config.xSmallFontSizePoint
-                                           font.family: notoRegular.name
+                                           font.family: notoRegular
                                            color: config.mainLabelFontColor
                                            horizontalAlignment: Text.AlignRight
                                            verticalAlignment: Text.AlignVCenter
@@ -637,7 +637,7 @@ Item {
                             readOnly: uploadToPortal ? false : true
 
                             color: config.formElementFontColor
-                            font.family: notoRegular.name
+                            font.family: notoRegular
                             background: Rectangle {
                                 color: _uiEntryElementStates(parent)
                                 border.width: config.formElementBorderWidth
@@ -666,7 +666,7 @@ Item {
                             Label {
                                 text: qsTr("Share this item with:")
                                 font.pointSize: config.smallFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                                 color: config.mainLabelFontColor
                                 anchors.fill: parent
                                 verticalAlignment: Text.AlignVCenter
@@ -715,7 +715,7 @@ Item {
                                 }
                                 contentItem: Text{
                                     text: qsTr("Do not share")
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                     color: config.mainLabelFontColor
                                     verticalAlignment: Text.AlignVCenter
                                     leftPadding: tpkSharingNotShared.indicator.width + sf(5)
@@ -757,7 +757,7 @@ Item {
                                 }
                                 contentItem: Text{
                                     text: qsTr("Your organization")
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                     color: config.mainLabelFontColor
                                     verticalAlignment: Text.AlignVCenter
                                     leftPadding: tpkSharingOrg.indicator.width + sf(5)
@@ -799,7 +799,7 @@ Item {
                                 }
                                 contentItem: Text{
                                     text: qsTr("Everyone (Public)")
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                     color: config.mainLabelFontColor
                                     verticalAlignment: Text.AlignVCenter
                                     leftPadding: tpkSharingEveryone.indicator.width + sf(5)

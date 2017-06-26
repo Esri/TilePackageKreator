@@ -74,7 +74,7 @@ Rectangle {
             anchors.centerIn: parent
             font.pointSize: config.largeFontSizePoint
             color: "#fff"
-            font.family: icons.name
+            font.family: iconFont
             text: ""
             fontSizeMode: Text.Fit
             minimumPointSize: config.smallFontSizePoint
@@ -115,7 +115,7 @@ Rectangle {
         minimumPointSize: statusTextMinimumFontSize
         text: ""
         font.pointSize: statusTextFontSize
-        font.family: notoRegular.name
+        font.family: notoRegular
         onLinkActivated: {
             Qt.openUrlExternally(link);
         }

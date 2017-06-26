@@ -88,7 +88,7 @@ Rectangle {
             textFormat: Text.RichText
             text: ""
             font.pointSize: statusTextFontSize
-            font.family: notoRegular.name
+            font.family: notoRegular
             wrapMode: Text.WordWrap
             onLinkActivated: {
                 linkClicked(link.toString());
@@ -118,7 +118,7 @@ Rectangle {
                     anchors.centerIn: parent
                     font.pointSize: config.mediumFontSizePoint
                     color: messageType.borderColor
-                    font.family: icons.name
+                    font.family: iconFont
                     text: icons.x_cross
                 }
             }

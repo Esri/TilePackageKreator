@@ -53,7 +53,7 @@ Rectangle {
 
     property int buttonHeight: 35 * AppFramework.displayScaleFactor
 
-    property string fontFamily: notoRegular.name
+    property string fontFamily: notoRegular
 
     signal accepted()
     signal rejected()

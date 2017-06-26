@@ -171,7 +171,7 @@ Item {
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                         font.pointSize: config.largeFontSizePoint
-                                        font.family: notoRegular.name
+                                        font.family: notoRegular
                                     }
                                     Text {
                                         Layout.fillWidth: true
@@ -180,7 +180,7 @@ Item {
                                         color: config.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
-                                        font.family: notoRegular.name
+                                        font.family: notoRegular
                                     }
                                     Rectangle {
                                         Layout.fillWidth: true
@@ -207,7 +207,7 @@ Item {
                                                 textFormat: Text.RichText
                                                 text: "Browse for file"
                                                 font.pointSize: config.baseFontSizePoint
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
                                             }
                                             onClicked: {
                                                 resetProperties();
@@ -249,7 +249,7 @@ Item {
                                         Layout.preferredHeight: selectedTPK.height / 4
                                         text: "filename.tpk"
                                         fontSizeMode: Text.Fit
-                                        font.family: notoRegular.name
+                                        font.family: notoRegular
                                         minimumPointSize: config.smallFontSizePoint
                                         color: config.boldUIElementFontColor
                                         font.pointSize: config.largeFontSizePoint
@@ -292,7 +292,7 @@ Item {
                                                 textFormat: Text.RichText
                                                 text: "Use a different file"
                                                 font.pointSize: config.baseFontSizePoint
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
                                             }
                                             onClicked: {
                                                 fileAcceptedForUpload = false;
@@ -419,7 +419,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: uploading ? ( tpkPackage.aborted ? qsTr("Cancelling") : qsTr("Uploading") ): qsTr("Upload")
                                     font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                 }
 
                                 ProgressIndicator{
@@ -469,7 +469,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: "Cancel"
                                 font.pointSize: config.baseFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                             }
 
                             onClicked: {

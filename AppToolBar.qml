@@ -97,7 +97,7 @@ Item {
                     anchors.centerIn: parent
                     font.pointSize: config.largeFontSizePoint
                     color: _returnButtonColor(backButton)
-                    font.family: icons.name
+                    font.family: iconFont
                     text: icons.chevron_left
                     Accessible.ignored: true
                 }
@@ -133,7 +133,7 @@ Item {
                     color: toolBarFontColor
                     textFormat: Text.RichText
                     text: ""
-                    font.family: notoRegular.name
+                    font.family: notoRegular
                     Accessible.role: Accessible.Heading
                     Accessible.name: text
                 }
@@ -158,7 +158,7 @@ Item {
                     anchors.centerIn: parent
                     font.pointSize: config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(updatesButton)
-                    font.family: icons.name
+                    font.family: iconFont
                     text: icons.download_circle
                     Accessible.ignored: true
                 }
@@ -215,7 +215,7 @@ Item {
                     anchors.centerIn: parent
                     font.pointSize: config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(feedbackButton)
-                    font.family: icons.name
+                    font.family: iconFont
                     text: icons.chat_bubble
                 }
 
@@ -250,7 +250,7 @@ Item {
                     anchors.centerIn: parent
                     font.pointSize: config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(aboutButton)
-                    font.family: icons.name
+                    font.family: iconFont
                     text: icons.info
                 }
 
@@ -285,7 +285,7 @@ Item {
                     anchors.centerIn: parent
                     font.pointSize: config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(historyButton)
-                    font.family: icons.name
+                    font.family: iconFont
                     text: icons.history
                 }
 
@@ -321,7 +321,7 @@ Item {
                     anchors.centerIn: parent
                     font.pointSize: config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(userButton)
-                    font.family: icons.name
+                    font.family: iconFont
                     text: icons.sign_out
                 }
 

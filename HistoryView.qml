@@ -91,7 +91,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: qsTr("Export History")
                                 font.pointSize: config.mediumFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                                 verticalAlignment: Text.AlignVCenter
                             }
                             Rectangle{
@@ -116,7 +116,7 @@ Item {
                                         textFormat: Text.RichText
                                         text: qsTr("Delete History")
                                         font.pointSize: config.baseFontSizePoint
-                                        font.family: notoRegular.name
+                                        font.family: notoRegular
                                     }
 
                                     onClicked: {
@@ -197,7 +197,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: qsTr("Upload History")
                                 font.pointSize: config.mediumFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                                 verticalAlignment: Text.AlignVCenter
                             }
                             Rectangle{
@@ -222,7 +222,7 @@ Item {
                                         textFormat: Text.RichText
                                         text: qsTr("Delete History")
                                         font.pointSize: config.baseFontSizePoint
-                                        font.family: notoRegular.name
+                                        font.family: notoRegular
                                     }
 
                                     onClicked: {

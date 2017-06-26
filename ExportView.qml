@@ -237,7 +237,7 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
                                                 font.pointSize: config.smallFontSizePoint
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
 
                                                 Accessible.role: Accessible.Heading
                                                 Accessible.name: text
@@ -254,7 +254,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "--"
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
 
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
@@ -287,7 +287,7 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
                                                 font.pointSize: config.smallFontSizePoint
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
 
                                                 Accessible.role: Accessible.Heading
                                                 Accessible.name: text
@@ -304,7 +304,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "-- --"
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
 
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
@@ -337,7 +337,7 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
                                                 font.pointSize: config.smallFontSizePoint
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
 
                                                 Accessible.role: Accessible.Heading
                                                 Accessible.name: text
@@ -354,7 +354,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "Not Available with Paths"
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
 
                                                 Accessible.ignored: mapViewPlus.geometryType !== "multipath"
                                                 Accessible.role: Accessible.Indicator
@@ -370,7 +370,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "Tiles: -- Size: --"
-                                                font.family: notoRegular.name
+                                                font.family: notoRegular
 
                                                 Accessible.ignored: mapViewPlus.geometryType === "multipath"
                                                 Accessible.role: Accessible.Indicator
@@ -575,7 +575,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: (!exporting) ? qsTr("Create Tile Package") : "Creating"
                                 font.pointSize: config.baseFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                             }
 
                             ProgressIndicator{
@@ -656,7 +656,7 @@ Item {
                             textFormat: Text.RichText
                             text: "Cancel"
                             font.pointSize: config.baseFontSizePoint
-                            font.family: notoRegular.name
+                            font.family: notoRegular
                         }
 
                         onClicked: {

@@ -174,7 +174,7 @@ Item {
                         anchors.centerIn: parent
                         font.pointSize: config.smallFontSizePoint
                         color: app.info.properties.mainButtonBorderColor
-                        font.family: icons.name
+                        font.family: iconFont
                         text: icons.plus_sign
                     }
                 }
@@ -207,7 +207,7 @@ Item {
                         anchors.centerIn: parent
                         font.pointSize: config.smallFontSizePoint
                         color: app.info.properties.mainButtonBorderColor
-                        font.family: icons.name
+                        font.family: iconFont
                         text: icons.minus_sign
                     }
                 }

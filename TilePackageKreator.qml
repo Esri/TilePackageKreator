@@ -33,6 +33,12 @@ App {
     property bool calledFromAnotherApp: false
     property url incomingUrl
 
+    property string iconFont: icons.status == FontLoader.Ready ? icons.name : "tilepackagekreator"
+    property string notoRegular: _notoRegular.status == FontLoader.Ready ? _notoRegular.name : "Noto Sans"
+    property string notoBold: _notoBold.status == FontLoader.Ready ? _notoBold.name : "Noto Sans"
+    property string notoItalic: _notoItalic.status == FontLoader.Ready ? _notoItalic.name : "Noto Sans"
+    property string notoBoldItalic: _notoBoldItalic.status == FontLoader.Ready ? _notoBoldItalic.name : "Noto Sans"
+
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     onOpenUrl: {
@@ -62,19 +68,19 @@ App {
     //--------------------------------------------------------------------------
 
     FontLoader{
-        id: notoRegular
+        id: _notoRegular
         source: app.folder.fileUrl("fonts/NotoSans-Regular.ttf")
     }
     FontLoader{
-        id: notoBold
+        id: _notoBold
         source: app.folder.fileUrl("fonts/NotoSans-Bold.ttf")
     }
     FontLoader{
-        id: notoItalic
+        id: _notoItalic
         source: app.folder.fileUrl("fonts/NotoSans-Italic.ttf")
     }
     FontLoader{
-        id: notoBoldItalic
+        id: _notoBoldItalic
         source: app.folder.fileUrl("fonts/NotoSans-BoldItalic.ttf")
     }
 

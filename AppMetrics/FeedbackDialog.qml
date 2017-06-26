@@ -59,7 +59,7 @@ Dialog {
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
                     font.pointSize: config.largeFontSizePoint
-                    font.family: notoRegular.name
+                    font.family: notoRegular
                     color: config.formElementFontColor
                 }
             }
@@ -81,7 +81,7 @@ Dialog {
                         textFormat: Text.RichText
                         text: qsTr("Subject") + "<span style:\"color:red\">*</span>"
                         verticalAlignment: Text.AlignVCenter
-                        font.family: notoRegular.name
+                        font.family: notoRegular
                     }
 
                     TextField {
@@ -98,7 +98,7 @@ Dialog {
                                 color: config.formElementBackground
                             }
                             textColor: config.formElementFontColor
-                            font.family: notoRegular.name
+                            font.family: notoRegular
 
                         }
                         onTextChanged: {
@@ -131,7 +131,7 @@ Dialog {
                         textFormat: Text.RichText
                         text: qsTr("Message") + "<span style:\"color:red\">*</span>"
                         verticalAlignment: Text.AlignTop
-                        font.family: notoRegular.name
+                        font.family: notoRegular
                     }
                     TextArea {
                         id: feedbackMessage
@@ -140,7 +140,7 @@ Dialog {
                         style: TextAreaStyle {
                             backgroundColor: config.formElementBackground
                             textColor: config.formElementFontColor
-                            font.family: notoRegular.name
+                            font.family: notoRegular
                             frame: Rectangle {
                                 border.width: config.formElementBorderWidth
                                 border.color: config.formElementBorderColor
@@ -193,7 +193,7 @@ Dialog {
                                 textFormat: Text.RichText
                                 text: qsTr("Cancel")
                                 font.pointSize: config.baseFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                             }
 
                             onClicked: {
@@ -235,7 +235,7 @@ Dialog {
                                 textFormat: Text.RichText
                                 text: qsTr("Send")
                                 font.pointSize: config.baseFontSizePoint
-                                font.family: notoRegular.name
+                                font.family: notoRegular
                             }
 
 

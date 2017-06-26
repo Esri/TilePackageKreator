@@ -119,7 +119,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: qsTr("UPLOAD")
                                     font.pointSize: config.largeFontSizePoint * .8
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                 }
                             }
                             Item {
@@ -133,7 +133,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: qsTr("Local Tile Package")
                                     font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                 }
                             }
                             Item {
@@ -208,7 +208,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: qsTr("CREATE")
                                     font.pointSize: config.largeFontSizePoint * .8
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                 }
                             }
                             Item {
@@ -222,7 +222,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: qsTr("New Tile Package")
                                     font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                 }
                             }
                             Item {
@@ -297,7 +297,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: qsTr("BROWSE")
                                     font.pointSize: config.largeFontSizePoint * .8
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                 }
                             }
                             Item {
@@ -311,7 +311,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: qsTr("Organization Tile Packages")
                                     font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
+                                    font.family: notoRegular
                                 }
                             }
                             Item {

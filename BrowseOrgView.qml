@@ -95,7 +95,7 @@ Item {
                     anchors.centerIn: parent
                     font.pointSize: config.largeFontSizePoint * 3
                     color: "#888"
-                    font.family: icons.name
+                    font.family: iconFont
                     text: icons.spinner2
 
                     Accessible.role: Accessible.Animation
