@@ -14,8 +14,8 @@
  *
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 1.4
+import QtQuick 2.7
+import QtQuick.Controls 2.1
 
 import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.WebView 1.0
@@ -31,12 +31,6 @@ Item {
     signal accepted(string authorizationCode)
     signal rejected()
 
-    onAuthorizationUrlChanged: {
-        //console.log("oauth auth url changed", authorizationUrl);
-        //webView.url = authorizationUrl + "&hidecancel=" + hideCancel.toString();
-        //webView.reload();
-    }
-
     //--------------------------------------------------------------------------
 
     WebView {
@@ -47,7 +41,7 @@ Item {
         url: authorizationUrl + "&hidecancel=" + hideCancel.toString()
 
         onLoadingChanged: {
-            //console.log("webView.title", title);
+            console.log("webView.title", title);
 
             if (loadRequest.status == WebView.LoadSucceededStatus) {
                 forceActiveFocus();
@@ -60,11 +54,6 @@ Item {
                 rejected();
             }
         }
-
-        Accessible.role: Accessible.WebDocument
-        Accessible.name: qsTr("ArcGIS OAuth login dialog web view.")
-        Accessible.description: qsTr("This is the ArcGIS Online or Portal login screen. It is a web view returned from the service.")
-        Accessible.focusable: true
     }
 
     //--------------------------------------------------------------------------
@@ -74,7 +63,6 @@ Item {
 
         backgroundColor: signInView.bannerColor
         running: webView.loading
-        Accessible.ignored: true
     }
 
     ProgressBar {
@@ -87,11 +75,8 @@ Item {
         height: 5 * AppFramework.displayScaleFactor
         visible: webView.loading
         value: webView.loadProgress
-        minimumValue: 0
-        maximumValue: 100
-
-        Accessible.role: Accessible.ProgressBar
-        Accessible.name: qsTr("Load progress of the sign in web view.")
+        from: 0
+        to: 100
     }
 
     //--------------------------------------------------------------------------

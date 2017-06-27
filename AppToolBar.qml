@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
@@ -86,6 +86,7 @@ Item {
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
 
+                ToolTip.visible: hovered
                 ToolTip.text: qsTr("Back")
 
                 background: Rectangle{
@@ -125,15 +126,15 @@ Item {
                 Accessible.role: Accessible.Pane
 
                 Text {
-                    id:toolbarTitle
+                    id: toolbarTitle
                     anchors.centerIn: parent
                     verticalAlignment: Text.AlignVCenter
-                    leftPadding: 20 * AppFramework.displayScaleFactor
+                    leftPadding: sf(20)
+                    font.family: notoRegular
                     font.pointSize: toolBarFontPointSize
                     color: toolBarFontColor
                     textFormat: Text.RichText
                     text: ""
-                    font.family: notoRegular
                     Accessible.role: Accessible.Heading
                     Accessible.name: text
                 }
@@ -145,6 +146,7 @@ Item {
                 id: updatesButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
+                ToolTip.visible: hovered
                 ToolTip.text: qsTr("Updates Available")
                 enabled: false
                 visible: false
@@ -203,6 +205,7 @@ Item {
                 id: feedbackButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
+                ToolTip.visible: hovered
                 ToolTip.text: qsTr("Feedback")
                 enabled: true
 
@@ -239,6 +242,7 @@ Item {
                 id: aboutButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
+                ToolTip.visible: hovered
                 ToolTip.text: qsTr("About and Help")
 
                 background: Rectangle{
@@ -274,6 +278,7 @@ Item {
                 id: historyButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
+                ToolTip.visible: hovered
                 ToolTip.text: qsTr("History")
 
                 background: Rectangle{
@@ -309,6 +314,7 @@ Item {
                 id: userButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
+                ToolTip.visible: hovered
                 ToolTip.text: (portal.user !== null && portal.user !== "" && portal.user !== undefined) ? qsTr("Sign out") + ": " + portal.user.fullName : "User Unknown"
                 enabled: true
 

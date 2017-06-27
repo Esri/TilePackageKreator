@@ -15,7 +15,7 @@
  */
 
 import QtQml 2.2
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
@@ -266,6 +266,7 @@ Item {
                             textRole: "text"
 
                             model: ListModel {
+                                 id: distanceUnits
                                 ListElement { text: "m"; max: 3000; conversionFactor: 1 }
                                 ListElement { text: "km"; max: 5; conversionFactor: 1000}
                                 ListElement { text: "ft"; max: 4000; conversionFactor: 0.3048 }
@@ -355,7 +356,7 @@ Item {
             color:"#fff"
 
             RowLayout{
-                id:tpkTitleLabels
+                id: tpkTitleLabels
                 anchors.fill: parent
                 spacing:0
 

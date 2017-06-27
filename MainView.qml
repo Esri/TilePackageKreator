@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.5
+import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 //------------------------------------------------------------------------------
@@ -42,9 +42,9 @@ Item {
         parentApp: mainView.parentApp
         debug: true
         onAvailableUpdatesChanged: {
-            if(availableUpdates.length > 0){
-                for(var i = 0; i < availableUpdates.length; i++){
-                    if(!availableUpdates[i].restricted_to_tags){
+            if (availableUpdates.length > 0) {
+                for (var i = 0; i < availableUpdates.length; i++) {
+                    if (!availableUpdates[i].restricted_to_tags) {
                         uD.updates.append(availableUpdates[i]);
                     }
                 }
@@ -59,11 +59,11 @@ Item {
 
     // UI //////////////////////////////////////////////////////////////////////
 
-    ColumnLayout{
+    ColumnLayout {
         anchors.fill: parent
         spacing: 1
 
-        AppToolBar{
+        AppToolBar {
             id: mainToolBar
             enabled: false
             stackView: mainStackView
@@ -99,7 +99,7 @@ Item {
 
         id: startView
 
-        SignInView{
+        SignInView {
 
             portal: mainView.portal
 
@@ -108,10 +108,10 @@ Item {
                 appMetrics.userEmail = portal.user.email;
                 appMetrics.checkForUpdates();
 
-                if(!calledFromAnotherApp){
+                if (!calledFromAnotherApp) {
                     mainStackView.push(osv, {}, StackView.Immediate);
                 }
-                else{
+                else {
                     getViewForAction();
                 }
             }
@@ -123,16 +123,16 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: osv
-        OperationSelectionView{
+        OperationSelectionView {
             config: mainView.config
         }
     }
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: utpkv
         UploadView {
             portal: mainView.portal
@@ -152,7 +152,7 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: etv
         ExportView {
             portal: mainView.portal
@@ -162,9 +162,9 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: btpkv
-        BrowseOrgView{
+        BrowseOrgView {
             portal: mainView.portal
             config: mainView.config
         }
@@ -172,23 +172,23 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: hv
-        HistoryView{
+        HistoryView {
             config: mainView.config
         }
     }
 
     //--------------------------------------------------------------------------
 
-    UpdatesDialog{
+    UpdatesDialog {
         id: uD
         metrics: appMetrics
     }
 
     //--------------------------------------------------------------------------
 
-    Connections{
+    Connections {
         target: app
 
         onIncomingUrlChanged: {
@@ -201,7 +201,7 @@ Item {
 
     function getViewForAction(){
         // TODO: Make the switch variable more agnostic maybe?
-        switch(dlr.mainAction.toLowerCase()){
+        switch (dlr.mainAction.toLowerCase()) {
             case "create":
                 mainStackView.push(asv);
                 break;
@@ -218,23 +218,23 @@ Item {
 
     function parseIncomingUrl(){
 
-        if(calledFromAnotherApp){
+        if (calledFromAnotherApp) {
 
-            if(incomingUrl.toString() !== ""){
+            if (incomingUrl.toString() !== "") {
 
-                if(dlr.parseUrl(incomingUrl)){
-                    try{
+                if (dlr.parseUrl(incomingUrl)) {
+                    try {
                         appMetrics.trackEvent("Called from another application: %1".arg(dlr.callingApplication));
                     }
-                    catch(e){
+                    catch(e) {
                     }
-                    finally{
+                    finally {
 
-                        if(dlr.parameters !== null){
+                        if (dlr.parameters !== null) {
 
                             dlr.parseParameters();
 
-                            if(dlr.refreshToken !== null && dlr.handoffClientId !== null){
+                            if (dlr.refreshToken !== null && dlr.handoffClientId !== null) {
                                 portal.refreshToken = dlr.refreshToken;
                                 portal.clientId = dlr.handoffClientId;
                                 portal.renew();
@@ -250,18 +250,29 @@ Item {
                             }*/
 
                         }
-                        else{
+                        else {
                             // do nothing as user will need to actually log in and then
                             // PortalSignInView will send them to getViewForAction()
                         }
                     }
                 }
-                else{
+                else {
                     // the url parsed as bad so do nothing cause the user needs to sign in.
                 }
             }
         }
 
+    }
+
+    //--------------------------------------------------------------------------
+
+    function _uiEntryElementStates(control){
+        if (!control.enabled) {
+            return config.formElementDisabledBackground;
+        }
+        else {
+            return config.formElementBackground;
+        }
     }
 
     // END /////////////////////////////////////////////////////////////////////

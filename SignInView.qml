@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Controls 2.1
 //------------------------------------------------------------------------------
 import "Portal"
@@ -24,10 +24,6 @@ PortalSignInView {
 
     signal loginSuccess()
     signal loginFailed()
-
-    StackView.onDeactivating: {
-        mainView.appToolBar.toolBarTitleLabel = "";
-    }
 
     StackView.onActivating: {
         console.log("activationg")

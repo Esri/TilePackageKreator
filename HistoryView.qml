@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
@@ -44,10 +44,6 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    StackView.onDeactivating: {
-        mainView.appToolBar.toolBarTitleLabel = "";
-    }
-
     StackView.onActivating: {
         mainView.appToolBar.enabled = true;
         mainView.appToolBar.historyButtonEnabled = false;
@@ -58,7 +54,7 @@ Item {
 
     // UI //////////////////////////////////////////////////////////////////////
 
-    RowLayout{
+    RowLayout {
         anchors.fill: parent
         anchors.margins: sf(10)
         anchors.topMargin: 0
@@ -69,23 +65,23 @@ Item {
             Layout.fillHeight: true
             clip: true
 
-            Rectangle{
+            Rectangle {
                 anchors.fill: parent
                 anchors.rightMargin: sf(10)
 
-                color:"white"
+                color: "#fff"
 
-                ColumnLayout{
+                ColumnLayout {
                     spacing: 0
                     anchors.fill: parent
 
-                    Rectangle{
+                    Rectangle {
                         Layout.preferredHeight: sf(50)
                         Layout.fillWidth: true
 
-                        RowLayout{
+                        RowLayout {
                             anchors.fill: parent
-                            Text{
+                            Text {
                                 id: exportHistoryLabel
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
@@ -94,10 +90,10 @@ Item {
                                 font.family: notoRegular
                                 verticalAlignment: Text.AlignVCenter
                             }
-                            Rectangle{
+                            Rectangle {
                                 Layout.fillHeight: true
                                 Layout.preferredWidth: sf(150)
-                                Button{
+                                Button {
                                     anchors.fill: parent
                                     enabled: exportHistoryExists
                                     visible: exportHistoryExists
@@ -140,20 +136,30 @@ Item {
 
                     // ---------------------------------------------------------
 
-                    TextArea {
-                        id: exportHistoryTextArea
+                    Item {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        textFormat: Text.RichText
-                        readOnly: true
-                        font.pointSize: config.baseFontSizePoint
-                        color: app.info.properties.toolBarBackgroundColor
-                        wrapMode: Text.Wrap
-                        onLinkActivated: {
-                            Qt.openUrlExternally(link);
-                        }
-                        Component.onCompleted: {
-                            flickableItem.contentY = 0;
+                        Flickable {
+                            id: view
+                            anchors.fill: parent
+                            contentHeight: exportHistoryTextArea.height
+                            clip: true
+                            flickableDirection: Flickable.VerticalFlick
+                            TextArea {
+                                id: exportHistoryTextArea
+                                width: parent.width
+                                textFormat: Text.RichText
+                                readOnly: true
+                                font.pointSize: config.baseFontSizePoint
+                                color: app.info.properties.toolBarBackgroundColor
+                                wrapMode: Text.Wrap
+                                onLinkActivated: {
+                                    Qt.openUrlExternally(link);
+                                }
+                                Component.onCompleted: {
+                                    flickableItem.contentY = 0;
+                                }
+                            }
                         }
                     }
                 }
@@ -162,7 +168,7 @@ Item {
 
         //------------------------------------------------------------------
 
-        Rectangle{
+        Rectangle {
             Layout.preferredWidth: sf(1)
             Layout.fillHeight: true
             color: app.info.properties.toolBarBackgroundColor
@@ -173,25 +179,24 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            //Layout.margins: 10 * AppFramework.displayScaleFactor
             clip: true
 
-            Rectangle{
+            Rectangle {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 color:"white"
 
-                ColumnLayout{
+                ColumnLayout {
                     spacing: 0
                     anchors.fill: parent
 
-                    Rectangle{
+                    Rectangle {
                         Layout.preferredHeight: sf(50)
                         Layout.fillWidth: true
 
-                        RowLayout{
+                        RowLayout {
                             anchors.fill: parent
-                            Text{
+                            Text {
                                 id: uploadHistoryLabel
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
@@ -200,11 +205,11 @@ Item {
                                 font.family: notoRegular
                                 verticalAlignment: Text.AlignVCenter
                             }
-                            Rectangle{
+                            Rectangle {
                                 Layout.fillHeight: true
                                 Layout.preferredWidth: sf(150)
 
-                                Button{
+                                Button {
                                     anchors.fill: parent
                                     enabled: uploadHistoryExists
                                     visible: uploadHistoryExists
@@ -236,7 +241,7 @@ Item {
 
                     // ---------------------------------------------------------
 
-                    Rectangle{
+                    Rectangle {
                         Layout.preferredHeight: sf(1)
                         Layout.fillWidth: true
                         Layout.bottomMargin: sf(10)
@@ -245,20 +250,29 @@ Item {
 
                     // ---------------------------------------------------------
 
-                    TextArea {
-                        id: uploadHistoryTextArea
+                    Item {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        textFormat: Text.RichText
-                        readOnly: true
-                        font.pointSize: config.baseFontSizePoint
-                        color: app.info.properties.toolBarBackgroundColor
-                        wrapMode: Text.Wrap
-                        onLinkActivated: {
-                            Qt.openUrlExternally(link);
-                        }
-                        Component.onCompleted: {
-                            flickableItem.contentY = 0;
+                        Flickable {
+                            anchors.fill: parent
+                            contentHeight: uploadHistoryTextArea.height
+                            clip: true
+                            flickableDirection: Flickable.VerticalFlick
+                            TextArea {
+                                id: uploadHistoryTextArea
+                                width: parent.width
+                                textFormat: Text.RichText
+                                readOnly: true
+                                font.pointSize: config.baseFontSizePoint
+                                color: app.info.properties.toolBarBackgroundColor
+                                wrapMode: Text.Wrap
+                                onLinkActivated: {
+                                    Qt.openUrlExternally(link);
+                                }
+                                Component.onCompleted: {
+                                    flickableItem.contentY = 0;
+                                }
+                            }
                         }
                     }
                 }
@@ -268,7 +282,7 @@ Item {
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 
-    HistoryManager{
+    HistoryManager {
         id: history
     }
 
@@ -277,9 +291,9 @@ Item {
     function getExportHistory(){
         exportHistoryTextArea.text = "";
         var exportHistory = history.readHistory(history.exportHistoryKey);
-        if(exportHistory !== null && exportHistory.length > 0){
+        if (exportHistory !== null && exportHistory.length > 0) {
             var reversedHistory = exportHistory.reverse();
-            for(var i=0; i < reversedHistory.length; i++){
+            for (var i=0; i < reversedHistory.length; i++) {
                exportHistoryTextArea.append("<h3 style=\"color:darkorange;\">" + reversedHistory[i].serviceTitle + "</h3>");
                exportHistoryTextArea.append("<p>" + new Date(reversedHistory[i].export_date).toLocaleDateString() + " " + new Date(reversedHistory[i].export_date).toLocaleTimeString() + "</p>");
                exportHistoryTextArea.append("<h4>Tile Service</h4>");
@@ -287,7 +301,7 @@ Item {
                var extent = JSON.parse(reversedHistory[i].extent)
                exportHistoryTextArea.append("<h4>Geometry</h4>");
                     exportHistoryTextArea.append("<p>" + JSON.stringify(extent.geometries) + "<br/>");
-                    if(reversedHistory[i].hasOwnProperty("buffer")){
+                    if (reversedHistory[i].hasOwnProperty("buffer")) {
                         exportHistoryTextArea.append("Buffer: " + reversedHistory[i].buffer + "</p><hr/>");
                     }
                     exportHistoryTextArea.append("Type: " + extent.geometryType + "</p><hr/>");
@@ -302,7 +316,7 @@ Item {
              }
             exportHistoryExists = true;
         }
-        else{
+        else {
             exportHistoryTextArea.append("<p>No Export History Available<p>");
             exportHistoryExists = false;
         }
@@ -313,9 +327,9 @@ Item {
     function getUploadHistory(){
         uploadHistoryTextArea.text = "";
         var uploadHistory = history.readHistory(history.uploadHistoryKey);
-        if(uploadHistory !== null && uploadHistory.length > 0){
+        if (uploadHistory !== null && uploadHistory.length > 0) {
             var reversedHistory = uploadHistory.reverse();
-            for(var i=0; i < reversedHistory.length; i++){
+            for (var i=0; i < reversedHistory.length; i++) {
                uploadHistoryTextArea.append("<h3 style=\"color:darkblue;\">" + reversedHistory[i].title + "</h3>");
                uploadHistoryTextArea.append("<p>" + new Date(reversedHistory[i].transaction_date).toLocaleDateString() + " " + new Date(reversedHistory[i].transaction_date).toLocaleTimeString() + "</p>");
                uploadHistoryTextArea.append("<p>Description: " + reversedHistory[i].description + "</p>");
@@ -323,7 +337,7 @@ Item {
             }
             uploadHistoryExists = true;
         }
-        else{
+        else {
             uploadHistoryTextArea.append("<p>No Upload History Available<p>");
             uploadHistoryExists = false;
         }

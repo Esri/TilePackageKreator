@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
@@ -47,13 +47,13 @@ Item {
     // SIGNAL IMPLEMENTATION ///////////////////////////////////////////////////
 
     Component.onCompleted: {
-        if(calledFromAnotherApp){
-            if(dlr.filePath !== null){
+        if (calledFromAnotherApp) {
+            if (dlr.filePath !== null) {
                 fileInfo.filePath = dlr.filePath
-                if(fileInfo.exists){
+                if (fileInfo.exists) {
                     fileAccepted(dlr.filePath);
                 }
-                else{
+                else {
                     uploadStatusIndicator.messageType = uploadStatusIndicator.error;
                     uploadStatusIndicator.message =  "The .tpk file does not exist. <a href='%1'>Return to %2</a>".arg(dlr.successCallback).arg(dlr.callingApplication);
                     uploadStatusIndicator.show();
@@ -63,10 +63,6 @@ Item {
     }
 
     //--------------------------------------------------------------------------
-
-    StackView.onDeactivating: {
-        mainView.appToolBar.toolBarTitleLabel = "";
-    }
 
     StackView.onActivating: {
         mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false
@@ -78,10 +74,10 @@ Item {
     //--------------------------------------------------------------------------
 
     onFileAcceptedForUploadChanged: {
-        if(fileAcceptedForUpload){
+        if (fileAcceptedForUpload) {
             uploadStatusIndicator.hide();
         }
-        else{
+        else {
             resetProperties();
         }
     }

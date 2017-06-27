@@ -208,7 +208,7 @@ Rectangle {
                                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
                                 font {
-                                    pointSize: 22
+                                    pointSize: config.largeFontSizePoint
                                     bold: true
                                     family: fontFamily
                                 }

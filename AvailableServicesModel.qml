@@ -134,8 +134,13 @@ Item {
 
                 availableServicesModel.servicesCountReady(servicesListModel.count);
 
-                for(var i = 0; i < servicesListModel.count; i++){
-                    requests[i].send();
+                if(servicesListModel.count > 0){
+                    for(var i = 0; i < servicesListModel.count; i++){
+                        requests[i].send();
+                    }
+                }
+                else{
+                    modelComplete();
                 }
 
                 busy = false;

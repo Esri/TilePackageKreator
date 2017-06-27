@@ -55,10 +55,6 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    StackView.onDeactivating: {
-        mainView.appToolBar.toolBarTitleLabel = "";
-    }
-
     StackView.onActivating: {
         mainView.appToolBar.enabled = true;
         mainView.appToolBar.historyButtonEnabled = true;

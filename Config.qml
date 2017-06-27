@@ -77,7 +77,7 @@ QtObject {
 
     //--------------------------------------------------------------------------
     function _setBaseFontSize(){
-        if(AppFramework.osName.toString() === "OS X"){
+        if(Qt.platform.os === "osx"){
             return 16;
         }else{
             return 12;

@@ -31,6 +31,7 @@
             "minimumHeight": 0,
             "minimumWidth": 0
         },
+        "enableHighDpi": true,
         "phone": {
             "landscape": true,
             "portrait": true,
@@ -42,6 +43,16 @@
             "showStatusBar": true
         }
     },
+    "launchUrlSchemes": [
+        "arcgis-collector",
+        "arcgis-explorer",
+        "arcgis-navigator",
+        "arcgis-survey123",
+        "arcgis-trek2there",
+        "arcgis-workforce",
+        "arcgis-appstudio-player",
+        "arcgis-survey123connect"
+    ],
     "environment": {
     },
     "mainFile": "TilePackageKreator.qml",

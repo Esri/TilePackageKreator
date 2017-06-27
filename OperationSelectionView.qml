@@ -36,17 +36,12 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    StackView.onDeactivating: {
-        mainView.appToolBar.toolBarTitleLabel = "";
-
-    }
-
     StackView.onActivating: {
+        mainView.appToolBar.toolBarTitleLabel = qsTr("Select an Operation");
         mainView.appToolBar.enabled = true;
         mainView.appToolBar.backButtonEnabled = false;
         mainView.appToolBar.backButtonVisible = false;
         mainView.appToolBar.historyButtonEnabled = true;
-        mainView.appToolBar.toolBarTitleLabel = qsTr("Select an Operation")
     }
 
     // UI //////////////////////////////////////////////////////////////////////
