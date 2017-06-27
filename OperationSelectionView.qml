@@ -21,12 +21,9 @@ import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
+import "singletons" as Singletons
 
 Item {
-
-    // PROPERTIES //////////////////////////////////////////////////////////////
-
-    property Config config
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
@@ -75,7 +72,7 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.buttonStates(parent, "major")
+                            color: Singletons.Config.buttonStates(parent, "major")
                             border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                             border.color: app.info.properties.mainButtonBorderColor
                             radius: app.info.properties.mainButtonRadius
@@ -113,7 +110,7 @@ Item {
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("UPLOAD")
-                                    font.pointSize: config.largeFontSizePoint * .8
+                                    font.pointSize: Singletons.Config.largeFontSizePoint * .8
                                     font.family: notoRegular
                                 }
                             }
@@ -127,7 +124,7 @@ Item {
                                     color:app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("Local Tile Package")
-                                    font.pointSize: config.baseFontSizePoint
+                                    font.pointSize: Singletons.Config.baseFontSizePoint
                                     font.family: notoRegular
                                 }
                             }
@@ -164,7 +161,7 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.buttonStates(parent, "major")
+                            color: Singletons.Config.buttonStates(parent, "major")
                             border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                             border.color: app.info.properties.mainButtonBorderColor
                             radius: app.info.properties.mainButtonRadius
@@ -202,7 +199,7 @@ Item {
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("CREATE")
-                                    font.pointSize: config.largeFontSizePoint * .8
+                                    font.pointSize: Singletons.Config.largeFontSizePoint * .8
                                     font.family: notoRegular
                                 }
                             }
@@ -216,7 +213,7 @@ Item {
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("New Tile Package")
-                                    font.pointSize: config.baseFontSizePoint
+                                    font.pointSize: Singletons.Config.baseFontSizePoint
                                     font.family: notoRegular
                                 }
                             }
@@ -253,7 +250,7 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.buttonStates(parent, "major")
+                            color: Singletons.Config.buttonStates(parent, "major")
                             border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                             border.color: app.info.properties.mainButtonBorderColor
                             radius: app.info.properties.mainButtonRadius
@@ -291,7 +288,7 @@ Item {
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("BROWSE")
-                                    font.pointSize: config.largeFontSizePoint * .8
+                                    font.pointSize: Singletons.Config.largeFontSizePoint * .8
                                     font.family: notoRegular
                                 }
                             }
@@ -305,7 +302,7 @@ Item {
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
                                     text: qsTr("Organization Tile Packages")
-                                    font.pointSize: config.baseFontSizePoint
+                                    font.pointSize: Singletons.Config.baseFontSizePoint
                                     font.family: notoRegular
                                 }
                             }

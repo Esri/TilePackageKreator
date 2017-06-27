@@ -20,6 +20,7 @@ import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
+import "../singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Rectangle{
@@ -85,7 +86,7 @@ Rectangle{
 
                     Text {
                         anchors.centerIn: parent
-                        font.pointSize: config.largeFontSizePoint * 1.2
+                        font.pointSize: Singletons.Config.largeFontSizePoint * 1.2
                         font.family: iconFont
                         text: (!drawing) ? ( (!drawingExists) ? icons.warning : icons.checkmark ) : icons.happy_face
                     }
@@ -186,7 +187,7 @@ Rectangle{
 
                         Text{
                             anchors.centerIn: parent
-                            font.pointSize: config.largeFontSizePoint * 1.5
+                            font.pointSize: Singletons.Config.largeFontSizePoint * 1.5
                             color: (activeGeometryType === geometryType) ? "#fff" : app.info.properties.mainButtonBorderColor
                             font.family: iconFont
                             text: icons[fontIcon]
@@ -204,7 +205,7 @@ Rectangle{
                             color: app.info.properties.mainButtonBorderColor
                             textFormat: Text.RichText
                             text: name
-                            font.pointSize: config.baseFontSizePoint
+                            font.pointSize: Singletons.Config.baseFontSizePoint
                             font.family: notoRegular
                         }
                     }

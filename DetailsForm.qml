@@ -25,6 +25,7 @@ import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Item {
@@ -33,7 +34,6 @@ Item {
 
     id: tpkDetailsForm
 
-    property Config config
     property int maxLevels: 19
     property string currentSharing: ""
     property string currentExportTitle: ""
@@ -49,7 +49,9 @@ Item {
     property bool uploadToPortal: true
     property bool usesMetric: localeIsMetric()
 
-    property alias tpkZoomLevels: desiredLevelsSlider.value
+    property alias tpkZoomLevels: desiredLevelsSlider.second
+    property alias tpkBottomZoomLevel: desiredLevelsSlider.first
+    property alias tpkTopZoomLevel: desiredLevelsSlider.second
     //property alias tpkPathBufferDistance: desiredBufferSlider.value
     property alias tpkTitle: tpkTitleTextField.text
     //property alias tpkSharing: tpkDetailsForm.currentSharing
@@ -58,6 +60,8 @@ Item {
 
     signal exportZoomLevelsChanged()
     signal exportBufferDistanceChanged()
+
+
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
@@ -98,8 +102,8 @@ Item {
                 spacing:0
                 Text {
                     text: qsTr("Number of Zoom Levels")
-                    color: config.formElementFontColor
-                    font.pointSize: config.smallFontSizePoint
+                    color: Singletons.Config.formElementFontColor
+                    font.pointSize: Singletons.Config.smallFontSizePoint
                     font.family: notoRegular
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -115,39 +119,40 @@ Item {
                         anchors.fill: parent
                         spacing:0
 
-                        Slider {
+                        RangeSlider {
                             id: desiredLevelsSlider
+                            Layout.fillWidth: true
+                            Layout.rightMargin: sf(10)
                             from: 0
                             to: maxLevels
                             stepSize: 1
-                            Layout.fillWidth: true
-                            Layout.rightMargin: sf(10)
-                            anchors.verticalCenter: parent.verticalCenter
+                            snapMode: RangeSlider.SnapAlways
+                            first.value: 0
+                            second.value: 3
+                        }
 
-                            onPressedChanged: {
-                                if(pressed===false){
-                                    tpkDetailsForm.exportZoomLevelsChanged();
-                                }
+                        Connections {
+                            target: desiredLevelsSlider.second
+                            onValueChanged: {
+                               tpkDetailsForm.exportZoomLevelsChanged();
                             }
+                        }
 
-                            Accessible.role: Accessible.Slider
-                            Accessible.name: qsTr("Number of Zoom Levels Slider")
-                            Accessible.description: qsTr("This slider allows the user to set the number of desired zoom levels to export from level 0 to the maximum number of levels allowed by the tile service.")
-                            Accessible.onPressedChanged: {
-                                if(!pressed){
-                                    tpkDetailsForm.exportZoomLevelsChanged();
-                                }
+                        Connections {
+                            target: desiredLevelsSlider.first
+                            onValueChanged: {
+                                tpkDetailsForm.exportZoomLevelsChanged();
                             }
                         }
 
                        TextField {
                             id: desiredLevels
                             Layout.fillHeight: true
-                            Layout.preferredWidth: sf(40)
+                            Layout.preferredWidth: sf(60)
                             readOnly: true
-                            text: desiredLevelsSlider.value
+                            text: "%1 - %2".arg(desiredLevelsSlider.first.value).arg(desiredLevelsSlider.second.value);
                             horizontalAlignment: Text.AlignRight
-                            font.pointSize: config.largeFontSizePoint
+                            font.pointSize: Singletons.Config.mediumFontSizePoint
                             font.family: notoRegular
 
                             background: Rectangle {
@@ -156,9 +161,9 @@ Item {
                                 radius: 0
                                 color: _uiEntryElementStates(parent)
                             }
-                            color: config.formElementFontColor
+                            color: Singletons.Config.formElementFontColor
                             Accessible.role: Accessible.StaticText
-                            Accessible.name: qsTr("Current number of levels: 0 to %1".arg(desiredLevelsSlider.value.toString()))
+                            Accessible.name: qsTr("This static text is updated when the slider value is updated.")
                             Accessible.readOnly: true
                             Accessible.description: qsTr("This static text is updated when the slider value is updated.")
                         }
@@ -173,11 +178,12 @@ Item {
             id: levelsWarning
             Layout.fillWidth: true
             Layout.topMargin: sf(5)
-            containerHeight: desiredLevelsSlider.value > 15 ? sf(30) : sf(1)
-            statusTextFontSize: config.xSmallFontSizePoint
+            containerHeight: desiredLevelsSlider.second.value > 15 ? sf(38) : sf(1)
+            statusTextFontSize: Singletons.Config.xSmallFontSizePoint
+            narrowLineHeight: true
             messageType: warning
             message: qsTr("Export may fail with this many levels if extent is too large.")
-            visible: (exportAndUpload && desiredLevelsSlider.value) > 15 ? true : false
+            visible: (exportAndUpload && desiredLevelsSlider.second.value > 15) ? true : false
             statusTextObject.anchors.margins: sf(10)
             statusTextObject.wrapMode: Text.Wrap
 
@@ -189,7 +195,7 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: sf(1)
             Layout.topMargin: sf(5)
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             visible: exportAndUpload
             Accessible.ignored: true
         }
@@ -209,8 +215,8 @@ Item {
                 spacing:0
                 Text {
                     text: qsTr("Buffer Radius")
-                    color: config.formElementFontColor
-                    font.pointSize: config.smallFontSizePoint
+                    color: Singletons.Config.formElementFontColor
+                    font.pointSize: Singletons.Config.smallFontSizePoint
                     font.family: notoRegular
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -230,6 +236,7 @@ Item {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             Layout.rightMargin: sf(10)
+                            selectByMouse: true
 
                             property int unitInMeters: 1
 
@@ -239,12 +246,12 @@ Item {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                border.width: config.formElementBorderWidth
-                                border.color: config.formElementBorderColor
-                                radius: config.formElementRadius
+                                border.width: Singletons.Config.formElementBorderWidth
+                                border.color: Singletons.Config.formElementBorderColor
+                                radius: Singletons.Config.formElementRadius
                                 color: _uiEntryElementStates(parent)
                             }
-                            color: config.formElementFontColor
+                            color: Singletons.Config.formElementFontColor
                             font.family: notoRegular
 
                             onTextChanged: {
@@ -277,59 +284,6 @@ Item {
                                 desiredBufferInput.text = "";
                             }
                         }
-
-                        /*
-                        Slider {
-                            id: desiredBufferSlider
-                            minimumValue: 1
-                            maximumValue: usesMetric ? 1000 : 3000
-                            stepSize: 1
-                            tickmarksEnabled: false
-                            Layout.fillWidth: true
-                            Layout.rightMargin: 10 * AppFramework.displayScaleFactor
-                            anchors.verticalCenter: parent.verticalCenter
-
-                            onPressedChanged: {
-                                if(pressed===false){
-                                    tpkDetailsForm.exportBufferDistanceChanged();
-                                }
-                            }
-
-                            Accessible.role: Accessible.Slider
-                            Accessible.name: qsTr("Buffer Radius Slider")
-                            Accessible.description: qsTr("This slider allows the user to set the desired buffer radius around a drawn multi point path.")
-                            Accessible.onPressedChanged: {
-                                if(!pressed){
-                                     tpkDetailsForm.exportBufferDistanceChanged();
-                                }
-                            }
-                        }
-
-                        TextField {
-                            id: desiredBuffer
-                            Layout.fillHeight: true
-                            Layout.preferredWidth: 90 * AppFramework.displayScaleFactor
-                            readOnly: true
-                            text: "%1 %2".arg(desiredBufferSlider.value).arg(usesMetric ? "m" : "ft")
-                            horizontalAlignment: Text.AlignRight
-                            font.pointSize: config.largeFontSizePoint
-
-                            style: TextFieldStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    border.width: 0
-                                    radius: 0
-                                    color: _uiEntryElementStates(control)
-                                }
-                                textColor: config.formElementFontColor
-                                font.family: notoRegular
-                            }
-                            Accessible.role: Accessible.StaticText
-                            Accessible.name: qsTr("Current buffer radius is %1".arg(text))
-                            Accessible.readOnly: true
-                            Accessible.description: qsTr("This static text is updated when the buffer radius slider value is updated.")
-                        }
-                        */
                     }
                 }
             }
@@ -339,7 +293,7 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: sf(1)
             Layout.topMargin: sf(5)
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             visible: exportAndUpload && exportPathBuffering
             Accessible.ignored: true
         }
@@ -366,9 +320,9 @@ Item {
                     Layout.fillWidth: true
                     text: qsTr("Title") + "<span style=\"color:red\"> *</span>"
                     textFormat: Text.RichText
-                    font.pointSize: config.smallFontSizePoint
+                    font.pointSize: Singletons.Config.smallFontSizePoint
                     font.family: notoRegular
-                    color: config.mainLabelFontColor
+                    color: Singletons.Config.mainLabelFontColor
                     verticalAlignment: Text.AlignVCenter
 
                     Accessible.role: Accessible.Heading
@@ -386,15 +340,16 @@ Item {
                 id: tpkTitleTextField
                 anchors.fill: parent
                 placeholderText: qsTr("Enter a title")
+                selectByMouse: true
 
                 background: Rectangle {
                     anchors.fill: parent
-                    border.width: config.formElementBorderWidth
-                    border.color: config.formElementBorderColor
-                    radius: config.formElementRadius
+                    border.width: Singletons.Config.formElementBorderWidth
+                    border.color: Singletons.Config.formElementBorderColor
+                    radius: Singletons.Config.formElementRadius
                     color: _uiEntryElementStates(parent)
                 }
-                color: config.formElementFontColor
+                color: Singletons.Config.formElementFontColor
                 font.family: notoRegular
 
                 onTextChanged: {
@@ -422,16 +377,16 @@ Item {
             Text{
                 id: tpkFileTitleName
                 anchors.fill: parent
-                font.pointSize: config.xSmallFontSizePoint
+                font.pointSize: Singletons.Config.xSmallFontSizePoint
                 font.family: notoRegular
-                color: config.formElementFontColor
+                color: Singletons.Config.formElementFontColor
             }
         }
 
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             visible: exportAndUpload
             Accessible.ignored: true
         }
@@ -467,8 +422,8 @@ Item {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     verticalAlignment: Text.AlignVCenter
-                    color: config.formElementFontColor
-                    font.pointSize: config.smallFontSizePoint
+                    color: Singletons.Config.formElementFontColor
+                    font.pointSize: Singletons.Config.smallFontSizePoint
                     font.family: notoRegular
                     text: qsTr("Save tile package locally")
                     Accessible.ignored: true
@@ -491,7 +446,7 @@ Item {
                     Layout.fillHeight: true
                     background: Rectangle {
                         anchors.fill: parent
-                        color: config.buttonStates(parent)
+                        color: Singletons.Config.buttonStates(parent)
                         radius: app.info.properties.mainButtonRadius
                         border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                         border.color: app.info.properties.mainButtonBorderColor
@@ -524,12 +479,12 @@ Item {
                         anchors.fill: parent
                         id: saveToLocationFolder
                         text: ""
-                        font.pointSize: config.smallFontSizePoint
+                        font.pointSize: Singletons.Config.smallFontSizePoint
                         font.family: notoRegular
                         fontSizeMode: Text.Fit
                         minimumPointSize: 10
                         verticalAlignment: Text.AlignVCenter
-                        color:config.formElementFontColor
+                        color:Singletons.Config.formElementFontColor
 
                         Accessible.role: Accessible.StaticText
                         Accessible.name: qsTr("Selected save to location: %1".arg(text))
@@ -567,8 +522,8 @@ Item {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     verticalAlignment: Text.AlignVCenter
-                    color: config.formElementFontColor
-                    font.pointSize: config.smallFontSizePoint
+                    color: Singletons.Config.formElementFontColor
+                    font.pointSize: Singletons.Config.smallFontSizePoint
                     font.family: notoRegular
                     text: qsTr("Upload tile package to ArcGIS")
                     Accessible.ignored: true
@@ -603,9 +558,9 @@ Item {
                                            Layout.fillHeight: true
                                            Layout.preferredWidth: parent.width/2
                                            text: qsTr("Description")
-                                           font.pointSize: config.smallFontSizePoint
+                                           font.pointSize: Singletons.Config.smallFontSizePoint
                                            font.family: notoRegular
-                                           color: config.mainLabelFontColor
+                                           color: Singletons.Config.mainLabelFontColor
                                            verticalAlignment: Text.AlignVCenter
                                            Accessible.role: Accessible.Heading
                                            Accessible.name: text
@@ -615,9 +570,9 @@ Item {
                                            Layout.fillHeight: true
                                            Layout.fillWidth: true
                                            text: "4000"
-                                           font.pointSize: config.xSmallFontSizePoint
+                                           font.pointSize: Singletons.Config.xSmallFontSizePoint
                                            font.family: notoRegular
-                                           color: config.mainLabelFontColor
+                                           color: Singletons.Config.mainLabelFontColor
                                            horizontalAlignment: Text.AlignRight
                                            verticalAlignment: Text.AlignVCenter
                                            Accessible.role: Accessible.AlertMessage
@@ -637,13 +592,13 @@ Item {
                             property int maximumLength: 4000
                             readOnly: uploadToPortal ? false : true
 
-                            color: config.formElementFontColor
+                            color: Singletons.Config.formElementFontColor
                             font.family: notoRegular
                             background: Rectangle {
                                 color: _uiEntryElementStates(parent)
-                                border.width: config.formElementBorderWidth
-                                border.color: config.formElementBorderColor
-                                radius: config.formElementRadius
+                                border.width: Singletons.Config.formElementBorderWidth
+                                border.color: Singletons.Config.formElementBorderColor
+                                radius: Singletons.Config.formElementRadius
                                 anchors.fill: parent
                             }
 
@@ -666,9 +621,9 @@ Item {
                             Layout.preferredHeight: sf(20)
                             Label {
                                 text: qsTr("Share this item with:")
-                                font.pointSize: config.smallFontSizePoint
+                                font.pointSize: Singletons.Config.smallFontSizePoint
                                 font.family: notoRegular
-                                color: config.mainLabelFontColor
+                                color: Singletons.Config.mainLabelFontColor
                                 anchors.fill: parent
                                 verticalAlignment: Text.AlignVCenter
 
@@ -703,13 +658,13 @@ Item {
                                     x: 0
                                     y: parent.height / 2 - height / 2
                                     radius: sf(8)
-                                    border.width: config.formElementBorderWidth
-                                    border.color: config.formElementBorderColor
+                                    border.width: Singletons.Config.formElementBorderWidth
+                                    border.color: Singletons.Config.formElementBorderColor
                                     color: _uiEntryElementStates(parent)
                                     Rectangle {
                                         anchors.fill: parent
                                         visible: parent.parent.checked
-                                        color: config.formElementFontColor
+                                        color: Singletons.Config.formElementFontColor
                                         radius: sf(9)
                                         anchors.margins: sf(4)
                                     }
@@ -717,7 +672,7 @@ Item {
                                 contentItem: Text{
                                     text: qsTr("Do not share")
                                     font.family: notoRegular
-                                    color: config.mainLabelFontColor
+                                    color: Singletons.Config.mainLabelFontColor
                                     verticalAlignment: Text.AlignVCenter
                                     leftPadding: tpkSharingNotShared.indicator.width + sf(5)
                                 }
@@ -745,13 +700,13 @@ Item {
                                     x: 0
                                     y: parent.height / 2 - height / 2
                                     radius: sf(8)
-                                    border.width: config.formElementBorderWidth
-                                    border.color: config.formElementBorderColor
+                                    border.width: Singletons.Config.formElementBorderWidth
+                                    border.color: Singletons.Config.formElementBorderColor
                                     color: _uiEntryElementStates(parent)
                                     Rectangle {
                                         anchors.fill: parent
                                         visible: parent.parent.checked
-                                        color: config.formElementFontColor
+                                        color: Singletons.Config.formElementFontColor
                                         radius: sf(9)
                                         anchors.margins: sf(4)
                                     }
@@ -759,7 +714,7 @@ Item {
                                 contentItem: Text{
                                     text: qsTr("Your organization")
                                     font.family: notoRegular
-                                    color: config.mainLabelFontColor
+                                    color: Singletons.Config.mainLabelFontColor
                                     verticalAlignment: Text.AlignVCenter
                                     leftPadding: tpkSharingOrg.indicator.width + sf(5)
                                 }
@@ -787,13 +742,13 @@ Item {
                                     x: 0
                                     y: parent.height / 2 - height / 2
                                     radius: sf(8)
-                                    border.width: config.formElementBorderWidth
-                                    border.color: config.formElementBorderColor
+                                    border.width: Singletons.Config.formElementBorderWidth
+                                    border.color: Singletons.Config.formElementBorderColor
                                     color: _uiEntryElementStates(parent)
                                     Rectangle {
                                         anchors.fill: parent
                                         visible: parent.parent.checked
-                                        color: config.formElementFontColor
+                                        color: Singletons.Config.formElementFontColor
                                         radius: sf(9)
                                         anchors.margins: sf(4)
                                     }
@@ -801,7 +756,7 @@ Item {
                                 contentItem: Text{
                                     text: qsTr("Everyone (Public)")
                                     font.family: notoRegular
-                                    color: config.mainLabelFontColor
+                                    color: Singletons.Config.mainLabelFontColor
                                     verticalAlignment: Text.AlignVCenter
                                     leftPadding: tpkSharingEveryone.indicator.width + sf(5)
                                 }
@@ -877,10 +832,10 @@ Item {
 
     function _uiEntryElementStates(control){
         if(!control.enabled){
-            return config.formElementDisabledBackground;
+            return Singletons.Config.formElementDisabledBackground;
         }
         else{
-            return config.formElementBackground;
+            return Singletons.Config.formElementBackground;
         }
     }
 

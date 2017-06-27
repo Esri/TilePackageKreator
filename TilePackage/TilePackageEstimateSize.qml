@@ -68,6 +68,43 @@ QtObject {
         calculationComplete({"tiles": totalTiles, "bytes": sizeInBytes});
     }
 
+    function calculateForRange(topLeft /* [x,y] as webmercator */, bottomRight /* [x,y] as webmercator */, bottomLevel /* int */, topLevel /* int */){
+
+        var xMeters = Math.abs(Math.floor(bottomRight[0] - topLeft[0]));
+
+        var yMeters = Math.abs(Math.floor(bottomRight[1] - topLeft[1]));
+
+        var totalTiles = 1;
+
+        if (topLevel > 0) {
+
+            console.log("-------------------------topLEVEL: ",topLevel);
+            console.log("-------------------------bottomLEVEL: ",bottomLevel);
+            for (var a = bottomLevel; a < topLevel + 1; a++) {
+
+                console.log("------------------------a: ", a);
+
+                var xPixels = xMeters / metersPerPixel[a];
+                var yPixels = yMeters / metersPerPixel[a];
+
+                var xTiles = Math.ceil(xPixels / tileSize);
+                var yTiles = Math.ceil(yPixels / tileSize);
+
+                var levelTiles = xTiles * yTiles;
+
+                totalTiles += levelTiles;
+            }
+        }
+
+        var compressionLevel = topLevel !== bottomLevel ? topLevel-bottomLevel : topLevel;
+
+        console.log("-------------------------compressionLevel: %1 ".arg(compressionLevel))
+
+        var sizeInBytes = (totalTiles * averageBytesPerTile) * averageCompressionPercent[topLevel];
+
+        calculationComplete({"tiles": totalTiles, "bytes": sizeInBytes});
+    }
+
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     onCalculationComplete: {}

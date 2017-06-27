@@ -21,12 +21,13 @@ import QtQuick.Dialogs 1.2
 
 import ArcGIS.AppFramework 1.0
 import "../"
+import "../singletons" as Singletons
+
 
 Dialog {
 
     id: feedbackDialog
 
-    property Config config: Config {}
     property AppMetrics metrics
 
     width: 500 * AppFramework.displayScaleFactor
@@ -50,7 +51,7 @@ Dialog {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40 * AppFramework.displayScaleFactor
-                color:config.subtleBackground
+                color: Singletons.Config.subtleBackground
 
                 Text {
                     anchors.fill: parent
@@ -58,9 +59,9 @@ Dialog {
                     text: feedbackDialog.title
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
-                    font.pointSize: config.largeFontSizePoint
+                    font.pointSize: Singletons.Config.largeFontSizePoint
                     font.family: notoRegular
-                    color: config.formElementFontColor
+                    color: Singletons.Config.formElementFontColor
                 }
             }
 
@@ -92,12 +93,12 @@ Dialog {
                         style: TextFieldStyle {
                             background: Rectangle {
                                 anchors.fill: parent
-                                border.width: config.formElementBorderWidth
-                                border.color: config.formElementBorderColor
-                                radius: config.formElementRadius
-                                color: config.formElementBackground
+                                border.width: Singletons.Config.formElementBorderWidth
+                                border.color: Singletons.Config.formElementBorderColor
+                                radius: Singletons.Config.formElementRadius
+                                color: Singletons.Config.formElementBackground
                             }
-                            textColor: config.formElementFontColor
+                            textColor: Singletons.Config.formElementFontColor
                             font.family: notoRegular
 
                         }
@@ -138,12 +139,12 @@ Dialog {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         style: TextAreaStyle {
-                            backgroundColor: config.formElementBackground
-                            textColor: config.formElementFontColor
+                            backgroundColor: Singletons.Config.formElementBackground
+                            textColor: Singletons.Config.formElementFontColor
                             font.family: notoRegular
                             frame: Rectangle {
-                                border.width: config.formElementBorderWidth
-                                border.color: config.formElementBorderColor
+                                border.width: Singletons.Config.formElementBorderWidth
+                                border.color: Singletons.Config.formElementBorderColor
                                 anchors.fill: parent
                             }
                         }
@@ -180,7 +181,7 @@ Dialog {
                             style: ButtonStyle {
                                 background: Rectangle {
                                     anchors.fill: parent
-                                    color: config.buttonStates(control, "major")
+                                    color: Singletons.Config.buttonStates(control, "major")
                                     radius: app.info.properties.mainButtonRadius
                                     border.width: app.info.properties.mainButtonBorderWidth
                                     border.color: app.info.properties.mainButtonBorderColor
@@ -192,7 +193,7 @@ Dialog {
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
                                 text: qsTr("Cancel")
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                                 font.family: notoRegular
                             }
 
@@ -222,7 +223,7 @@ Dialog {
                             style: ButtonStyle {
                                 background: Rectangle {
                                     anchors.fill: parent
-                                    color: config.buttonStates(control)
+                                    color: Singletons.Config.buttonStates(control)
                                     radius: app.info.properties.mainButtonRadius
                                     border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                     border.color: app.info.properties.mainButtonBorderColor
@@ -234,7 +235,7 @@ Dialog {
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
                                 text: qsTr("Send")
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                                 font.family: notoRegular
                             }
 

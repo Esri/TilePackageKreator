@@ -24,6 +24,8 @@ import ArcGIS.AppFramework 1.0
 import "Portal"
 import "AboutDialog"
 import "AppMetrics"
+import "singletons" as Singletons
+
 //------------------------------------------------------------------------------
 
 Item {
@@ -96,7 +98,7 @@ Item {
 
                 Text{
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint
+                    font.pointSize: Singletons.Config.largeFontSizePoint
                     color: _returnButtonColor(backButton)
                     font.family: iconFont
                     text: icons.chevron_left
@@ -158,7 +160,7 @@ Item {
 
                 Text{
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(updatesButton)
                     font.family: iconFont
                     text: icons.download_circle
@@ -216,7 +218,7 @@ Item {
 
                 Text{
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(feedbackButton)
                     font.family: iconFont
                     text: icons.chat_bubble
@@ -252,7 +254,7 @@ Item {
 
                 Text{
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(aboutButton)
                     font.family: iconFont
                     text: icons.info
@@ -288,7 +290,7 @@ Item {
 
                 Text{
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(historyButton)
                     font.family: iconFont
                     text: icons.history
@@ -325,7 +327,7 @@ Item {
 
                 Text{
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
                     color: _returnButtonColor(userButton)
                     font.family: iconFont
                     text: icons.sign_out

@@ -32,6 +32,7 @@ import "DeepLinkingRequest"
 import "HistoryManager"
 import "Geometry"
 import "MapViewPlus" as MapView
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Item {
@@ -41,7 +42,6 @@ Item {
     id: exportView
 
     property Portal portal
-    property Config config
     property bool exporting: false
     property bool uploading: false
     property var currentTileService: null
@@ -126,7 +126,7 @@ Item {
             Layout.fillHeight: true
             enabled: (exporting) ? false : true
             clip: true
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
 
             RowLayout {
                 anchors.fill: parent
@@ -187,7 +187,9 @@ Item {
                                 if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null && mapViewPlus.geometryType !== "multipath"){
                                     var tlAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.topLeft));
                                     var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
-                                    tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
+                                    //tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
+                                    tpkEstimateSize.calculateForRange(tlAsXY, brAsXY, exportDetails.tpkBottomZoomLevel.value, exportDetails.tpkTopZoomLevel.value);
+
                                 }
                             }
 
@@ -204,7 +206,7 @@ Item {
                             id: mapInfoToolbar
                             Layout.preferredHeight: sf(50)
                             Layout.fillWidth: true
-                            color:config.subtleBackground
+                            color:Singletons.Config.subtleBackground
 
                             RowLayout{
                                 anchors.fill: parent
@@ -232,7 +234,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
-                                                font.pointSize: config.smallFontSizePoint
+                                                font.pointSize: Singletons.Config.smallFontSizePoint
                                                 font.family: notoRegular
 
                                                 Accessible.role: Accessible.Heading
@@ -282,7 +284,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
-                                                font.pointSize: config.smallFontSizePoint
+                                                font.pointSize: Singletons.Config.smallFontSizePoint
                                                 font.family: notoRegular
 
                                                 Accessible.role: Accessible.Heading
@@ -332,7 +334,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
-                                                font.pointSize: config.smallFontSizePoint
+                                                font.pointSize: Singletons.Config.smallFontSizePoint
                                                 font.family: notoRegular
 
                                                 Accessible.role: Accessible.Heading
@@ -396,7 +398,6 @@ Item {
                         width: parent.width
                         anchors.fill: parent
                         enabled: true
-                        config: exportView.config
 
                         exportAndUpload: true
                         exportPathBuffering: mapViewPlus.geometryType === "multipath"
@@ -407,7 +408,9 @@ Item {
                             if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null){
                                 var tlAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.topLeft));
                                 var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
-                                tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
+                                //tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
+                                tpkEstimateSize.calculateForRange(tlAsXY, brAsXY, exportDetails.tpkBottomZoomLevel.value, exportDetails.tpkTopZoomLevel.value);
+
                             }
                         }
                     }
@@ -425,7 +428,7 @@ Item {
                 Rectangle{
                     anchors.fill:parent
                     opacity: .9
-                    color:config.subtleBackground
+                    color:Singletons.Config.subtleBackground
                     z: 100
                 }
 
@@ -439,7 +442,7 @@ Item {
 
                     ProgressIndicator{
                         id: estimateSizeProgressIndicator
-                        statusTextFontSize: config.smallFontSizePoint
+                        statusTextFontSize: Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
                         statusTextLeftMargin: sf(10)
                         iconContainerLeftMargin: sf(5)
@@ -449,7 +452,7 @@ Item {
                     }
                     ProgressIndicator{
                         id:exportCompleteProgressIndicator
-                        statusTextFontSize:config.smallFontSizePoint
+                        statusTextFontSize:Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
                         statusTextLeftMargin: sf(10)
                         iconContainerLeftMargin: sf(5)
@@ -460,7 +463,7 @@ Item {
 
                     ProgressIndicator{
                         id: downloadProgressIndicator
-                        statusTextFontSize:config.smallFontSizePoint
+                        statusTextFontSize:Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
                         statusTextLeftMargin: sf(10)
                         iconContainerLeftMargin: sf(5)
@@ -471,7 +474,7 @@ Item {
 
                     ProgressIndicator{
                         id: uploadProgressIndicator
-                        statusTextFontSize:config.smallFontSizePoint
+                        statusTextFontSize:Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
                         statusTextLeftMargin: sf(10)
                         iconContainerLeftMargin: sf(5)
@@ -482,7 +485,7 @@ Item {
 
                     ProgressIndicator{
                         id: exportErrorProgressIndicator
-                        statusTextFontSize:config.smallFontSizePoint
+                        statusTextFontSize:Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
                         statusTextLeftMargin: sf(10)
                         iconContainerLeftMargin: sf(5)
@@ -522,7 +525,7 @@ Item {
                             anchors.fill: parent
                             containerHeight: parent.height
                             hideAutomatically: true
-                            statusTextFontSize: config.baseFontSizePoint
+                            statusTextFontSize: Singletons.Config.baseFontSizePoint
                             showDismissButton: true
 
                             onLinkClicked: {
@@ -551,7 +554,7 @@ Item {
                         enabled: (exportDetails.tpkTitle !== "" /*tpkTitleTextField.text !== ""*/ && mapViewPlus.userDrawnExtent) ? true : false
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.buttonStates(parent)
+                            color: Singletons.Config.buttonStates(parent)
                             radius: app.info.properties.mainButtonRadius
                             border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                             border.color: app.info.properties.mainButtonBorderColor
@@ -570,7 +573,7 @@ Item {
                                 horizontalAlignment: Text.AlignHCenter
                                 textFormat: Text.RichText
                                 text: (!exporting) ? qsTr("Create Tile Package") : "Creating"
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                                 font.family: notoRegular
                             }
 
@@ -595,7 +598,7 @@ Item {
                             if(mapViewPlus.drawMultipath){
                                 exportDetails.currentExportRequest.buffer = exportDetails.currentBufferInMeters;
                             }
-                            exportDetails.currentLevels = (exportDetails.tpkZoomLevels > 0) ? "0-" + exportDetails.tpkZoomLevels.toString() : "0";
+                            exportDetails.currentLevels = (exportDetails.tpkTopZoomLevel.value > 0) ? "%1-%2".arg(exportDetails.tpkBottomZoomLevel.value.toString()).arg(exportDetails.tpkTopZoomLevel.value.toString()) : "0";
                             exportDetails.currentExportRequest.levels = exportDetails.currentLevels
 
                             var outFileName = (exportDetails.currentExportTitle != "") ? exportDetails.currentExportTitle : "tpk_export"
@@ -640,7 +643,7 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.buttonStates(parent, "clear")
+                            color: Singletons.Config.buttonStates(parent, "clear")
                             radius: app.info.properties.mainButtonRadius
                             border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                             border.color: "#fff"
@@ -651,7 +654,7 @@ Item {
                             anchors.centerIn: parent
                             textFormat: Text.RichText
                             text: "Cancel"
-                            font.pointSize: config.baseFontSizePoint
+                            font.pointSize: Singletons.Config.baseFontSizePoint
                             font.family: notoRegular
                         }
 
@@ -1010,10 +1013,10 @@ Item {
 
     function _uiEntryElementStates(control){
         if(!control.enabled){
-            return config.formElementDisabledBackground;
+            return Singletons.Config.formElementDisabledBackground;
         }
         else{
-            return config.formElementBackground;
+            return Singletons.Config.formElementBackground;
         }
     }
 

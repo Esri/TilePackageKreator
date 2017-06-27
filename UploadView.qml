@@ -27,6 +27,7 @@ import "TilePackage"
 import "ProgressIndicator"
 import "HistoryManager"
 //------------------------------------------------------------------------------
+import "singletons" as Singletons
 
 Item {
 
@@ -35,7 +36,6 @@ Item {
     id: uploadView
 
     property Portal portal
-    property Config config
     property var currentTPKUrl: null
 
     property bool fileAcceptedForUpload: false
@@ -124,7 +124,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 clip: true
-                color: config.subtleBackground
+                color: Singletons.Config.subtleBackground
 
                 RowLayout {
                     id: tpkForm
@@ -140,7 +140,7 @@ Item {
                         color: "#fff"
 
                         Rectangle {
-                            color: config.boldUIElementBackground
+                            color: Singletons.Config.boldUIElementBackground
                             anchors.top: parent.top
                             anchors.right: parent.right
                             anchors.bottom: parent.bottom
@@ -163,17 +163,17 @@ Item {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectTPK.height / 3
                                         text: "Drag .tpk file here"
-                                        color: config.boldUIElementFontColor
+                                        color: Singletons.Config.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
-                                        font.pointSize: config.largeFontSizePoint
+                                        font.pointSize: Singletons.Config.largeFontSizePoint
                                         font.family: notoRegular
                                     }
                                     Text {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectTPK.height / 3
                                         text: "or"
-                                        color: config.boldUIElementFontColor
+                                        color: Singletons.Config.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                         font.family: notoRegular
@@ -191,7 +191,7 @@ Item {
 
                                             background: Rectangle {
                                                 anchors.fill: parent
-                                                color:config.buttonStates(this.parent)
+                                                color:Singletons.Config.buttonStates(this.parent)
                                                 radius: app.info.properties.mainButtonRadius
                                                 border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                                 border.color: app.info.properties.mainButtonBorderColor
@@ -202,7 +202,7 @@ Item {
                                                 anchors.centerIn: parent
                                                 textFormat: Text.RichText
                                                 text: "Browse for file"
-                                                font.pointSize: config.baseFontSizePoint
+                                                font.pointSize: Singletons.Config.baseFontSizePoint
                                                 font.family: notoRegular
                                             }
                                             onClicked: {
@@ -246,9 +246,9 @@ Item {
                                         text: "filename.tpk"
                                         fontSizeMode: Text.Fit
                                         font.family: notoRegular
-                                        minimumPointSize: config.smallFontSizePoint
-                                        color: config.boldUIElementFontColor
-                                        font.pointSize: config.largeFontSizePoint
+                                        minimumPointSize: Singletons.Config.smallFontSizePoint
+                                        color: Singletons.Config.boldUIElementFontColor
+                                        font.pointSize: Singletons.Config.largeFontSizePoint
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                     }
@@ -287,7 +287,7 @@ Item {
                                                 anchors.centerIn: parent
                                                 textFormat: Text.RichText
                                                 text: "Use a different file"
-                                                font.pointSize: config.baseFontSizePoint
+                                                font.pointSize: Singletons.Config.baseFontSizePoint
                                                 font.family: notoRegular
                                             }
                                             onClicked: {
@@ -334,7 +334,6 @@ Item {
                             id: tpkUploadDetails
                             anchors.fill: parent
                             enabled: uploading ? false : true
-                            config: uploadView.config
 
                             exportAndUpload: false
                             exportPathBuffering: false
@@ -346,7 +345,7 @@ Item {
 
                 Rectangle{
                     id: tpkUploadStatusOverlay
-                    color:config.subtleBackground
+                    color: Singletons.Config.subtleBackground
                     opacity: .9
                     anchors.fill: parent
                     visible: uploading ? true : false
@@ -396,7 +395,7 @@ Item {
                             anchors.margins: sf(10)
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: config.buttonStates(this.parent)
+                                color: Singletons.Config.buttonStates(this.parent)
                                 radius: app.info.properties.mainButtonRadius
                                 border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
@@ -414,7 +413,7 @@ Item {
                                     horizontalAlignment: Text.AlignHCenter
                                     textFormat: Text.RichText
                                     text: uploading ? ( tpkPackage.aborted ? qsTr("Cancelling") : qsTr("Uploading") ): qsTr("Upload")
-                                    font.pointSize: config.baseFontSizePoint
+                                    font.pointSize: Singletons.Config.baseFontSizePoint
                                     font.family: notoRegular
                                 }
 
@@ -453,7 +452,7 @@ Item {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: config.buttonStates(this.parent, "clear")
+                                color: Singletons.Config.buttonStates(this.parent, "clear")
                                 radius: app.info.properties.mainButtonRadius
                                 border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: "#fff"
@@ -464,7 +463,7 @@ Item {
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
                                 text: "Cancel"
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                                 font.family: notoRegular
                             }
 
@@ -645,7 +644,7 @@ Item {
         if (!control.enabled) {
             return "#888";
         } else {
-            return config.formElementBackground;
+            return Singletons.Config.formElementBackground;
         }
     }
 

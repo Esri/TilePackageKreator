@@ -25,6 +25,7 @@ import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "Portal"
 import "TilePackage"
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Item {
@@ -34,12 +35,11 @@ Item {
     id: browseOrganizationTpksView
 
     property Portal portal
-    property Config config
     property bool busy: false
-    property double gridMargin: config.availableServicesView.gridMargin
+    property double gridMargin: Singletons.Config.availableServicesView.gridMargin
     property var currentTileService: null
-    property int thumbnailWidth: config.thumbnails.width
-    property int thumbnailHeight: config.thumbnails.height
+    property int thumbnailWidth: Singletons.Config.thumbnails.width
+    property int thumbnailHeight: Singletons.Config.thumbnails.height
     property string searchQuery: '(type:("Tile Package") AND group:(access:org OR access:private))'
     property ListModel servicesListModel: ListModel {}
 
@@ -75,7 +75,7 @@ Item {
             id: activityIndicator
             anchors.fill: parent
             visible: false
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             opacity: .8
             z: 1000
             Accessible.role: Accessible.Pane
@@ -89,7 +89,7 @@ Item {
                 Text{
                     id: refreshSpinner
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 3
+                    font.pointSize: Singletons.Config.largeFontSizePoint * 3
                     color: "#888"
                     font.family: iconFont
                     text: icons.spinner2
@@ -155,8 +155,8 @@ Item {
 
                 Rectangle {
                     id: tileContent
-                    color: config.availableServicesView.tileItemBackgroundColor
-                    border.color: config.availableServicesView.tileItemBorderColor
+                    color: Singletons.Config.availableServicesView.tileItemBackgroundColor
+                    border.color: Singletons.Config.availableServicesView.tileItemBorderColor
                     border.width: gridMargin / 2
                     anchors.fill: parent
                     anchors.margins: gridMargin / 2
@@ -194,7 +194,7 @@ Item {
                                     text: title
                                     anchors.fill: parent
                                     font {
-                                        pointSize: config.smallFontSizePoint
+                                        pointSize: Singletons.Config.smallFontSizePoint
                                     }
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
@@ -228,7 +228,7 @@ Item {
                                             anchors.leftMargin: sf(10)
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignLeft
-                                            font.pointSize: config.xSmallFontSizePoint
+                                            font.pointSize: Singletons.Config.xSmallFontSizePoint
                                             text: isWebMercator ? "Web Mercator" : "NOT Web Mercator"
                                             color: isWebMercator ? "#007ac2" : "red"
 
@@ -248,7 +248,7 @@ Item {
                                             anchors.fill: parent
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignHCenter
-                                            font.pointSize: config.xSmallFontSizePoint
+                                            font.pointSize: Singletons.Config.xSmallFontSizePoint
                                             text: access
                                             color: (access === "org") ? "#007ac2" : "#222"
 
@@ -367,7 +367,7 @@ Item {
         Accessible.description: qsTr("This is a dialog that displays metadata for a selected tile service.")
 
         contentItem: Rectangle {
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             anchors.fill: parent
             width: browseOrganizationTpksView.parent.width - sf(10)
             height: browseOrganizationTpksView.parent.height - sf(10)
@@ -486,7 +486,7 @@ Item {
                 anchors.margins: sf(gridMargin / 2)
                 visible: true
                 border.width: sf(1)
-                border.color: config.availableServicesView.highlightColor
+                border.color: Singletons.Config.availableServicesView.highlightColor
             }
 
             Rectangle {
@@ -508,7 +508,7 @@ Item {
                 ColorOverlay {
                     source: tileSelectedIcon
                     anchors.fill: tileSelectedIcon
-                    color: config.availableServicesView.highlightColor
+                    color: Singletons.Config.availableServicesView.highlightColor
                 }
             }
         }
@@ -649,7 +649,7 @@ Item {
         // This needs to be replaced with the better logic from TilePackageUpload
         // See #135
 
-        if (sr === config.webMercSR || sr === config.webMercLatestWKID.toString() || sr === config.webMercWKID.toString()){
+        if (sr === Singletons.Config.webMercSR || sr === Singletons.Config.webMercLatestWKID.toString() || sr === Singletons.Config.webMercWKID.toString()){
             return true;
         }
         else{

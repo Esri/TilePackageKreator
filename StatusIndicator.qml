@@ -19,6 +19,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Rectangle {
@@ -27,6 +28,7 @@ Rectangle {
 
     property bool hideAutomatically: false
     property bool showDismissButton: false
+    property bool narrowLineHeight: false
     property int hideAfter: 30000
     property int containerHeight: 50
     property int statusTextFontSize: 14
@@ -78,10 +80,6 @@ Rectangle {
             id: statusText
             Layout.fillHeight: true
             Layout.fillWidth: true
-            //anchors.top: parent.top
-            //anchors.right: parent.right
-            //anchors.bottom: parent.bottom
-            //anchors.left: parent.left
             color: statusTextFontColor
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
@@ -90,6 +88,7 @@ Rectangle {
             font.pointSize: statusTextFontSize
             font.family: notoRegular
             wrapMode: Text.WordWrap
+            lineHeight: narrowLineHeight ? .7 : 1
             onLinkActivated: {
                 linkClicked(link.toString());
                 Qt.openUrlExternally(link);
@@ -116,7 +115,7 @@ Rectangle {
 
                 Text{
                     anchors.centerIn: parent
-                    font.pointSize: config.mediumFontSizePoint
+                    font.pointSize: Singletons.Config.mediumFontSizePoint
                     color: messageType.borderColor
                     font.family: iconFont
                     text: icons.x_cross

@@ -24,6 +24,7 @@ import "Portal"
 import "HistoryManager"
 import "AppMetrics"
 import "DeepLinkingRequest"
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Item {
@@ -33,7 +34,6 @@ Item {
     id: mainView
 
     property Portal portal
-    property Config config: Config{}
     property TilePackageDeepLinkRequest dlr: TilePackageDeepLinkRequest{}
     property App parentApp
 
@@ -74,7 +74,7 @@ Item {
             toolBarBackground: app.info.properties.toolBarBackgroundColor
             toolBarBorderColor: app.info.properties.toolBarBorderColor
             toolBarFontColor: app.info.properties.toolBarFontColor
-            toolBarFontPointSize: config.baseFontSizePoint
+            toolBarFontPointSize: Singletons.Config.baseFontSizePoint
             toolBarButtonHoverColor: app.info.properties.mainButtonPressedColor
             toolBarButtonPressedColor: app.info.properties.mainButtonBackgroundColor
             backButtonEnabled: false
@@ -126,7 +126,6 @@ Item {
     Component {
         id: osv
         OperationSelectionView {
-            config: mainView.config
         }
     }
 
@@ -136,7 +135,6 @@ Item {
         id: utpkv
         UploadView {
             portal: mainView.portal
-            config: mainView.config
         }
     }
 
@@ -146,7 +144,6 @@ Item {
         id: asv
         AvailableServicesView {
             portal: mainView.portal
-            config: mainView.config
         }
     }
 
@@ -156,7 +153,6 @@ Item {
         id: etv
         ExportView {
             portal: mainView.portal
-            config: mainView.config
         }
     }
 
@@ -166,7 +162,6 @@ Item {
         id: btpkv
         BrowseOrgView {
             portal: mainView.portal
-            config: mainView.config
         }
     }
 
@@ -175,7 +170,6 @@ Item {
     Component {
         id: hv
         HistoryView {
-            config: mainView.config
         }
     }
 
@@ -268,10 +262,10 @@ Item {
 
     function _uiEntryElementStates(control){
         if (!control.enabled) {
-            return config.formElementDisabledBackground;
+            return Singletons.Config.formElementDisabledBackground;
         }
         else {
-            return config.formElementBackground;
+            return Singletons.Config.formElementBackground;
         }
     }
 

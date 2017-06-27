@@ -20,6 +20,7 @@ import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
+import "../singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Rectangle {
@@ -72,12 +73,12 @@ Rectangle {
         Text{
             id:statusIcon
             anchors.centerIn: parent
-            font.pointSize: config.largeFontSizePoint
+            font.pointSize: Singletons.Config.largeFontSizePoint
             color: "#fff"
             font.family: iconFont
             text: ""
             fontSizeMode: Text.Fit
-            minimumPointSize: config.smallFontSizePoint
+            minimumPointSize: Singletons.Config.smallFontSizePoint
 
             onTextChanged: {
                 if(text === working){

@@ -24,6 +24,8 @@ import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
 
 import "../Controls"
+import "../singletons" as Singletons
+
 
 //------------------------------------------------------------------------------
 
@@ -208,7 +210,7 @@ Rectangle {
                                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
                                 font {
-                                    pointSize: config.largeFontSizePoint
+                                    pointSize: Singletons.Config.largeFontSizePoint
                                     bold: true
                                     family: fontFamily
                                 }

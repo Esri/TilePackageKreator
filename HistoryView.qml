@@ -23,6 +23,7 @@ import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "HistoryManager"
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Item {
@@ -31,7 +32,6 @@ Item {
 
     id: historyView
 
-    property Config config
     property bool exportHistoryExists: false
     property bool uploadHistoryExists: false
 
@@ -86,7 +86,7 @@ Item {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
                                 text: qsTr("Export History")
-                                font.pointSize: config.mediumFontSizePoint
+                                font.pointSize: Singletons.Config.mediumFontSizePoint
                                 font.family: notoRegular
                                 verticalAlignment: Text.AlignVCenter
                             }
@@ -100,7 +100,7 @@ Item {
 
                                     background: Rectangle {
                                         anchors.fill: parent
-                                        color: config.buttonStates(parent, "clear")
+                                        color: Singletons.Config.buttonStates(parent, "clear")
                                         radius: app.info.properties.mainButtonRadius
                                         border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                         border.color: "#fff"
@@ -111,7 +111,7 @@ Item {
                                         anchors.centerIn: parent
                                         textFormat: Text.RichText
                                         text: qsTr("Delete History")
-                                        font.pointSize: config.baseFontSizePoint
+                                        font.pointSize: Singletons.Config.baseFontSizePoint
                                         font.family: notoRegular
                                     }
 
@@ -150,7 +150,7 @@ Item {
                                 width: parent.width
                                 textFormat: Text.RichText
                                 readOnly: true
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                                 color: app.info.properties.toolBarBackgroundColor
                                 wrapMode: Text.Wrap
                                 onLinkActivated: {
@@ -201,7 +201,7 @@ Item {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
                                 text: qsTr("Upload History")
-                                font.pointSize: config.mediumFontSizePoint
+                                font.pointSize: Singletons.Config.mediumFontSizePoint
                                 font.family: notoRegular
                                 verticalAlignment: Text.AlignVCenter
                             }
@@ -215,7 +215,7 @@ Item {
                                     visible: uploadHistoryExists
                                     background: Rectangle {
                                         anchors.fill: parent
-                                        color: config.buttonStates(parent, "clear")
+                                        color: Singletons.Config.buttonStates(parent, "clear")
                                         radius: app.info.properties.mainButtonRadius
                                         border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                         border.color: "#fff"
@@ -226,7 +226,7 @@ Item {
                                         anchors.centerIn: parent
                                         textFormat: Text.RichText
                                         text: qsTr("Delete History")
-                                        font.pointSize: config.baseFontSizePoint
+                                        font.pointSize: Singletons.Config.baseFontSizePoint
                                         font.family: notoRegular
                                     }
 
@@ -263,7 +263,7 @@ Item {
                                 width: parent.width
                                 textFormat: Text.RichText
                                 readOnly: true
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                                 color: app.info.properties.toolBarBackgroundColor
                                 wrapMode: Text.Wrap
                                 onLinkActivated: {

@@ -25,6 +25,7 @@ import ArcGIS.AppFramework.Controls 1.0
 //--------------------------------------------------------------------------
 import "Portal"
 import "TilePackage"
+import "singletons" as Singletons
 //--------------------------------------------------------------------------
 
 Item {
@@ -34,7 +35,6 @@ Item {
     id: availableServicesView
 
     property Portal portal
-    property Config config
 
     property AvailableServicesModel asm: AvailableServicesModel {
         portal: availableServicesView.portal
@@ -83,10 +83,10 @@ Item {
         }
     }
 
-    property double gridMargin: config.availableServicesView.gridMargin * AppFramework.displayScaleFactor
+    property double gridMargin: Singletons.Config.availableServicesView.gridMargin * AppFramework.displayScaleFactor
     property var currentTileService: null
-    property int thumbnailWidth: config.thumbnails.width
-    property int thumbnailHeight: config.thumbnails.height
+    property int thumbnailWidth: Singletons.Config.thumbnails.width
+    property int thumbnailHeight: Singletons.Config.thumbnails.height
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
@@ -122,7 +122,7 @@ Item {
             id: activityIndicator
             anchors.fill: parent
             visible: false
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             opacity: .8
             z: 1000
             Accessible.role: Accessible.Pane
@@ -147,7 +147,7 @@ Item {
                         Text {
                             id: refreshSpinner
                             anchors.centerIn: parent
-                            font.pointSize: config.largeFontSizePoint * 3
+                            font.pointSize: Singletons.Config.largeFontSizePoint * 3
                             color: "#888"
                             font.family: iconFont
                             text: icons.spinner2
@@ -168,7 +168,7 @@ Item {
                         anchors.fill: parent
                         id: servicesStatusText
                         font.family: notoRegular
-                        font.pointSize: config.largeFontSizePoint
+                        font.pointSize: Singletons.Config.largeFontSizePoint
                         text: qsTr("Querying Services. Please wait.")
                         verticalAlignment: Text.AlignTop
                         horizontalAlignment: Text.AlignHCenter
@@ -189,7 +189,7 @@ Item {
             anchors.right: parent.right
             anchors.left: parent.left
             height: sf(60)
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             Accessible.role: Accessible.Pane
 
             RowLayout {
@@ -199,7 +199,7 @@ Item {
                 Rectangle {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    color: config.subtleBackground
+                    color: Singletons.Config.subtleBackground
                     visible: !addServiceEntry.visible
                     enabled: !addServiceEntry.visible
                     Accessible.role: Accessible.Pane
@@ -220,7 +220,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: parent.height - sf(20)
                     Layout.margins: sf(10)
-                    color: config.subtleBackground
+                    color: Singletons.Config.subtleBackground
                     visible: !addServiceEntry.visible
                     enabled: !addServiceEntry.visible
                     Accessible.role: Accessible.Pane
@@ -236,7 +236,7 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: config.subtleBackground
+                            color: Singletons.Config.subtleBackground
                             radius: sf(3)
                             border.width: sf(1)
                             border.color: app.info.properties.mainButtonBorderColor
@@ -244,7 +244,7 @@ Item {
 
                         Text {
                             anchors.centerIn: parent
-                            font.pointSize: config.largeFontSizePoint * .8
+                            font.pointSize: Singletons.Config.largeFontSizePoint * .8
                             color: app.info.properties.mainButtonBackgroundColor
                             font.family: iconFont
                             text: icons.plus_sign
@@ -271,7 +271,7 @@ Item {
                     id: addServiceEntry
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    color: config.subtleBackground
+                    color: Singletons.Config.subtleBackground
                     visible: false
                     enabled: false
                     Accessible.role: Accessible.Pane
@@ -292,12 +292,12 @@ Item {
 
                                 background: Rectangle {
                                     anchors.fill: parent
-                                    border.width: config.formElementBorderWidth
-                                    border.color: config.formElementBorderColor
-                                    radius: config.formElementRadius
+                                    border.width: Singletons.Config.formElementBorderWidth
+                                    border.color: Singletons.Config.formElementBorderColor
+                                    radius: Singletons.Config.formElementRadius
                                     color: _uiEntryElementStates(parent)
                                 }
-                                color: config.formElementFontColor
+                                color: Singletons.Config.formElementFontColor
                                 font.family: notoRegular
 
                                 validator: RegExpValidator {
@@ -319,7 +319,7 @@ Item {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: config.buttonStates(parent)
+                                color: Singletons.Config.buttonStates(parent)
                                 radius: app.info.properties.mainButtonRadius
                                 border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
@@ -330,7 +330,7 @@ Item {
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
                                 text: parent.buttonText
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                                 font.family: notoRegular
                                 Accessible.ignored: true
                             }
@@ -358,7 +358,7 @@ Item {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: config.buttonStates(parent, "clear")
+                                color: Singletons.Config.buttonStates(parent, "clear")
                                 radius: app.info.properties.mainButtonRadius
                                 border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: "#fff"
@@ -369,7 +369,7 @@ Item {
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
                                 text: parent.buttonText
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                                 font.family: notoRegular
                                 Accessible.ignored: true
                             }
@@ -431,8 +431,8 @@ Item {
                 anchors.centerIn: parent
                 text: qsTr("No export tile services are available.");
                 font.family: notoBold
-                font.pointSize: config.largeFontSizePoint
-                color: config.boldUIElementFontColor
+                font.pointSize: Singletons.Config.largeFontSizePoint
+                color: Singletons.Config.boldUIElementFontColor
             }
         }
 
@@ -455,7 +455,7 @@ Item {
                 containerHeight: parent.height
                 hideAutomatically: false
                 showDismissButton: true
-                statusTextFontSize: config.baseFontSizePoint
+                statusTextFontSize: Singletons.Config.baseFontSizePoint
 
                 onShow: {
                     viewStatusIndicatorContainer.visible = true;
@@ -531,7 +531,7 @@ Item {
                         id: innerTile
                         anchors.fill: parent
                         Accessible.role: Accessible.Pane
-                        color: config.subtleBackground
+                        color: Singletons.Config.subtleBackground
 
                         ColumnLayout {
                             spacing: 1
@@ -572,10 +572,10 @@ Item {
                                     anchors.fill: parent
                                     anchors.margins: sf(10)
                                     font {
-                                        pointSize: config.smallFontSizePoint
+                                        pointSize: Singletons.Config.smallFontSizePoint
                                         family: notoRegular
                                     }
-                                    color: config.boldUIElementFontColor
+                                    color: Singletons.Config.boldUIElementFontColor
                                     verticalAlignment: Text.AlignVCenter
                                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
@@ -587,7 +587,7 @@ Item {
 
                             Rectangle {
                                 id: tileMenu
-                                color: config.subtleBackground
+                                color: Singletons.Config.subtleBackground
                                 Layout.preferredHeight: 30  * AppFramework.displayScaleFactor
                                 Layout.fillWidth: true
                                 Accessible.role: Accessible.Pane
@@ -608,7 +608,7 @@ Item {
                                             anchors.fill: parent
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignHCenter
-                                            font.pointSize: config.xSmallFontSizePoint * .8
+                                            font.pointSize: Singletons.Config.xSmallFontSizePoint * .8
                                             font.family: notoRegular
                                             text: spatialReference //isWebMercator  ? "Web Mercator" : "NOT Web Mercator"
                                             color: isWebMercator ? "#007ac2" : "red"
@@ -632,7 +632,7 @@ Item {
                                             anchors.fill: parent
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignHCenter
-                                            font.pointSize: config.xSmallFontSizePoint * .8
+                                            font.pointSize: Singletons.Config.xSmallFontSizePoint * .8
                                             font.family: notoRegular
                                             text: owner === "esri" ? "Esri" : "Non-Esri"
                                             color: owner === "esri" ? "#007ac2" : "darkorange"
@@ -671,7 +671,7 @@ Item {
                 anchors.margins: gridMargin / 2
                 visible: true
                 border.width: 1 * AppFramework.displayScaleFactor
-                border.color: config.availableServicesView.highlightColor
+                border.color: Singletons.Config.availableServicesView.highlightColor
             }
 
             Rectangle {
@@ -693,7 +693,7 @@ Item {
                 ColorOverlay {
                     source: tileSelectedIcon
                     anchors.fill: tileSelectedIcon
-                    color: config.availableServicesView.highlightColor
+                    color: Singletons.Config.availableServicesView.highlightColor
                 }
             }
         }
@@ -712,7 +712,7 @@ Item {
         Accessible.description: qsTr("This is a dialog that displays metadata for a selected tile service.")
 
         contentItem: Rectangle {
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             anchors.fill: parent
             width: availableServicesView.parent.width - sf(10)
             height: availableServicesView.parent.height - sf(10)
@@ -760,7 +760,7 @@ Item {
             color: "#fff"
             border {
                 width: sf(1)
-                color: config.subtleBackground
+                color: Singletons.Config.subtleBackground
             }
         }
 
@@ -768,13 +768,13 @@ Item {
             height: contextMenu.menuItemHeight
             width: parent.width
             background: Rectangle {
-                color: parent.hovered ? config.subtleBackground : "#fff"
+                color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
             }
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 text: qsTr("View Metadata")
-                color: config.boldUIElementFontColor
+                color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
             onClicked: {
@@ -805,7 +805,7 @@ Item {
         Rectangle {
             height: sf(1)
             width: parent.width
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
         }
 
         Button {
@@ -814,13 +814,13 @@ Item {
             visible: contextMenu.currentInfo.isArcgisTileService || portal.isPortal
             enabled: contextMenu.currentInfo.isArcgisTileService || portal.isPortal
             background: Rectangle {
-                color: parent.hovered ? config.subtleBackground : "#fff"
+                color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
             }
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 text: !portal.isPortal ? qsTr("View on ArcGIS") : qsTr("View on Portal")
-                color: config.boldUIElementFontColor
+                color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
             onClicked: {
@@ -835,7 +835,7 @@ Item {
         Rectangle {
             height: sf(1)
             width: parent.width
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
             visible: contextMenu.currentInfo.isArcgisTileService || portal.isPortal
         }
 
@@ -843,13 +843,13 @@ Item {
             height: contextMenu.menuItemHeight
             width: parent.width
             background: Rectangle {
-                color: parent.hovered ? config.subtleBackground : "#fff"
+                color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
             }
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 text: contextMenu.currentInfo.isArcgisTileService ? qsTr("View REST Service") : qsTr("View Service")
-                color: config.boldUIElementFontColor
+                color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
             onClicked: {
@@ -875,20 +875,20 @@ Item {
         Rectangle {
             height: sf(1)
             width: parent.width
-            color: config.subtleBackground
+            color: Singletons.Config.subtleBackground
         }
 
         Button {
             height: contextMenu.menuItemHeight
             width: parent.width
             background: Rectangle {
-                color: parent.hovered ? config.subtleBackground : "#fff"
+                color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
             }
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 text: qsTr("Create .pitem")
-                color: config.boldUIElementFontColor
+                color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
             onClicked: {

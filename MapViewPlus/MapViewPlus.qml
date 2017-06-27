@@ -26,6 +26,7 @@ import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "../Portal"
+import "../singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Item {
@@ -172,7 +173,7 @@ Item {
                     color: "transparent"
                     Text {
                         anchors.centerIn: parent
-                        font.pointSize: config.smallFontSizePoint
+                        font.pointSize: Singletons.Config.smallFontSizePoint
                         color: app.info.properties.mainButtonBorderColor
                         font.family: iconFont
                         text: icons.plus_sign
@@ -205,7 +206,7 @@ Item {
 
                     Text{
                         anchors.centerIn: parent
-                        font.pointSize: config.smallFontSizePoint
+                        font.pointSize: Singletons.Config.smallFontSizePoint
                         color: app.info.properties.mainButtonBorderColor
                         font.family: iconFont
                         text: icons.minus_sign

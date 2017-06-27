@@ -19,6 +19,7 @@ import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
 //--------------------------------------------------------------------------
 import "Portal"
+import "singletons" as Singletons
 //--------------------------------------------------------------------------
 
 Item {
@@ -221,7 +222,7 @@ Item {
     //--------------------------------------------------------------------------
 
     function _isWebMercator(sr){
-        if (sr === config.webMercSR || sr === config.webMercLatestWKID.toString() || sr === config.webMercWKID.toString()){
+        if (sr === Singletons.Config.webMercSR || sr === Singletons.Config.webMercLatestWKID.toString() || sr === Singletons.Config.webMercWKID.toString()){
             return true;
         }
         else{
