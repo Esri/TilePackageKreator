@@ -26,9 +26,10 @@ import QtGraphicalEffects 1.0
 import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
 import "singletons" as Singletons
+import "Controls" as Controls
 //------------------------------------------------------------------------------
 
-Item {
+Rectangle {
 
     // PROPERTIES //////////////////////////////////////////////////////////////
 
@@ -45,6 +46,8 @@ Item {
     property string defaultSaveToLocation: ""
 
     property bool exportAndUpload: true
+    property bool exportOnly: false
+    property bool uploadOnly: false
     property bool exportPathBuffering: false
     property bool uploadToPortal: true
     property bool usesMetric: localeIsMetric()
@@ -52,7 +55,6 @@ Item {
     property alias tpkZoomLevels: desiredLevelsSlider.second
     property alias tpkBottomZoomLevel: desiredLevelsSlider.first
     property alias tpkTopZoomLevel: desiredLevelsSlider.second
-    //property alias tpkPathBufferDistance: desiredBufferSlider.value
     property alias tpkTitle: tpkTitleTextField.text
     //property alias tpkSharing: tpkDetailsForm.currentSharing
     property alias tpkDescription: tpkDescriptionTextArea.text
@@ -60,8 +62,6 @@ Item {
 
     signal exportZoomLevelsChanged()
     signal exportBufferDistanceChanged()
-
-
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
@@ -90,8 +90,7 @@ Item {
 
         //----------------------------------------------------------------------
 
-        Rectangle {
-            color: "#fff"
+        Item {
             Layout.fillWidth: true
             Layout.preferredHeight: sf(70)
             visible: exportAndUpload
@@ -100,9 +99,10 @@ Item {
             ColumnLayout{
                 anchors.fill: parent
                 spacing:0
+
                 Text {
-                    text: qsTr("Number of Zoom Levels")
-                    color: Singletons.Config.formElementFontColor
+                    text: Singletons.Strings.numberOfZoomLevels
+                    color: Singletons.Colors.darkGray
                     font.pointSize: Singletons.Config.smallFontSizePoint
                     font.family: notoRegular
                     Layout.fillWidth: true
@@ -111,7 +111,8 @@ Item {
                     Accessible.role: Accessible.Heading
                     Accessible.name: text
                 }
-                Rectangle{
+
+                Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: sf(50)
 
@@ -145,23 +146,17 @@ Item {
                             }
                         }
 
-                       TextField {
+                        Text {
                             id: desiredLevels
                             Layout.fillHeight: true
                             Layout.preferredWidth: sf(60)
-                            readOnly: true
                             text: "%1 - %2".arg(desiredLevelsSlider.first.value).arg(desiredLevelsSlider.second.value);
                             horizontalAlignment: Text.AlignRight
-                            font.pointSize: Singletons.Config.mediumFontSizePoint
+                            verticalAlignment: Text.AlignVCenter
+                            font.pointSize: Singletons.Config.smallFontSizePoint
                             font.family: notoRegular
+                            color: Singletons.Colors.darkGray
 
-                            background: Rectangle {
-                                anchors.fill: parent
-                                border.width: 0
-                                radius: 0
-                                color: _uiEntryElementStates(parent)
-                            }
-                            color: Singletons.Config.formElementFontColor
                             Accessible.role: Accessible.StaticText
                             Accessible.name: qsTr("This static text is updated when the slider value is updated.")
                             Accessible.readOnly: true
@@ -193,9 +188,10 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: sf(1)
-            Layout.topMargin: sf(5)
-            color: Singletons.Config.subtleBackground
+            Layout.preferredHeight: sf(2)
+            Layout.topMargin: sf(8)
+            Layout.bottomMargin: sf(8)
+            color: Singletons.Colors.mediumGray
             visible: exportAndUpload
             Accessible.ignored: true
         }
@@ -206,16 +202,16 @@ Item {
             color: "#fff"
             Layout.fillWidth: true
             Layout.preferredHeight: sf(70)
-            Layout.topMargin: sf(10)
             visible: exportAndUpload && exportPathBuffering
             enabled: exportAndUpload && exportPathBuffering
 
             ColumnLayout{
                 anchors.fill: parent
                 spacing:0
+
                 Text {
                     text: qsTr("Buffer Radius")
-                    color: Singletons.Config.formElementFontColor
+                    color: Singletons.Colors.darkGray
                     font.pointSize: Singletons.Config.smallFontSizePoint
                     font.family: notoRegular
                     Layout.fillWidth: true
@@ -223,37 +219,24 @@ Item {
                     Accessible.role: Accessible.Heading
                     Accessible.name: text
                 }
+
                 Rectangle{
                     Layout.fillWidth: true
-                    Layout.preferredHeight: sf(50)
+                    Layout.preferredHeight: sf(40)
 
                     RowLayout{
                         anchors.fill: parent
                         spacing:0
 
-                        TextField {
+                        Controls.StyledTextField {
                             id: desiredBufferInput
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             Layout.rightMargin: sf(10)
-                            selectByMouse: true
-
                             property int unitInMeters: 1
 
                             placeholderText: "%1 max, [default=1]".arg(distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max.toString())
-
                             validator: IntValidator { bottom: 1; top: distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max;}
-
-                            background: Rectangle {
-                                anchors.fill: parent
-                                border.width: Singletons.Config.formElementBorderWidth
-                                border.color: Singletons.Config.formElementBorderColor
-                                radius: Singletons.Config.formElementRadius
-                                color: _uiEntryElementStates(parent)
-                            }
-                            color: Singletons.Config.formElementFontColor
-                            font.family: notoRegular
-
                             onTextChanged: {
                                 currentBufferInMeters = (text !== "") ? Math.ceil(text * distanceUnits.get(desiredBufferDistanceUnit.currentIndex).conversionFactor) : 1;
                             }
@@ -273,7 +256,7 @@ Item {
                             textRole: "text"
 
                             model: ListModel {
-                                 id: distanceUnits
+                                id: distanceUnits
                                 ListElement { text: "m"; max: 3000; conversionFactor: 1 }
                                 ListElement { text: "km"; max: 5; conversionFactor: 1000}
                                 ListElement { text: "ft"; max: 4000; conversionFactor: 0.3048 }
@@ -291,9 +274,10 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: sf(1)
-            Layout.topMargin: sf(5)
-            color: Singletons.Config.subtleBackground
+            Layout.preferredHeight: sf(2)
+            Layout.topMargin: sf(8)
+            Layout.bottomMargin: sf(8)
+            color: Singletons.Colors.mediumGray
             visible: exportAndUpload && exportPathBuffering
             Accessible.ignored: true
         }
@@ -312,7 +296,7 @@ Item {
             RowLayout{
                 id: tpkTitleLabels
                 anchors.fill: parent
-                spacing:0
+                spacing: 0
 
                 Label {
                     id: tpkTitleTextFieldLabel
@@ -322,7 +306,7 @@ Item {
                     textFormat: Text.RichText
                     font.pointSize: Singletons.Config.smallFontSizePoint
                     font.family: notoRegular
-                    color: Singletons.Config.mainLabelFontColor
+                    color: Singletons.Colors.darkGray
                     verticalAlignment: Text.AlignVCenter
 
                     Accessible.role: Accessible.Heading
@@ -336,45 +320,32 @@ Item {
              Layout.preferredHeight: sf(40)
              Layout.bottomMargin: sf(5)
 
-            TextField {
-                id: tpkTitleTextField
-                anchors.fill: parent
-                placeholderText: qsTr("Enter a title")
-                selectByMouse: true
+             Controls.StyledTextField {
+                 id: tpkTitleTextField
+                 anchors.fill: parent
+                 placeholderText: qsTr("Enter a title")
+                 onTextChanged: {
+                     if(tpkTitleTextField.length > 0){
+                         _sanatizeTitle(text);
+                     }
+                     else{
+                         tpkFileTitleName.text = "";
+                         currentExportTitle = "";
+                     }
+                 }
 
-                background: Rectangle {
-                    anchors.fill: parent
-                    border.width: Singletons.Config.formElementBorderWidth
-                    border.color: Singletons.Config.formElementBorderColor
-                    radius: Singletons.Config.formElementRadius
-                    color: _uiEntryElementStates(parent)
-                }
-                color: Singletons.Config.formElementFontColor
-                font.family: notoRegular
-
-                onTextChanged: {
-                    if(tpkTitleTextField.length > 0){
-                        _sanatizeTitle(text);
-                    }
-                    else{
-                        tpkFileTitleName.text = "";
-                        currentExportTitle = "";
-                    }
-                }
-
-                Accessible.role: Accessible.EditableText
-                Accessible.name: qsTr("Enter a title for the exported tile package.")
-                Accessible.focusable: true
-            }
+                 Accessible.role: Accessible.EditableText
+                 Accessible.name: qsTr("Enter a title for the exported tile package.")
+                 Accessible.focusable: true
+             }
         }
 
-        Rectangle{
+        Rectangle {
             Layout.fillWidth:true
             Layout.preferredHeight: sf(10)
-            Layout.bottomMargin: sf(5)
             visible: false
             Accessible.ignored: true
-            Text{
+            Text {
                 id: tpkFileTitleName
                 anchors.fill: parent
                 font.pointSize: Singletons.Config.xSmallFontSizePoint
@@ -385,64 +356,67 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 1
-            color: Singletons.Config.subtleBackground
+            Layout.preferredHeight: sf(2)
+            Layout.topMargin: sf(8)
+            Layout.bottomMargin: sf(8)
+            color: Singletons.Colors.mediumGray
             visible: exportAndUpload
             Accessible.ignored: true
         }
 
         //----------------------------------------------------------------------
 
-        Rectangle{
+        Text {
+            text: qsTr("Save To")
+            color: Singletons.Colors.darkGray
+            font.pointSize: Singletons.Config.smallFontSizePoint
+            font.family: notoRegular
+            Layout.fillWidth: true
+            Layout.preferredHeight: sf(20)
+            Accessible.role: Accessible.Heading
+            Accessible.name: text
+            visible: exportOnly
+        }
+
+        Item {
             Layout.fillWidth: true
             Layout.preferredHeight: sf(40)
-            color:"#fff"
             visible: exportAndUpload
             enabled: exportAndUpload
 
-            RowLayout{
-                anchors.fill: parent
-                spacing: 0
-
-                RadioButton {
-                    id: saveToLocation
-                    ButtonGroup.group: destinationExclusiveGroup
-                    onCheckedChanged: {
-                        currentSaveToLocation = (dlr.saveToPath !== null) ? defaultSaveToLocation : null;
-                        saveToLocationFolder.text = _extractFolderDirectory(defaultSaveToLocation);
-                        saveToLocationDetails.visible = this.checked;
-                    }
-
-                    Accessible.role: Accessible.RadioButton
-                    Accessible.name: qsTr(saveToLocationLabel.text)
+            Controls.StyledRadioButton {
+                height: sf(20)
+                width: parent.width
+                anchors.verticalCenter: parent.verticalCenter
+                text: qsTr("Save tile package locally")
+                ButtonGroup.group: destinationExclusiveGroup
+                onCheckedChanged: {
+                    currentSaveToLocation = (dlr.saveToPath !== null) ? defaultSaveToLocation : null;
+                    saveToLocationFolder.text = _extractFolderDirectory(defaultSaveToLocation);
+                    saveToLocationDetails.visible = this.checked;
                 }
 
-                Text{
-                    id: saveToLocationLabel
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    verticalAlignment: Text.AlignVCenter
-                    color: Singletons.Config.formElementFontColor
-                    font.pointSize: Singletons.Config.smallFontSizePoint
-                    font.family: notoRegular
-                    text: qsTr("Save tile package locally")
-                    Accessible.ignored: true
-                }
+                Accessible.role: Accessible.RadioButton
+                Accessible.name: qsTr(saveToLocationLabel.text)
             }
         }
 
-        Rectangle{
+        Rectangle {
             id: saveToLocationDetails
-            color:"#fff"
             Layout.fillWidth: true
             Layout.bottomMargin: sf(10)
-            implicitHeight: sf(30)
+            Layout.leftMargin: uploadOnly ? 0 : sf(20)
+            color: uploadOnly ? "white" : Singletons.Colors.lightGray
+            implicitHeight: sf(40)
             visible: false
-            RowLayout{
+
+            RowLayout {
                 anchors.fill: parent
+                anchors.margins: sf(5)
                 spacing:0
-                Button{
-                    Layout.preferredWidth: parent.width/3
+
+                Button {
+                    Layout.preferredWidth: parent.width / 3
                     Layout.fillHeight: true
                     background: Rectangle {
                         anchors.fill: parent
@@ -450,7 +424,7 @@ Item {
                         radius: app.info.properties.mainButtonRadius
                         border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                         border.color: app.info.properties.mainButtonBorderColor
-                        Text{
+                        Text {
                             text: qsTr("Save To")
                             color: app.info.properties.mainButtonFontColor
                             font.family: notoRegular
@@ -471,11 +445,11 @@ Item {
                         }
                     }
                 }
-                Rectangle{
+                Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.leftMargin: sf(10)
-                    Text{
+                    Text {
                         anchors.fill: parent
                         id: saveToLocationFolder
                         text: ""
@@ -501,33 +475,19 @@ Item {
             color: "#fff"
             visible: exportAndUpload
 
-            RowLayout{
-                anchors.fill: parent
-                spacing: 0
-
-                RadioButton {
-                    id: uploadToPortalCheckbox
-                    ButtonGroup.group: destinationExclusiveGroup
-                    checked: true
-                    onCheckedChanged: {
-                        uploadToPortal = (checked) ? true : false;
-                    }
-
-                    Accessible.role: Accessible.RadioButton
-                    Accessible.name: qsTr(uploadToPortalCheckboxLabel.text)
+            Controls.StyledRadioButton {
+                height: sf(20)
+                width: parent.width
+                anchors.verticalCenter: parent.verticalCenter
+                text: qsTr("Upload tile package to ArcGIS")
+                ButtonGroup.group: destinationExclusiveGroup
+                checked: true
+                onCheckedChanged: {
+                    uploadToPortal = (checked) ? true : false;
                 }
 
-                Text{
-                    id: uploadToPortalCheckboxLabel
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    verticalAlignment: Text.AlignVCenter
-                    color: Singletons.Config.formElementFontColor
-                    font.pointSize: Singletons.Config.smallFontSizePoint
-                    font.family: notoRegular
-                    text: qsTr("Upload tile package to ArcGIS")
-                    Accessible.ignored: true
-                }
+                Accessible.role: Accessible.RadioButton
+                Accessible.name: qsTr(uploadToPortalCheckboxLabel.text)
             }
         }
 
@@ -537,88 +497,105 @@ Item {
             id: uploadToPortalDetailsContainer
             Layout.fillHeight: true
             Layout.fillWidth: true
-            color:"#fff"
+            Layout.leftMargin: uploadOnly ? 0 : sf(20)
+            color: uploadOnly ? "white" : Singletons.Colors.lightGray
             opacity: uploadToPortal ? 1 : 0
             enabled: uploadToPortal ? true : false
 
                 ColumnLayout{
                         anchors.fill: parent
+                        anchors.margins: uploadOnly ? 0 : sf(5)
                         spacing:0
 
-                        Rectangle{
+                        Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: sf(30)
-                            RowLayout{
-                                       id:tpkDescriptionLabels
-                                       spacing:0
-                                       anchors.fill: parent
 
-                                       Label {
-                                           id: tpkDescriptionTextAreaLabel
-                                           Layout.fillHeight: true
-                                           Layout.preferredWidth: parent.width/2
-                                           text: qsTr("Description")
-                                           font.pointSize: Singletons.Config.smallFontSizePoint
-                                           font.family: notoRegular
-                                           color: Singletons.Config.mainLabelFontColor
-                                           verticalAlignment: Text.AlignVCenter
-                                           Accessible.role: Accessible.Heading
-                                           Accessible.name: text
-                                       }
-                                       Text {
-                                           id: tpkDescriptionCharacterCount
-                                           Layout.fillHeight: true
-                                           Layout.fillWidth: true
-                                           text: "4000"
-                                           font.pointSize: Singletons.Config.xSmallFontSizePoint
-                                           font.family: notoRegular
-                                           color: Singletons.Config.mainLabelFontColor
-                                           horizontalAlignment: Text.AlignRight
-                                           verticalAlignment: Text.AlignVCenter
-                                           Accessible.role: Accessible.AlertMessage
-                                           Accessible.name: text
-                                           Accessible.description: qsTr("This text displays the number of charcters left available in the description text area.")
-                                       }
-                                   }
+                            RowLayout {
+                               id: tpkDescriptionLabels
+                               spacing: 0
+                               anchors.fill: parent
+
+                               Label {
+                                   id: tpkDescriptionTextAreaLabel
+                                   Layout.fillHeight: true
+                                   Layout.preferredWidth: parent.width/2
+                                   text: qsTr("Description")
+                                   font.pointSize: Singletons.Config.smallFontSizePoint
+                                   font.family: notoRegular
+                                   color: Singletons.Colors.darkGray
+                                   verticalAlignment: Text.AlignVCenter
+                                   Accessible.role: Accessible.Heading
+                                   Accessible.name: text
+                               }
+
+                               Text {
+                                   id: tpkDescriptionCharacterCount
+                                   Layout.fillHeight: true
+                                   Layout.fillWidth: true
+                                   text: "4000"
+                                   font.pointSize: Singletons.Config.xSmallFontSizePoint
+                                   font.family: notoRegular
+                                   color: Singletons.Colors.darkGray
+                                   horizontalAlignment: Text.AlignRight
+                                   verticalAlignment: Text.AlignVCenter
+                                   Accessible.role: Accessible.AlertMessage
+                                   Accessible.name: text
+                                   Accessible.description: qsTr("This text displays the number of charcters left available in the description text area.")
+                               }
+                           }
                         }
 
                         //------------------------------------------------------
 
-                        TextArea {
-                            id: tpkDescriptionTextArea
+                        Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: sf(60)
                             Layout.bottomMargin: sf(10)
-                            property int maximumLength: 4000
-                            readOnly: uploadToPortal ? false : true
 
-                            color: Singletons.Config.formElementFontColor
-                            font.family: notoRegular
-                            background: Rectangle {
-                                color: _uiEntryElementStates(parent)
-                                border.width: Singletons.Config.formElementBorderWidth
-                                border.color: Singletons.Config.formElementBorderColor
-                                radius: Singletons.Config.formElementRadius
+                            TextArea {
+                                id: tpkDescriptionTextArea
                                 anchors.fill: parent
+                                property int maximumLength: 4000
+                                readOnly: uploadToPortal ? false : true
+                                selectByMouse: true
+                                wrapMode: Text.Wrap
+                                placeholderText: qsTr("Copy and paste description text here.")
+
+                                color: Singletons.Config.formElementFontColor
+                                font.family: notoRegular
+                                font.pointSize: Singletons.Config.xSmallFontSizePoint
+                                background: Rectangle {
+                                    color: _uiEntryElementStates(parent)
+                                    border.width: Singletons.Config.formElementBorderWidth
+                                    border.color: Singletons.Config.formElementBorderColor
+                                    radius: Singletons.Config.formElementRadius
+                                    anchors.fill: parent
+                                }
+
+                                onTextChanged: {
+                                    tpkDescriptionCharacterCount.text =  (maximumLength - text.length).toString();
+                                       if (text.length > maximumLength) {
+                                           tpkDescriptionTextArea.text = tpkDescriptionTextArea.getText(0, maximumLength);
+                                       }
+                                }
+
+                                Accessible.role: Accessible.EditableText
+                                Accessible.name: qsTr("Tile package description text area entry")
+                                Accessible.description: qsTr("Enter a description of the tile package for the online item.")
                             }
 
-                            onTextChanged: {
-                                tpkDescriptionCharacterCount.text =  (maximumLength - text.length).toString();
-                                   if (text.length > maximumLength) {
-                                       tpkDescriptionTextArea.text = tpkDescriptionTextArea.getText(0, maximumLength);
-                                   }
-                            }
-
-                            Accessible.role: Accessible.EditableText
-                            Accessible.name: qsTr("Tile package description text area entry")
-                            Accessible.description: qsTr("Enter a description of the tile package for the online item.")
                         }
+
+
+
+
 
                         //------------------------------------------------------
 
-                        Rectangle{
+                        Item {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: sf(20)
+                            Layout.preferredHeight: sf(30)
                             Label {
                                 text: qsTr("Share this item with:")
                                 font.pointSize: Singletons.Config.smallFontSizePoint
@@ -634,7 +611,7 @@ Item {
 
                         //------------------------------------------------------
 
-                        Rectangle {
+                        Item {
                             id: tpkSharingContainer
                             Layout.fillWidth: true
                             Layout.fillHeight: true
@@ -643,131 +620,71 @@ Item {
                                 id: sharingExclusiveGroup
                             }
 
-                            RadioButton {
-                                id: tpkSharingNotShared
-                                ButtonGroup.group: sharingExclusiveGroup
-                                anchors.top: parent.top
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-                                anchors.topMargin: sf(10)
-                                checked: uploadToPortal ? true : false
-                                enabled: uploadToPortal ? true : false
-                                indicator: Rectangle {
-                                    implicitWidth: sf(16)
-                                    implicitHeight: sf(16)
-                                    x: 0
-                                    y: parent.height / 2 - height / 2
-                                    radius: sf(8)
-                                    border.width: Singletons.Config.formElementBorderWidth
-                                    border.color: Singletons.Config.formElementBorderColor
-                                    color: _uiEntryElementStates(parent)
-                                    Rectangle {
+                            ColumnLayout {
+                                anchors.fill: parent
+                                spacing: sf(5)
+
+                                Item {
+                                    Layout.preferredHeight: sf(20)
+                                    Layout.fillWidth: true
+                                    Controls.StyledRadioButton {
                                         anchors.fill: parent
-                                        visible: parent.parent.checked
-                                        color: Singletons.Config.formElementFontColor
-                                        radius: sf(9)
-                                        anchors.margins: sf(4)
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: qsTr("Do not share")
+                                        ButtonGroup.group: sharingExclusiveGroup
+                                        checked: uploadToPortal ? true : false
+                                        enabled: uploadToPortal ? true : false
+                                        onCheckedChanged: {
+                                            if(checked){
+                                                currentSharing = "";
+                                            }
+                                        }
+                                        Accessible.role: Accessible.RadioButton
+                                        Accessible.name: qsTr("Do not share")
                                     }
                                 }
-                                contentItem: Text{
-                                    text: qsTr("Do not share")
-                                    font.family: notoRegular
-                                    color: Singletons.Config.mainLabelFontColor
-                                    verticalAlignment: Text.AlignVCenter
-                                    leftPadding: tpkSharingNotShared.indicator.width + sf(5)
-                                }
 
-                                onCheckedChanged: {
-                                    if(checked){
-                                        currentSharing = "";
-                                    }
-                                }
-                                Accessible.role: Accessible.RadioButton
-                                Accessible.name: qsTr("Do not share")
-                            }
-
-                            RadioButton {
-                                id: tpkSharingOrg
-                                ButtonGroup.group: sharingExclusiveGroup
-                                anchors.top: tpkSharingNotShared.bottom
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-                                anchors.topMargin: sf(8)
-                                enabled: uploadToPortal ? true : false
-                                indicator: Rectangle {
-                                    implicitWidth: sf(16)
-                                    implicitHeight: sf(16)
-                                    x: 0
-                                    y: parent.height / 2 - height / 2
-                                    radius: sf(8)
-                                    border.width: Singletons.Config.formElementBorderWidth
-                                    border.color: Singletons.Config.formElementBorderColor
-                                    color: _uiEntryElementStates(parent)
-                                    Rectangle {
+                                Item {
+                                    Layout.preferredHeight: sf(20)
+                                    Layout.fillWidth: true
+                                    Controls.StyledRadioButton {
                                         anchors.fill: parent
-                                        visible: parent.parent.checked
-                                        color: Singletons.Config.formElementFontColor
-                                        radius: sf(9)
-                                        anchors.margins: sf(4)
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: qsTr("Your organization")
+                                        ButtonGroup.group: sharingExclusiveGroup
+                                        enabled: uploadToPortal ? true : false
+                                        onCheckedChanged: {
+                                            if(checked){
+                                                currentSharing = "org";
+                                            }
+                                        }
+                                        Accessible.role: Accessible.RadioButton
+                                        Accessible.name: qsTr("Your organization")
                                     }
                                 }
-                                contentItem: Text{
-                                    text: qsTr("Your organization")
-                                    font.family: notoRegular
-                                    color: Singletons.Config.mainLabelFontColor
-                                    verticalAlignment: Text.AlignVCenter
-                                    leftPadding: tpkSharingOrg.indicator.width + sf(5)
-                                }
 
-                                onCheckedChanged: {
-                                    if(checked){
-                                        currentSharing = "org";
-                                    }
-                                }
-                                Accessible.role: Accessible.RadioButton
-                                Accessible.name: qsTr("Your organization")
-                            }
 
-                            RadioButton {
-                                id: tpkSharingEveryone
-                                ButtonGroup.group: sharingExclusiveGroup
-                                anchors.top: tpkSharingOrg.bottom
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-                                anchors.topMargin: sf(8)
-                                enabled: uploadToPortal ? true : false
-                                indicator: Rectangle {
-                                    implicitWidth: sf(16)
-                                    implicitHeight: sf(16)
-                                    x: 0
-                                    y: parent.height / 2 - height / 2
-                                    radius: sf(8)
-                                    border.width: Singletons.Config.formElementBorderWidth
-                                    border.color: Singletons.Config.formElementBorderColor
-                                    color: _uiEntryElementStates(parent)
-                                    Rectangle {
+                                Item {
+                                    Layout.preferredHeight: sf(20)
+                                    Layout.fillWidth: true
+                                    Controls.StyledRadioButton {
                                         anchors.fill: parent
-                                        visible: parent.parent.checked
-                                        color: Singletons.Config.formElementFontColor
-                                        radius: sf(9)
-                                        anchors.margins: sf(4)
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: qsTr("Everyone (Public)")
+                                        ButtonGroup.group: sharingExclusiveGroup
+                                        enabled: uploadToPortal ? true : false
+                                        onCheckedChanged: {
+                                            if(checked){
+                                                currentSharing = "everyone";
+                                            }
+                                        }
+                                        Accessible.role: Accessible.RadioButton
+                                        Accessible.name: qsTr("Everyone (Public)")
                                     }
                                 }
-                                contentItem: Text{
-                                    text: qsTr("Everyone (Public)")
-                                    font.family: notoRegular
-                                    color: Singletons.Config.mainLabelFontColor
-                                    verticalAlignment: Text.AlignVCenter
-                                    leftPadding: tpkSharingEveryone.indicator.width + sf(5)
+                                Item {
+                                    Layout.fillHeight: true
                                 }
-
-                                onCheckedChanged: {
-                                    if(checked){
-                                        currentSharing = "everyone";
-                                    }
-                                }
-                                Accessible.role: Accessible.RadioButton
-                                Accessible.name: qsTr("Everyone (Public)")
                             }
                         }
                 }

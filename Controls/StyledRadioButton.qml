@@ -1,5 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.1
+import "../singletons" as Singletons
 
 RadioButton {
     id: control
@@ -27,8 +28,8 @@ RadioButton {
         x: sf(2)
         y: sf(2)
         radius: width / 2
-        //border.color:// control.checked ?
-        border.width: sf(2)
+        border.color: Singletons.Colors.darkGray
+        border.width: sf(1)
         color: "transparent"
         anchors {
             left: !control.rtl ? control.left : undefined
@@ -41,7 +42,7 @@ RadioButton {
             x: (parent.width - width) / 2
             y: (parent.width - width) / 2
             radius: height / 2
-            color: control.checked ? AppStudioTheme.primaryButtonBackground : "transparent"
+            color: control.checked ? Singletons.Colors.darkGray : "transparent"
         }
     }
 
@@ -51,10 +52,10 @@ RadioButton {
         verticalAlignment: Text.AlignVCenter
         leftPadding: !control.rtl ? control.indicator.width + sf(1) : 0
         rightPadding: !control.rtl ? 0 : control.indicator.width + sf(1)
-        color: AppStudioTheme.secondaryForeground
+        color: Singletons.Colors.darkGray
         font {
-            family: AppStudioTheme.avenir
-            pointSize: AppStudioTheme.smallFontSizePoint
+            family: notoRegular
+            pointSize: Singletons.Config.smallFontSizePoint
         }
     }
 

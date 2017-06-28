@@ -1,4 +1,4 @@
-/* Copyright 2015 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,25 @@
  *
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick 2.7
+import QtQuick.Controls 2.1
+import "../singletons" as Singletons
 
 TextField {
-    style: TextFieldStyle {
-        renderType: Text.QtRendering
-        textColor: "black"
+    id: control
+    selectByMouse: true
+
+    background: Rectangle {
+        anchors.fill: parent
+        border.width: Singletons.Config.formElementBorderWidth
+        border.color: Singletons.Colors.mediumGray
+        radius: Singletons.Config.formElementRadius
+        color: parent.enabled ? "#fff" : Singletons.Colors.lightGray
     }
+    color: Singletons.Colors.darkGray
+    font.family: notoRegular
+    font.pointSize: Singletons.Config.xSmallFontSizePoint
+
+    Accessible.role: Accessible.EditableText
+    Accessible.focusable: true
 }

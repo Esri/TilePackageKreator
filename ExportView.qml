@@ -398,7 +398,7 @@ Item {
                         width: parent.width
                         anchors.fill: parent
                         enabled: true
-
+                        exportOnly: true
                         exportAndUpload: true
                         exportPathBuffering: mapViewPlus.geometryType === "multipath"
                         currentTileService: exportView.currentTileService

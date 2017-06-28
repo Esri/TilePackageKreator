@@ -57,7 +57,7 @@ Item {
         }
 
         onServicesCountReady: {
-            servicesStatusText.text = "Found %1 total services. Querying each for export tile ability.".arg(numberOfServices);
+            servicesStatusText.text = Singletons.Strings.foundXTotalServices.arg(numberOfServices);
         }
 
         onFailed: {
@@ -78,7 +78,7 @@ Item {
             addServiceEntry.visible = false;
             addServiceEntry.enabled = false;
             viewStatusIndicator.messageType = viewStatusIndicator.error
-            viewStatusIndicator.message = "The service wasn't added. There may be a problem with the service or url entered.";
+            viewStatusIndicator.message = Singletons.Strings.serviceNotAddedError
             viewStatusIndicator.show();
         }
     }
@@ -105,7 +105,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false;
         mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false;
         mainView.appToolBar.historyButtonEnabled = true;
-        mainView.appToolBar.toolBarTitleLabel = qsTr("Create New Tile Package")
+        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ Item {
                         id: servicesStatusText
                         font.family: notoRegular
                         font.pointSize: Singletons.Config.largeFontSizePoint
-                        text: qsTr("Querying Services. Please wait.")
+                        text: Singletons.Strings.queryingServices
                         verticalAlignment: Text.AlignTop
                         horizontalAlignment: Text.AlignHCenter
 
@@ -206,9 +206,9 @@ Item {
 
                     Text {
                         anchors.fill: parent
-                        anchors.leftMargin: 20 * AppFramework.displayScaleFactor
+                        anchors.leftMargin: sf(20)
                         verticalAlignment: Text.AlignVCenter
-                        text: qsTr("Select tile service to be used as the source for the tile package")
+                        text: Singletons.Strings.selectTileService
                         font.family: notoRegular
 
                         Accessible.role: Accessible.Heading
@@ -229,7 +229,7 @@ Item {
                         id: addTileServiceBtn
                         anchors.fill: parent
 
-                        property string buttonText: qsTr("Add a tile service manually")
+                        property string buttonText: Singletons.Strings.addTileService
 
                         ToolTip.visible: hovered
                         ToolTip.text: buttonText
@@ -288,7 +288,7 @@ Item {
                                 id: tileServiceTextField
                                 width: parent.width
                                 height: parent.height
-                                placeholderText: qsTr("Enter url (e.g. http://someservice.gov/arcgis/rest/services/example/MapServer)")
+                                placeholderText: Singletons.Strings.tileServiceUrlExample
 
                                 background: Rectangle {
                                     anchors.fill: parent
@@ -305,7 +305,7 @@ Item {
                                 }
 
                                 Accessible.role: Accessible.EditableText
-                                Accessible.name: qsTr("Enter a url a tile service.")
+                                Accessible.name: qsTr("Enter a url for a tile service.")
                                 Accessible.focusable: true
                             }
                         }
@@ -315,7 +315,7 @@ Item {
                             Layout.preferredWidth: sf(70)
                             enabled: tileServiceTextField.length > 0 && tileServiceTextField.acceptableInput
 
-                            property string buttonText: qsTr("Add")
+                            property string buttonText: Singletons.Strings.add
 
                             background: Rectangle {
                                 anchors.fill: parent
@@ -354,7 +354,7 @@ Item {
                             Layout.fillHeight: true
                             Layout.preferredWidth: sf(70)
 
-                            property string buttonText: qsTr("Cancel")
+                            property string buttonText: Singletons.Strings.cancel
 
                             background: Rectangle {
                                 anchors.fill: parent
@@ -429,7 +429,7 @@ Item {
             color: "#fff"
             Text {
                 anchors.centerIn: parent
-                text: qsTr("No export tile services are available.");
+                text: Singletons.Strings.noTileServices
                 font.family: notoBold
                 font.pointSize: Singletons.Config.largeFontSizePoint
                 color: Singletons.Config.boldUIElementFontColor
@@ -610,7 +610,7 @@ Item {
                                             horizontalAlignment: Text.AlignHCenter
                                             font.pointSize: Singletons.Config.xSmallFontSizePoint * .8
                                             font.family: notoRegular
-                                            text: spatialReference //isWebMercator  ? "Web Mercator" : "NOT Web Mercator"
+                                            text: spatialReference
                                             color: isWebMercator ? "#007ac2" : "red"
                                             elide: Text.ElideRight
 
@@ -819,7 +819,7 @@ Item {
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
-                text: !portal.isPortal ? qsTr("View on ArcGIS") : qsTr("View on Portal")
+                text: !portal.isPortal ? Singletons.Strings.viewOnArcgis : Singletons.Strings.viewOnPortal
                 color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -848,7 +848,7 @@ Item {
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
-                text: contextMenu.currentInfo.isArcgisTileService ? qsTr("View REST Service") : qsTr("View Service")
+                text: contextMenu.currentInfo.isArcgisTileService ? Singletons.Strings.viewRestService : Singletons.Strings.viewOnlineService
                 color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -887,7 +887,7 @@ Item {
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
-                text: qsTr("Create .pitem")
+                text: Singletons.Strings.createPItem
                 color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -910,7 +910,7 @@ Item {
 
         onSuccess: {
             viewStatusIndicator.messageType = viewStatusIndicator.success
-            viewStatusIndicator.message = "File saved to %1".arg(path);
+            viewStatusIndicator.message = Singletons.Strings.fileSavedToX.arg(path)
             viewStatusIndicator.show();
         }
     }

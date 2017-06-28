@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import "Portal"
 import "TilePackage"
 import "ProgressIndicator"
 import "HistoryManager"
-//------------------------------------------------------------------------------
 import "singletons" as Singletons
+//------------------------------------------------------------------------------
 
 Item {
 
@@ -68,7 +68,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false
         mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false
         mainView.appToolBar.historyButtonEnabled = true;
-        mainView.appToolBar.toolBarTitleLabel = qsTr("Upload Local Tile Package")
+        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.uploadTilePackage
     }
 
     //--------------------------------------------------------------------------
@@ -102,7 +102,7 @@ Item {
         fileAcceptedForUpload = false;
         statusWebMercCheck.progressIcon = "";
         statusWebMercCheck.progressText = "";
-        selectedTPKFileName.text = "no file chosen";
+        selectedTPKFileName.text = Singletons.Strings.noFileChosen;
         tpkUploadDetails.reset();
         resetProperties();
     }
@@ -162,7 +162,7 @@ Item {
                                     Text {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectTPK.height / 3
-                                        text: "Drag .tpk file here"
+                                        text: Singletons.Strings.dragTPKFile
                                         color: Singletons.Config.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
@@ -172,7 +172,7 @@ Item {
                                     Text {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectTPK.height / 3
-                                        text: "or"
+                                        text: Singletons.Strings.or
                                         color: Singletons.Config.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
@@ -201,7 +201,7 @@ Item {
                                                 color: app.info.properties.mainButtonFontColor
                                                 anchors.centerIn: parent
                                                 textFormat: Text.RichText
-                                                text: "Browse for file"
+                                                text: Singletons.Strings.browseForFile
                                                 font.pointSize: Singletons.Config.baseFontSizePoint
                                                 font.family: notoRegular
                                             }
@@ -286,7 +286,7 @@ Item {
                                                 color: app.info.properties.mainButtonBackgroundColor
                                                 anchors.centerIn: parent
                                                 textFormat: Text.RichText
-                                                text: "Use a different file"
+                                                text: Singletons.Strings.useDifferentFile
                                                 font.pointSize: Singletons.Config.baseFontSizePoint
                                                 font.family: notoRegular
                                             }
@@ -315,7 +315,7 @@ Item {
                                         fileAccepted(AppFramework.resolvedUrl(drop.urls[0]));
                                     } else {
                                         tpkIcon.source = "images/sad_face.png";
-                                        selectedTPKFileName.text = ".tpk files only please";
+                                        selectedTPKFileName.text = Singletons.Strings.tpkFilesOnly;
                                         tpkUploadDetails.tpkTitle = "";
                                     }
                                 }
@@ -334,6 +334,7 @@ Item {
                             id: tpkUploadDetails
                             anchors.fill: parent
                             enabled: uploading ? false : true
+                            uploadOnly: true
 
                             exportAndUpload: false
                             exportPathBuffering: false
@@ -412,7 +413,7 @@ Item {
                                     verticalAlignment: Text.AlignVCenter
                                     horizontalAlignment: Text.AlignHCenter
                                     textFormat: Text.RichText
-                                    text: uploading ? ( tpkPackage.aborted ? qsTr("Cancelling") : qsTr("Uploading") ): qsTr("Upload")
+                                    text: uploading ? ( tpkPackage.aborted ?  Singletons.Strings.cancelling : Singletons.Strings.uploading ): Singletons.Strings.upload
                                     font.pointSize: Singletons.Config.baseFontSizePoint
                                     font.family: notoRegular
                                 }
@@ -462,7 +463,7 @@ Item {
                                 color: (!tpkPackage.aborted) ? app.info.properties.mainButtonBackgroundColor : "#aaa"
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
-                                text: "Cancel"
+                                text: Singletons.Strings.cancel
                                 font.pointSize: Singletons.Config.baseFontSizePoint
                                 font.family: notoRegular
                             }
@@ -512,10 +513,10 @@ Item {
         onSrCheckComplete: {
             if (tpkPackage.isWebMercator) {
                 statusWebMercCheck.progressIcon = statusWebMercCheck.success;
-                statusWebMercCheck.progressText = "Web Mercator";
+                statusWebMercCheck.progressText = Singletons.Strings.webMercator;
             } else {
                 statusWebMercCheck.progressIcon = statusWebMercCheck.failed;
-                statusWebMercCheck.progressText = "NOT WEB MERCATOR";
+                statusWebMercCheck.progressText = Singletons.Strings.notWebMercator;
             }
         }
 
@@ -554,7 +555,7 @@ Item {
 
         onUploadCancelled: {
             uploadStatusIndicator.messageType = uploadStatusIndicator.info;
-            uploadStatusIndicator.message =  "Upload Cancelled";
+            uploadStatusIndicator.message = Singletons.Strings.uploadCancelled;
             uploadStatusIndicator.show();
             uploadView.uploadComplete();
         }
@@ -566,7 +567,7 @@ Item {
             uploadStatusIndicator.messageType = uploadStatusIndicator.error;
 
             if(error.message.indexOf("already exists") > -1){
-                error.message = "A tpk file with that name already exists.";
+                error.message = Singletons.Strings.tpkWithThatNameAlreadyExistsError;
             }
 
             try{
@@ -576,14 +577,14 @@ Item {
                 appMetrics.reportError(e)
             }
 
-            uploadStatusIndicator.message =  "Upload Failed. " + error.message;
+            uploadStatusIndicator.message =  Singletons.Strings.uploadFailedError + ": " + error.message;
             uploadStatusIndicator.show();
             uploadView.uploadComplete();
         }
 
         onUploadError: {
             uploadStatusIndicator.messageType = uploadStatusIndicator.error;
-            uploadStatusIndicator.message =  "Upload Failed. Error: " + error;
+            uploadStatusIndicator.message =  Singletons.Strings.uploadFailedError + " Error: " + error;
             uploadStatusIndicator.show();
             uploadView.uploadComplete();
 
@@ -690,7 +691,7 @@ Item {
         selectedTPKFileName.text = extractTPKFileName(fileUrl.toString());
         tpkUploadDetails.tpkTitle = extractDefaultTPKTitle(selectedTPKFileName.text);
         statusWebMercCheck.progressIcon = statusWebMercCheck.working;
-        statusWebMercCheck.progressText = "Checking Spatial Reference";
+        statusWebMercCheck.progressText = Singletons.Strings.checkingSpatialReference;
         statusWebMercCheck.visible = true;
         tpkPackage.getTPKSpatialReference(currentTPKUrl);
     }

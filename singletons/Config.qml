@@ -24,8 +24,6 @@ QtObject {
 
     id: appConfig
 
-    property string nextButton: qsTr("Next") +  " &#187;"
-
     property var availableServicesView: {
         "gridMargin": 8,
         "highlightColor": "#196fa6",
@@ -33,11 +31,6 @@ QtObject {
         "tileItemBorderColor": "#eeeeee"
     }
 
-    property string appBrandColor: "#d94f27"
-
-    //property string toolBarBackgroundColor: "#323232"
-    //property string toolBarBorderColor: "#aaaaaa"
-    //property string toolBarFontColor: "#ffffff"
 
     property string mainButtonBackgroundColor: "#196fa6"
     //property string mainButtonBorderColor: "#007ac2"
@@ -48,12 +41,15 @@ QtObject {
 
     property string mainLabelFontColor: "#595959"
     property string subtleBackground: "#efefef"
+
     property string boldUIElementBackground: "#ddeedb"
     property string boldUIElementFontColor: "#323232"
+
     property string formElementBackground: "#fff"
     property string formElementBorderColor: "#ddd"
     property string formElementFontColor: "#323232"
     property string formElementDisabledBackground: "#888"
+
     property int formElementBorderWidth: 1
     property int formElementRadius: 0
 
