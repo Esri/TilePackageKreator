@@ -89,7 +89,7 @@ Item {
                 Layout.fillHeight: true
 
                 ToolTip.visible: hovered
-                ToolTip.text: qsTr("Back")
+                ToolTip.text: Singletons.Strings.back
 
                 background: Rectangle{
                     color: toolBarBackground
@@ -110,8 +110,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("Go Back to previous view")
-                Accessible.description: qsTr("This button will take you back to the previous view. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.goBackToPreviousView
+                Accessible.description: Singletons.Strings.goBackToPreviousViewDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -149,7 +149,7 @@ Item {
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
                 ToolTip.visible: hovered
-                ToolTip.text: qsTr("Updates Available")
+                ToolTip.text: Singletons.Strings.updatesAvailable
                 enabled: false
                 visible: false
 
@@ -192,8 +192,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("%1 Updates are available".arg(numberOfUpdatesIndicatorCount.text))
-                Accessible.description: qsTr("This button is enabled when there are updates available to the application. The current number of updates available is %1. The action on this button will only work when the button is enabled via the application.".arg(numberOfUpdatesIndicatorCount.text))
+                Accessible.name: Singletons.Strings.xUpdatesAvaliable.arg(numberOfUpdatesIndicatorCount.text)
+                Accessible.description: Singletons.Strings.xUpdatesAvaliableDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -208,7 +208,7 @@ Item {
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
                 ToolTip.visible: hovered
-                ToolTip.text: qsTr("Feedback")
+                ToolTip.text: Singletons.Strings.feedback
                 enabled: true
 
                 background: Rectangle{
@@ -229,8 +229,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("Feedback")
-                Accessible.description: qsTr("This button opens up a dialog that allows a user to submit feedback on the application. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.feedback
+                Accessible.description: Singletons.Strings.feedbackDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -240,12 +240,12 @@ Item {
 
             //------------------------------------------------------------------
 
-            Button{
+            Button {
                 id: aboutButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
                 ToolTip.visible: hovered
-                ToolTip.text: qsTr("About and Help")
+                ToolTip.text: Singletons.Strings.aboutAndHelp
 
                 background: Rectangle{
                     color: toolBarBackground
@@ -265,8 +265,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("About the app")
-                Accessible.description: qsTr("This button opens up a dialog that provides information about this application. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.aboutTheApp
+                Accessible.description: Singletons.Strings.aboutTheAppDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -281,7 +281,7 @@ Item {
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
                 ToolTip.visible: hovered
-                ToolTip.text: qsTr("History")
+                ToolTip.text: Singletons.Strings.history
 
                 background: Rectangle{
                     color: toolBarBackground
@@ -301,8 +301,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("Export and Upload History")
-                Accessible.description: qsTr("This button will open the export and upload history view. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.exportAndUploadHistory
+                Accessible.description: Singletons.Strings.exportAndUploadHistoryDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -317,7 +317,7 @@ Item {
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
                 ToolTip.visible: hovered
-                ToolTip.text: (portal.user !== null && portal.user !== "" && portal.user !== undefined) ? qsTr("Sign out") + ": " + portal.user.fullName : "User Unknown"
+                ToolTip.text: (portal.user !== null && portal.user !== "" && portal.user !== undefined) ? Singletons.Strings.signOut + ": " + portal.user.fullName : "User Unknown"
                 enabled: true
 
                 background: Rectangle{
@@ -340,8 +340,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("Sign out")
-                Accessible.description: qsTr("This button will sign the user out of the application and return to the sign in screen. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.signOut
+                Accessible.description: Singletons.Strings.signOutDesci
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();

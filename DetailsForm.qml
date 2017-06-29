@@ -52,6 +52,9 @@ Rectangle {
     property bool uploadToPortal: true
     property bool usesMetric: localeIsMetric()
 
+    readonly property string kOrgSharing: "org"
+    readonly property string kPublicSharing: "everyone"
+
     property alias tpkZoomLevels: desiredLevelsSlider.second
     property alias tpkBottomZoomLevel: desiredLevelsSlider.first
     property alias tpkTopZoomLevel: desiredLevelsSlider.second
@@ -66,14 +69,12 @@ Rectangle {
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     Component.onCompleted: {
-        console.log("usesMetric: ", usesMetric);
         currentBufferInMeters = (usesMetric) ? 1 : feetToMeters(1);
     }
 
     //--------------------------------------------------------------------------
 
     onExportBufferDistanceChanged: {
-        console.log("usesMetric: ", usesMetric);
         currentBufferInMeters = (usesMetric) ? desiredBufferSlider.value : feetToMeters(desiredBufferSlider.value);
     }
 
@@ -83,426 +84,458 @@ Rectangle {
 
     // UI //////////////////////////////////////////////////////////////////////
 
-    ColumnLayout{
-        anchors.fill: parent
-        anchors.margins: sf(10)
-        spacing: 0
+    Flickable {
+        id: details
+        width: parent.width
+        height: parent.height
+        contentWidth: parent.width
+        interactive: true
+        flickableDirection: Flickable.VerticalFlick
+        clip: true
+        Accessible.role: Accessible.Pane
 
-        //----------------------------------------------------------------------
+        Connections {
+            target: bufferRadiusContainer
 
-        Item {
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(70)
-            visible: exportAndUpload
-            enabled: exportAndUpload
-
-            ColumnLayout{
-                anchors.fill: parent
-                spacing:0
-
-                Text {
-                    text: Singletons.Strings.numberOfZoomLevels
-                    color: Singletons.Colors.darkGray
-                    font.pointSize: Singletons.Config.smallFontSizePoint
-                    font.family: notoRegular
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
-                    Accessible.role: Accessible.Heading
-                    Accessible.name: text
+            onVisibleChanged: {
+                if (bufferRadiusContainer.visible) {
+                    details.contentHeight += bufferRadiusContainer.controlHeight;
                 }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: sf(50)
-
-                    RowLayout{
-                        anchors.fill: parent
-                        spacing:0
-
-                        RangeSlider {
-                            id: desiredLevelsSlider
-                            Layout.fillWidth: true
-                            Layout.rightMargin: sf(10)
-                            from: 0
-                            to: maxLevels
-                            stepSize: 1
-                            snapMode: RangeSlider.SnapAlways
-                            first.value: 0
-                            second.value: 3
-                        }
-
-                        Connections {
-                            target: desiredLevelsSlider.second
-                            onValueChanged: {
-                               tpkDetailsForm.exportZoomLevelsChanged();
-                            }
-                        }
-
-                        Connections {
-                            target: desiredLevelsSlider.first
-                            onValueChanged: {
-                                tpkDetailsForm.exportZoomLevelsChanged();
-                            }
-                        }
-
-                        Text {
-                            id: desiredLevels
-                            Layout.fillHeight: true
-                            Layout.preferredWidth: sf(60)
-                            text: "%1 - %2".arg(desiredLevelsSlider.first.value).arg(desiredLevelsSlider.second.value);
-                            horizontalAlignment: Text.AlignRight
-                            verticalAlignment: Text.AlignVCenter
-                            font.pointSize: Singletons.Config.smallFontSizePoint
-                            font.family: notoRegular
-                            color: Singletons.Colors.darkGray
-
-                            Accessible.role: Accessible.StaticText
-                            Accessible.name: qsTr("This static text is updated when the slider value is updated.")
-                            Accessible.readOnly: true
-                            Accessible.description: qsTr("This static text is updated when the slider value is updated.")
-                        }
-                    }
+                else {
+                    details.contentHeight -= bufferRadiusContainer.controlHeight;
                 }
             }
         }
 
-        //----------------------------------------------------------------------
+        ColumnLayout{
+            anchors.fill: parent
+            anchors.margins: sf(10)
+            spacing: 0
 
-        StatusIndicator{
-            id: levelsWarning
-            Layout.fillWidth: true
-            Layout.topMargin: sf(5)
-            containerHeight: desiredLevelsSlider.second.value > 15 ? sf(38) : sf(1)
-            statusTextFontSize: Singletons.Config.xSmallFontSizePoint
-            narrowLineHeight: true
-            messageType: warning
-            message: qsTr("Export may fail with this many levels if extent is too large.")
-            visible: (exportAndUpload && desiredLevelsSlider.second.value > 15) ? true : false
-            statusTextObject.anchors.margins: sf(10)
-            statusTextObject.wrapMode: Text.Wrap
-
-            Accessible.role: Accessible.AlertMessage
-            Accessible.name: message
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(2)
-            Layout.topMargin: sf(8)
-            Layout.bottomMargin: sf(8)
-            color: Singletons.Colors.mediumGray
-            visible: exportAndUpload
-            Accessible.ignored: true
-        }
-
-        //----------------------------------------------------------------------
-
-        Rectangle {
-            color: "#fff"
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(70)
-            visible: exportAndUpload && exportPathBuffering
-            enabled: exportAndUpload && exportPathBuffering
-
-            ColumnLayout{
-                anchors.fill: parent
-                spacing:0
-
-                Text {
-                    text: qsTr("Buffer Radius")
-                    color: Singletons.Colors.darkGray
-                    font.pointSize: Singletons.Config.smallFontSizePoint
-                    font.family: notoRegular
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Accessible.role: Accessible.Heading
-                    Accessible.name: text
-                }
-
-                Rectangle{
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: sf(40)
-
-                    RowLayout{
-                        anchors.fill: parent
-                        spacing:0
-
-                        Controls.StyledTextField {
-                            id: desiredBufferInput
-                            Layout.fillHeight: true
-                            Layout.fillWidth: true
-                            Layout.rightMargin: sf(10)
-                            property int unitInMeters: 1
-
-                            placeholderText: "%1 max, [default=1]".arg(distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max.toString())
-                            validator: IntValidator { bottom: 1; top: distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max;}
-                            onTextChanged: {
-                                currentBufferInMeters = (text !== "") ? Math.ceil(text * distanceUnits.get(desiredBufferDistanceUnit.currentIndex).conversionFactor) : 1;
-                            }
-
-                            Accessible.role: Accessible.EditableText
-                            Accessible.name: qsTr("Enter a buffer radius.")
-                            Accessible.focusable: true
-                        }
-
-                        ComboBox {
-                            id: desiredBufferDistanceUnit
-                            Layout.fillHeight: true
-                            //Layout.fillWidth: true
-                            Layout.preferredWidth: sf(50)
-
-                            currentIndex: usesMetric ? 0 : 2
-                            textRole: "text"
-
-                            model: ListModel {
-                                id: distanceUnits
-                                ListElement { text: "m"; max: 3000; conversionFactor: 1 }
-                                ListElement { text: "km"; max: 5; conversionFactor: 1000}
-                                ListElement { text: "ft"; max: 4000; conversionFactor: 0.3048 }
-                                ListElement { text: "mi"; max: 5; conversionFactor: 1609.34 }
-                            }
-
-                            onCurrentIndexChanged: {
-                                desiredBufferInput.text = "";
-                            }
-                        }
-                    }
-                }
+            Component.onCompleted: {
+               details.contentHeight = childrenRect.height;
             }
-        }
 
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(2)
-            Layout.topMargin: sf(8)
-            Layout.bottomMargin: sf(8)
-            color: Singletons.Colors.mediumGray
-            visible: exportAndUpload && exportPathBuffering
-            Accessible.ignored: true
-        }
+            //----------------------------------------------------------------------
 
-        //----------------------------------------------------------------------
-
-        ButtonGroup { id: destinationExclusiveGroup }
-
-        //----------------------------------------------------------------------
-
-        Rectangle{
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(30)
-            color:"#fff"
-
-            RowLayout{
-                id: tpkTitleLabels
-                anchors.fill: parent
-                spacing: 0
-
-                Label {
-                    id: tpkTitleTextFieldLabel
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    text: qsTr("Title") + "<span style=\"color:red\"> *</span>"
-                    textFormat: Text.RichText
-                    font.pointSize: Singletons.Config.smallFontSizePoint
-                    font.family: notoRegular
-                    color: Singletons.Colors.darkGray
-                    verticalAlignment: Text.AlignVCenter
-
-                    Accessible.role: Accessible.Heading
-                    Accessible.name: text
-                }
-            }
-         }
-
-         Rectangle{
-             Layout.fillWidth: true
-             Layout.preferredHeight: sf(40)
-             Layout.bottomMargin: sf(5)
-
-             Controls.StyledTextField {
-                 id: tpkTitleTextField
-                 anchors.fill: parent
-                 placeholderText: qsTr("Enter a title")
-                 onTextChanged: {
-                     if(tpkTitleTextField.length > 0){
-                         _sanatizeTitle(text);
-                     }
-                     else{
-                         tpkFileTitleName.text = "";
-                         currentExportTitle = "";
-                     }
-                 }
-
-                 Accessible.role: Accessible.EditableText
-                 Accessible.name: qsTr("Enter a title for the exported tile package.")
-                 Accessible.focusable: true
-             }
-        }
-
-        Rectangle {
-            Layout.fillWidth:true
-            Layout.preferredHeight: sf(10)
-            visible: false
-            Accessible.ignored: true
-            Text {
-                id: tpkFileTitleName
-                anchors.fill: parent
-                font.pointSize: Singletons.Config.xSmallFontSizePoint
-                font.family: notoRegular
-                color: Singletons.Config.formElementFontColor
-            }
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(2)
-            Layout.topMargin: sf(8)
-            Layout.bottomMargin: sf(8)
-            color: Singletons.Colors.mediumGray
-            visible: exportAndUpload
-            Accessible.ignored: true
-        }
-
-        //----------------------------------------------------------------------
-
-        Text {
-            text: qsTr("Save To")
-            color: Singletons.Colors.darkGray
-            font.pointSize: Singletons.Config.smallFontSizePoint
-            font.family: notoRegular
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(20)
-            Accessible.role: Accessible.Heading
-            Accessible.name: text
-            visible: exportOnly
-        }
-
-        Item {
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(40)
-            visible: exportAndUpload
-            enabled: exportAndUpload
-
-            Controls.StyledRadioButton {
-                height: sf(20)
-                width: parent.width
-                anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("Save tile package locally")
-                ButtonGroup.group: destinationExclusiveGroup
-                onCheckedChanged: {
-                    currentSaveToLocation = (dlr.saveToPath !== null) ? defaultSaveToLocation : null;
-                    saveToLocationFolder.text = _extractFolderDirectory(defaultSaveToLocation);
-                    saveToLocationDetails.visible = this.checked;
-                }
-
-                Accessible.role: Accessible.RadioButton
-                Accessible.name: qsTr(saveToLocationLabel.text)
-            }
-        }
-
-        Rectangle {
-            id: saveToLocationDetails
-            Layout.fillWidth: true
-            Layout.bottomMargin: sf(10)
-            Layout.leftMargin: uploadOnly ? 0 : sf(20)
-            color: uploadOnly ? "white" : Singletons.Colors.lightGray
-            implicitHeight: sf(40)
-            visible: false
-
-            RowLayout {
-                anchors.fill: parent
-                anchors.margins: sf(5)
-                spacing:0
-
-                Button {
-                    Layout.preferredWidth: parent.width / 3
-                    Layout.fillHeight: true
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: Singletons.Config.buttonStates(parent)
-                        radius: app.info.properties.mainButtonRadius
-                        border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
-                        border.color: app.info.properties.mainButtonBorderColor
-                        Text {
-                            text: qsTr("Save To")
-                            color: app.info.properties.mainButtonFontColor
-                            font.family: notoRegular
-                            anchors.centerIn: parent
-                        }
-                    }
-                    onClicked: {
-                        folderChooser.folder = currentSaveToLocation !== null ? currentSaveToLocation : AppFramework.resolvedPathUrl(defaultSaveToLocation);
-                        folderChooser.open();
-                    }
-
-                    Accessible.role: Accessible.Button
-                    Accessible.name: qsTr("Select the location to save the tile package to locally.")
-                    Accessible.description: qsTr("This button will open a file dialog chooser that allows the user to select the folder to save the tile package to locally.")
-                    Accessible.onPressAction: {
-                        if(saveToLocationDetails.visible){
-                            clicked();
-                        }
-                    }
-                }
-                Item {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.leftMargin: sf(10)
-                    Text {
-                        anchors.fill: parent
-                        id: saveToLocationFolder
-                        text: ""
-                        font.pointSize: Singletons.Config.smallFontSizePoint
-                        font.family: notoRegular
-                        fontSizeMode: Text.Fit
-                        minimumPointSize: 10
-                        verticalAlignment: Text.AlignVCenter
-                        color:Singletons.Config.formElementFontColor
-
-                        Accessible.role: Accessible.StaticText
-                        Accessible.name: qsTr("Selected save to location: %1".arg(text))
-                    }
-                }
-            }
-        }
-
-        //----------------------------------------------------------------------
-
-        Rectangle{
-            Layout.fillWidth: true
-            Layout.preferredHeight: sf(40)
-            color: "#fff"
-            visible: exportAndUpload
-
-            Controls.StyledRadioButton {
-                height: sf(20)
-                width: parent.width
-                anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("Upload tile package to ArcGIS")
-                ButtonGroup.group: destinationExclusiveGroup
-                checked: true
-                onCheckedChanged: {
-                    uploadToPortal = (checked) ? true : false;
-                }
-
-                Accessible.role: Accessible.RadioButton
-                Accessible.name: qsTr(uploadToPortalCheckboxLabel.text)
-            }
-        }
-
-        //----------------------------------------------------------------------
-
-        Rectangle {
-            id: uploadToPortalDetailsContainer
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.leftMargin: uploadOnly ? 0 : sf(20)
-            color: uploadOnly ? "white" : Singletons.Colors.lightGray
-            opacity: uploadToPortal ? 1 : 0
-            enabled: uploadToPortal ? true : false
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(70)
+                visible: exportAndUpload
+                enabled: exportAndUpload
 
                 ColumnLayout{
+                    anchors.fill: parent
+                    spacing:0
+
+                    Text {
+                        text: Singletons.Strings.numberOfZoomLevels
+                        color: Singletons.Colors.darkGray
+                        font.pointSize: Singletons.Config.smallFontSizePoint
+                        font.family: notoRegular
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        Accessible.role: Accessible.Heading
+                        Accessible.name: text
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: sf(50)
+
+                        RowLayout{
+                            anchors.fill: parent
+                            spacing:0
+
+                            Controls.StyledRangeSlider {
+                                id: desiredLevelsSlider
+                                Layout.fillWidth: true
+                                Layout.rightMargin: sf(10)
+                                from: 0
+                                to: maxLevels
+                                stepSize: 1
+                                snapMode: RangeSlider.SnapAlways
+                                first.value: 0
+                                second.value: 3
+                            }
+
+                            Connections {
+                                target: desiredLevelsSlider.second
+                                onValueChanged: {
+                                   tpkDetailsForm.exportZoomLevelsChanged();
+                                }
+                            }
+
+                            Connections {
+                                target: desiredLevelsSlider.first
+                                onValueChanged: {
+                                    tpkDetailsForm.exportZoomLevelsChanged();
+                                }
+                            }
+
+                            Text {
+                                id: desiredLevels
+                                Layout.fillHeight: true
+                                Layout.preferredWidth: sf(50)
+                                text: "%1 - %2".arg(desiredLevelsSlider.first.value).arg(desiredLevelsSlider.second.value);
+                                horizontalAlignment: Text.AlignRight
+                                verticalAlignment: Text.AlignVCenter
+                                font.pointSize: Singletons.Config.mediumFontSizePoint
+                                font.family: notoRegular
+                                color: Singletons.Colors.darkGray
+
+                                Accessible.role: Accessible.StaticText
+                                Accessible.name: Singletons.Strings.desiredLevelsDesc
+                                Accessible.readOnly: true
+                                Accessible.description: Singletons.Strings.desiredLevelsDesc
+                            }
+                        }
+                    }
+                }
+            }
+
+            //----------------------------------------------------------------------
+
+            StatusIndicator{
+                id: levelsWarning
+                Layout.fillWidth: true
+                Layout.topMargin: sf(5)
+                containerHeight: desiredLevelsSlider.second.value > 15 ? sf(38) : sf(1)
+                statusTextFontSize: Singletons.Config.xSmallFontSizePoint
+                narrowLineHeight: true
+                messageType: warning
+                message: Singletons.Strings.exportMayFailWarning
+                visible: (exportAndUpload && desiredLevelsSlider.second.value > 15) ? true : false
+                statusTextObject.anchors.margins: sf(10)
+                statusTextObject.wrapMode: Text.Wrap
+
+                Accessible.role: Accessible.AlertMessage
+                Accessible.name: message
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(2)
+                Layout.topMargin: sf(8)
+                Layout.bottomMargin: sf(8)
+                color: Singletons.Colors.mediumGray
+                visible: exportAndUpload
+                Accessible.ignored: true
+            }
+
+            //----------------------------------------------------------------------
+
+            Rectangle {
+                id: bufferRadiusContainer
+                property int controlHeight: sf(70)
+                color: "#fff"
+                Layout.fillWidth: true
+                Layout.preferredHeight: controlHeight
+                visible: exportAndUpload && exportPathBuffering
+                enabled: exportAndUpload && exportPathBuffering
+
+                ColumnLayout{
+                    anchors.fill: parent
+                    spacing:0
+
+                    Text {
+                        text: Singletons.Strings.bufferRadius
+                        color: Singletons.Colors.darkGray
+                        font.pointSize: Singletons.Config.smallFontSizePoint
+                        font.family: notoRegular
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Accessible.role: Accessible.Heading
+                        Accessible.name: text
+                    }
+
+                    Rectangle{
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: sf(40)
+
+                        RowLayout{
+                            anchors.fill: parent
+                            spacing:0
+
+                            Controls.StyledTextField {
+                                id: desiredBufferInput
+                                Layout.fillHeight: true
+                                Layout.fillWidth: true
+                                Layout.rightMargin: sf(10)
+                                property int unitInMeters: 1
+
+                                placeholderText: "%1 max, [default=1]".arg(distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max.toString())
+                                validator: IntValidator { bottom: 1; top: distanceUnits.get(desiredBufferDistanceUnit.currentIndex).max;}
+                                onTextChanged: {
+                                    currentBufferInMeters = (text !== "") ? Math.ceil(text * distanceUnits.get(desiredBufferDistanceUnit.currentIndex).conversionFactor) : 1;
+                                }
+
+                                Accessible.role: Accessible.EditableText
+                                Accessible.name: Singletons.Strings.bufferRadiusDesc
+                                Accessible.focusable: true
+                            }
+
+                            Controls.StyledComboBox {
+                                id: desiredBufferDistanceUnit
+                                Layout.fillHeight: true
+                                Layout.preferredWidth: sf(80)
+
+                                currentIndex: usesMetric ? 0 : 2
+                                textRole: "text"
+
+                                model: ListModel {
+                                    id: distanceUnits
+                                    ListElement { text: "m"; max: 3000; conversionFactor: 1 }
+                                    ListElement { text: "km"; max: 5; conversionFactor: 1000}
+                                    ListElement { text: "ft"; max: 4000; conversionFactor: 0.3048 }
+                                    ListElement { text: "mi"; max: 5; conversionFactor: 1609.34 }
+                                }
+
+                                onCurrentIndexChanged: {
+                                    desiredBufferInput.text = "";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(2)
+                Layout.topMargin: sf(8)
+                Layout.bottomMargin: sf(8)
+                color: Singletons.Colors.mediumGray
+                visible: exportAndUpload && exportPathBuffering
+                Accessible.ignored: true
+            }
+
+            //----------------------------------------------------------------------
+
+            ButtonGroup { id: destinationExclusiveGroup }
+
+            //----------------------------------------------------------------------
+
+            Rectangle{
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(30)
+                color:"#fff"
+
+                RowLayout{
+                    id: tpkTitleLabels
+                    anchors.fill: parent
+                    spacing: 0
+
+                    Label {
+                        id: tpkTitleTextFieldLabel
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        text: Singletons.Strings.title + "<span style=\"color:red\"> *</span>"
+                        textFormat: Text.RichText
+                        font.pointSize: Singletons.Config.smallFontSizePoint
+                        font.family: notoRegular
+                        color: Singletons.Colors.darkGray
+                        verticalAlignment: Text.AlignVCenter
+
+                        Accessible.role: Accessible.Heading
+                        Accessible.name: text
+                    }
+                }
+             }
+
+             Rectangle{
+                 Layout.fillWidth: true
+                 Layout.preferredHeight: sf(40)
+                 Layout.bottomMargin: sf(5)
+
+                 Controls.StyledTextField {
+                     id: tpkTitleTextField
+                     anchors.fill: parent
+                     placeholderText: Singletons.Strings.enterATitle
+                     onTextChanged: {
+                         if(tpkTitleTextField.length > 0){
+                             _sanatizeTitle(text);
+                         }
+                         else{
+                             tpkFileTitleName.text = "";
+                             currentExportTitle = "";
+                         }
+                     }
+
+                     Accessible.role: Accessible.EditableText
+                     Accessible.name: Singletons.Strings.enterATitle
+                     Accessible.focusable: true
+                 }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(10)
+                visible: false
+                Accessible.ignored: true
+                Text {
+                    id: tpkFileTitleName
+                    anchors.fill: parent
+                    font.pointSize: Singletons.Config.xSmallFontSizePoint
+                    font.family: notoRegular
+                    color: Singletons.Config.formElementFontColor
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(2)
+                Layout.topMargin: sf(8)
+                Layout.bottomMargin: sf(8)
+                color: Singletons.Colors.mediumGray
+                visible: exportAndUpload
+                Accessible.ignored: true
+            }
+
+            //----------------------------------------------------------------------
+
+            Text {
+                text: Singletons.Strings.saveTo //qsTr("Save To")
+                color: Singletons.Colors.darkGray
+                font.pointSize: Singletons.Config.smallFontSizePoint
+                font.family: notoRegular
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(20)
+                Accessible.role: Accessible.Heading
+                Accessible.name: text
+                visible: exportOnly
+            }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(40)
+                visible: exportAndUpload
+                enabled: exportAndUpload
+
+                Controls.StyledRadioButton {
+                    id: saveToLocationRadioButton
+                    height: sf(20)
+                    width: parent.width
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: Singletons.Strings.saveTpkLocally
+                    ButtonGroup.group: destinationExclusiveGroup
+                    onCheckedChanged: {
+                        currentSaveToLocation = (dlr.saveToPath !== null) ? defaultSaveToLocation : null;
+                        saveToLocationFolder.text = _extractFolderDirectory(defaultSaveToLocation);
+                        saveToLocationDetails.visible = this.checked;
+                    }
+
+                    Accessible.role: Accessible.RadioButton
+                    Accessible.name: qsTr(saveToLocationRadioButton.text)
+                }
+            }
+
+            Rectangle {
+                id: saveToLocationDetails
+                Layout.fillWidth: true
+                Layout.bottomMargin: sf(10)
+                Layout.leftMargin: uploadOnly ? 0 : sf(20)
+                color: uploadOnly ? "white" : Singletons.Colors.lightGray
+                implicitHeight: sf(40)
+                visible: false
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: sf(5)
+                    spacing: 0
+
+                    Button {
+                        Layout.preferredWidth: parent.width / 3
+                        Layout.fillHeight: true
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: Singletons.Config.buttonStates(parent)
+                            radius: app.info.properties.mainButtonRadius
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: app.info.properties.mainButtonBorderColor
+                            Text {
+                                text: Singletons.Strings.saveTo
+                                color: app.info.properties.mainButtonFontColor
+                                font.family: notoRegular
+                                anchors.centerIn: parent
+                            }
+                        }
+                        onClicked: {
+                            folderChooser.folder = currentSaveToLocation !== null
+                                                    ? currentSaveToLocation
+                                                    : AppFramework.resolvedPathUrl(defaultSaveToLocation);
+                            folderChooser.open();
+                        }
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: Singletons.Strings.saveTo
+                        Accessible.description: Singletons.Strings.saveToDesc
+                        Accessible.onPressAction: {
+                            if(saveToLocationDetails.visible){
+                                clicked();
+                            }
+                        }
+                    }
+                    Item {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.leftMargin: sf(10)
+                        Text {
+                            anchors.fill: parent
+                            id: saveToLocationFolder
+                            text: ""
+                            font.pointSize: Singletons.Config.smallFontSizePoint
+                            font.family: notoRegular
+                            fontSizeMode: Text.Fit
+                            minimumPointSize: 10
+                            verticalAlignment: Text.AlignVCenter
+                            color: Singletons.Config.formElementFontColor
+
+                            Accessible.role: Accessible.StaticText
+                            Accessible.name: Singletons.Strings.saveToLocationDesc
+                        }
+                    }
+                }
+            }
+
+            //----------------------------------------------------------------------
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(40)
+                color: "#fff"
+                visible: exportAndUpload
+
+                Controls.StyledRadioButton {
+                    id: uploadToPortalRadioButton
+                    height: sf(20)
+                    width: parent.width
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: Singletons.Strings.uploadToArcGIS
+                    ButtonGroup.group: destinationExclusiveGroup
+                    checked: true
+                    onCheckedChanged: {
+                        uploadToPortal = (checked) ? true : false;
+                    }
+
+                    Accessible.role: Accessible.RadioButton
+                    Accessible.name: qsTr(uploadToPortalRadioButton.text)
+                }
+            }
+
+            //----------------------------------------------------------------------
+
+            Rectangle {
+                id: uploadToPortalDetailsContainer
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.leftMargin: uploadOnly ? 0 : sf(20)
+                color: uploadOnly ? "white" : Singletons.Colors.lightGray
+                opacity: uploadToPortal ? 1 : 0
+                enabled: uploadToPortal ? true : false
+
+                ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: uploadOnly ? 0 : sf(5)
                         spacing:0
@@ -520,7 +553,7 @@ Rectangle {
                                    id: tpkDescriptionTextAreaLabel
                                    Layout.fillHeight: true
                                    Layout.preferredWidth: parent.width/2
-                                   text: qsTr("Description")
+                                   text: Singletons.Strings.description
                                    font.pointSize: Singletons.Config.smallFontSizePoint
                                    font.family: notoRegular
                                    color: Singletons.Colors.darkGray
@@ -541,7 +574,7 @@ Rectangle {
                                    verticalAlignment: Text.AlignVCenter
                                    Accessible.role: Accessible.AlertMessage
                                    Accessible.name: text
-                                   Accessible.description: qsTr("This text displays the number of charcters left available in the description text area.")
+                                   Accessible.description: Singletons.Strings.descriptionCharCountDesc
                                }
                            }
                         }
@@ -555,12 +588,13 @@ Rectangle {
 
                             TextArea {
                                 id: tpkDescriptionTextArea
+                                enabled: false
                                 anchors.fill: parent
                                 property int maximumLength: 4000
                                 readOnly: uploadToPortal ? false : true
                                 selectByMouse: true
                                 wrapMode: Text.Wrap
-                                placeholderText: qsTr("Copy and paste description text here.")
+                                placeholderText: Singletons.Strings.descriptionCopyPaste
 
                                 color: Singletons.Config.formElementFontColor
                                 font.family: notoRegular
@@ -574,22 +608,18 @@ Rectangle {
                                 }
 
                                 onTextChanged: {
-                                    tpkDescriptionCharacterCount.text =  (maximumLength - text.length).toString();
+                                    tpkDescriptionCharacterCount.text = (maximumLength - text.length).toString();
                                        if (text.length > maximumLength) {
                                            tpkDescriptionTextArea.text = tpkDescriptionTextArea.getText(0, maximumLength);
                                        }
                                 }
 
                                 Accessible.role: Accessible.EditableText
-                                Accessible.name: qsTr("Tile package description text area entry")
-                                Accessible.description: qsTr("Enter a description of the tile package for the online item.")
+                                Accessible.name: Singletons.Strings.descriptionTextAreaDesc
+                                Accessible.description: Singletons.Strings.descriptionTextAreaDesc
                             }
 
                         }
-
-
-
-
 
                         //------------------------------------------------------
 
@@ -597,7 +627,7 @@ Rectangle {
                             Layout.fillWidth: true
                             Layout.preferredHeight: sf(30)
                             Label {
-                                text: qsTr("Share this item with:")
+                                text: Singletons.Strings.shareThisItemWith
                                 font.pointSize: Singletons.Config.smallFontSizePoint
                                 font.family: notoRegular
                                 color: Singletons.Config.mainLabelFontColor
@@ -628,9 +658,10 @@ Rectangle {
                                     Layout.preferredHeight: sf(20)
                                     Layout.fillWidth: true
                                     Controls.StyledRadioButton {
+                                        id: tpkSharingNotShared
                                         anchors.fill: parent
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: qsTr("Do not share")
+                                        text: Singletons.Strings.doNotShare
                                         ButtonGroup.group: sharingExclusiveGroup
                                         checked: uploadToPortal ? true : false
                                         enabled: uploadToPortal ? true : false
@@ -640,7 +671,7 @@ Rectangle {
                                             }
                                         }
                                         Accessible.role: Accessible.RadioButton
-                                        Accessible.name: qsTr("Do not share")
+                                        Accessible.name: Singletons.Strings.doNotShare
                                     }
                                 }
 
@@ -650,16 +681,16 @@ Rectangle {
                                     Controls.StyledRadioButton {
                                         anchors.fill: parent
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: qsTr("Your organization")
+                                        text: Singletons.Strings.yourOrg
                                         ButtonGroup.group: sharingExclusiveGroup
                                         enabled: uploadToPortal ? true : false
                                         onCheckedChanged: {
                                             if(checked){
-                                                currentSharing = "org";
+                                                currentSharing = kOrgSharing;
                                             }
                                         }
                                         Accessible.role: Accessible.RadioButton
-                                        Accessible.name: qsTr("Your organization")
+                                        Accessible.name: Singletons.Strings.yourOrg
                                     }
                                 }
 
@@ -670,16 +701,16 @@ Rectangle {
                                     Controls.StyledRadioButton {
                                         anchors.fill: parent
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: qsTr("Everyone (Public)")
+                                        text: Singletons.Strings.everyonePublic
                                         ButtonGroup.group: sharingExclusiveGroup
                                         enabled: uploadToPortal ? true : false
                                         onCheckedChanged: {
                                             if(checked){
-                                                currentSharing = "everyone";
+                                                currentSharing = kPublicSharing;
                                             }
                                         }
                                         Accessible.role: Accessible.RadioButton
-                                        Accessible.name: qsTr("Everyone (Public)")
+                                        Accessible.name: Singletons.Strings.everyonePublic
                                     }
                                 }
                                 Item {
@@ -688,6 +719,7 @@ Rectangle {
                             }
                         }
                 }
+            }
         }
     }
 
@@ -695,17 +727,15 @@ Rectangle {
 
     FileDialog {
         id: folderChooser
-        title: "Please choose a folder to save to"
+        title: Singletons.Strings.saveTo
         //selectMultiple: false
         selectFolder: true
         //selectExisting: true
         modality: Qt.WindowModal
         //nameFilters: ["Tile Packages (*.tpk)"]
         onAccepted: {
-            //console.log(folderChooser.folder.toString());
-            //console.log(folderChooser.fileUrl.toString());
             var folderPath = folderChooser.fileUrl.toString();
-            var folderName = _extractFolderDirectory(folderPath); // folderPath.substring(folderPath.lastIndexOf('/'), folderPath.length);
+            var folderName = _extractFolderDirectory(folderPath);
             saveToLocationFolder.text = folderName;
             currentSaveToLocation = AppFramework.resolvedPath(folderChooser.fileUrl);
             folderChooser.close();
@@ -727,12 +757,11 @@ Rectangle {
     //--------------------------------------------------------------------------
 
     function reset(){
-        //desiredBufferSlider.value = 1;
-        desiredLevelsSlider.value = 0;
+        //desiredLevelsSlider.value = 0;
         desiredBufferInput.text = "";
-        uploadToPortalCheckbox.checked = true;
+        uploadToPortalRadioButton.checked = true;
         tpkSharingNotShared.checked = true;
-        saveToLocation.checked = false;
+        //saveToLocation.checked = false;
         tpkTitleTextField.text = "";
         tpkDescriptionTextArea.text = "";
         currentExportTitle = "";
@@ -748,10 +777,10 @@ Rectangle {
     //--------------------------------------------------------------------------
 
     function _uiEntryElementStates(control){
-        if(!control.enabled){
+        if (!control.enabled) {
             return Singletons.Config.formElementDisabledBackground;
         }
-        else{
+        else {
             return Singletons.Config.formElementBackground;
         }
     }

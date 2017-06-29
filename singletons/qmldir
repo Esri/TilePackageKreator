@@ -2,4 +2,5 @@ module singletons
 
 singleton Colors 1.0 Colors.qml
 singleton Config 1.0 Config.qml
+singleton Constants 1.0 Constants.qml
 singleton Strings 1.0 Strings.qml

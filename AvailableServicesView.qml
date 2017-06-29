@@ -153,8 +153,8 @@ Item {
                             text: icons.spinner2
 
                             Accessible.role: Accessible.Animation
-                            Accessible.name: qsTr("animated spinner")
-                            Accessible.description: qsTr("This is an animated spinner that appears when network queries are in progress.")
+                            Accessible.name: Singletons.Strings.animatedSpinner
+                            Accessible.description: Singletons.Strings.animatedSpinnerDesc
                         }
                     }
                 }
@@ -175,7 +175,7 @@ Item {
 
                         Accessible.role: Accessible.AlertMessage
                         Accessible.name: text
-                        Accessible.description: qsTr("This status text will update as services are discovered and then queried for the ability to export tiles.")
+                        Accessible.description: Singletons.Strings.statusTextDesc
                     }
                 }
             }
@@ -258,7 +258,7 @@ Item {
 
                         Accessible.role: Accessible.Button
                         Accessible.name: buttonText
-                        Accessible.description: qsTr("This button will reveal an input form which the user can enter a url for a tile service to add to the list.")
+                        Accessible.description: Singletons.Strings.addTileServiceDesc
                         Accessible.onPressAction: {
                             if(enabled && visible){
                                 clicked(null);
@@ -305,7 +305,7 @@ Item {
                                 }
 
                                 Accessible.role: Accessible.EditableText
-                                Accessible.name: qsTr("Enter a url for a tile service.")
+                                Accessible.name: Singletons.Strings.enterUrlForTileService
                                 Accessible.focusable: true
                             }
                         }
@@ -404,7 +404,7 @@ Item {
             enabled: false
             clip: true
             flow: GridView.FlowLeftToRight
-            cellHeight: _returnCellWidth() + sf(60)
+            cellHeight: _returnCellWidth() + sf(30)
             cellWidth: _returnCellWidth()
             model: asm.servicesListModel
             delegate: tileServiceDelegate
@@ -466,7 +466,7 @@ Item {
 
                 Accessible.role: Accessible.AlertMessage
                 Accessible.name: message
-                Accessible.description: qsTr("This alert message provides information about where .pitem files are saved, or if there was an error.")
+                Accessible.description: Singletons.Strings.alertMessageDesc
             }
         }
     }
@@ -511,8 +511,8 @@ Item {
                     }
 
                     Accessible.role: Accessible.Button
-                    Accessible.name: qsTr("Select this tile service to export from.")
-                    Accessible.description: qsTr("This clickable mouse area will select the %1 tile service to export tiles from and will transition to the export area and details selection view.".arg(title))
+                    Accessible.name: Singletons.Strings.selectTileService
+                    Accessible.description: Singletons.Strings.selectTileServiceDesc
                     Accessible.focusable: true
                     Accessible.onPressAction: {
                         if(enabled && visible){
@@ -556,8 +556,14 @@ Item {
                                         return tn;
                                     })(thumbnail)
 
+                                    onStatusChanged: {
+                                        if (status === Image.Error){
+                                            source = "images/no_thumbnail.png";
+                                        }
+                                    }
+
                                     Accessible.role: Accessible.Graphic
-                                    Accessible.name: qsTr("Tile service thumbnail image.")
+                                    Accessible.name: Singletons.Strings.tileServiceThumbnailDesc
                                 }
                             }
 
@@ -581,7 +587,7 @@ Item {
 
                                     Accessible.role: Accessible.StaticText
                                     Accessible.name: title
-                                    Accessible.description: qsTr("Title of the tile service.")
+                                    Accessible.description: Singletons.Strings.tileServiceTitleDesc
                                 }
                             }
 
@@ -608,7 +614,7 @@ Item {
                                             anchors.fill: parent
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignHCenter
-                                            font.pointSize: Singletons.Config.xSmallFontSizePoint * .8
+                                            font.pointSize: Singletons.Config.xSmallFontSizePoint
                                             font.family: notoRegular
                                             text: spatialReference
                                             color: isWebMercator ? "#007ac2" : "red"
@@ -616,7 +622,7 @@ Item {
 
                                             Accessible.role: Accessible.StaticText
                                             Accessible.name: text
-                                            Accessible.description: qsTr("This text denotes whether the tile service is or is not web mercator spatial reference.")
+                                            Accessible.description: Singletons.Strings.spatialReferenceDesc
                                         }
                                     }
 
@@ -632,14 +638,14 @@ Item {
                                             anchors.fill: parent
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignHCenter
-                                            font.pointSize: Singletons.Config.xSmallFontSizePoint * .8
+                                            font.pointSize: Singletons.Config.xSmallFontSizePoint
                                             font.family: notoRegular
                                             text: owner === "esri" ? "Esri" : "Non-Esri"
                                             color: owner === "esri" ? "#007ac2" : "darkorange"
 
                                             Accessible.role: Accessible.StaticText
                                             Accessible.name: text
-                                            Accessible.description: qsTr("This text denotes whether the tile service is from an Esri source or an external source.")
+                                            Accessible.description: Singletons.Strings.tileServiceSourceDesc
                                         }
                                     }
                                 }
@@ -705,19 +711,19 @@ Item {
         id: metadataDialog
         visible: false
         title: "Metadata"
-        modality: Qt.WindowModal
+        modality: Qt.ApplicationModal
 
         Accessible.role: Accessible.Dialog
         Accessible.name: title
-        Accessible.description: qsTr("This is a dialog that displays metadata for a selected tile service.")
+        Accessible.description: Singletons.Strings.metadataDialogDesc
 
         contentItem: Rectangle {
             color: Singletons.Config.subtleBackground
             anchors.fill: parent
-            width: availableServicesView.parent.width - sf(10)
-            height: availableServicesView.parent.height - sf(10)
-            implicitWidth: availableServicesView.parent.width - sf(10)
-            implicitHeight: availableServicesView.parent.height - sf(10)
+            width: app.width - sf(30)
+            height: app.height - sf(30)
+            implicitWidth: app.width - sf(30)
+            implicitHeight: app.height - sf(30)
             Flickable {
                 id: view
                 anchors.fill: parent
@@ -738,7 +744,7 @@ Item {
                     }
 
                     Accessible.role: Accessible.StaticText
-                    Accessible.name: qsTr("Metadata text")
+                    Accessible.name: Singletons.Strings.metatdataTextDesc
                     Accessible.multiLine: true
                     Accessible.readOnly: true
                 }
@@ -773,7 +779,7 @@ Item {
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
-                text: qsTr("View Metadata")
+                text: Singletons.Strings.viewMetadata
                 color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -799,7 +805,7 @@ Item {
             }
             Accessible.role: Accessible.MenuItem
             Accessible.name: text
-            Accessible.description: qsTr("This menu item will open up a dialog window and display metadata associated with this tile service.")
+            Accessible.description: Singletons.Strings.viewMetadataDesc
         }
 
         Rectangle {
@@ -811,8 +817,8 @@ Item {
         Button {
             height: visible ? contextMenu.menuItemHeight : 0
             width: parent.width
-            visible: contextMenu.currentInfo.isArcgisTileService || portal.isPortal
-            enabled: contextMenu.currentInfo.isArcgisTileService || portal.isPortal
+            visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
+            enabled: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
             background: Rectangle {
                 color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
             }
@@ -829,14 +835,14 @@ Item {
             }
             Accessible.role: Accessible.MenuItem
             Accessible.name: text
-            Accessible.description: qsTr("This menu item will open up a web browser and load the ArcGIS or Portal item for this tile service.")
+            Accessible.description: Singletons.Strings.viewOnArcgisOrPortalDesc
         }
 
         Rectangle {
             height: sf(1)
             width: parent.width
             color: Singletons.Config.subtleBackground
-            visible: contextMenu.currentInfo.isArcgisTileService || portal.isPortal
+            visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
         }
 
         Button {
@@ -848,7 +854,7 @@ Item {
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
-                text: contextMenu.currentInfo.isArcgisTileService ? Singletons.Strings.viewRestService : Singletons.Strings.viewOnlineService
+                text: contextMenu.currentInfo !== undefined ? ( contextMenu.currentInfo.isArcgisTileService ? Singletons.Strings.viewRestService : Singletons.Strings.viewOnlineService) : ""
                 color: Singletons.Config.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -869,7 +875,7 @@ Item {
             }
             Accessible.role: Accessible.MenuItem
             Accessible.name: text
-            Accessible.description: qsTr("This menu item will open up a web browser and load the ArcGIS or Portal item for this tile service.")
+            Accessible.description: Singletons.Strings.viewOnlineServiceDesc
         }
 
         Rectangle {
@@ -896,11 +902,11 @@ Item {
             }
             Accessible.role: Accessible.MenuItem
             Accessible.name: text
-            Accessible.description: qsTr("This menu item will open up a file dialog and save a pitem file to the location specified in the dialog.")
+            Accessible.description: Singletons.Strings.createPItemDesc
         }
 
         Accessible.role: Accessible.PopupMenu
-        Accessible.name: qsTr("Context menu for this service.")
+        Accessible.name: Singletons.Strings.contextMenuDesc
     }
 
     //--------------------------------------------------------------------------

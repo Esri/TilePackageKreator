@@ -49,7 +49,7 @@ Item {
         mainView.appToolBar.historyButtonEnabled = false;
         mainView.appToolBar.backButtonEnabled = true;
         mainView.appToolBar.backButtonVisible = true;
-        mainView.appToolBar.toolBarTitleLabel = qsTr("Export and Upload History");
+        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.exportAndUploadHistory;
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ Item {
                                 id: exportHistoryLabel
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                text: qsTr("Export History")
+                                text: Singletons.Strings.exportHistory
                                 font.pointSize: Singletons.Config.mediumFontSizePoint
                                 font.family: notoRegular
                                 verticalAlignment: Text.AlignVCenter
@@ -110,7 +110,7 @@ Item {
                                         color: app.info.properties.mainButtonBackgroundColor
                                         anchors.centerIn: parent
                                         textFormat: Text.RichText
-                                        text: qsTr("Delete History")
+                                        text: Singletons.Strings.deleteHistory
                                         font.pointSize: Singletons.Config.baseFontSizePoint
                                         font.family: notoRegular
                                     }
@@ -140,7 +140,7 @@ Item {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Flickable {
-                            id: view
+                            id: exportFlickable
                             anchors.fill: parent
                             contentHeight: exportHistoryTextArea.height
                             clip: true
@@ -157,7 +157,7 @@ Item {
                                     Qt.openUrlExternally(link);
                                 }
                                 Component.onCompleted: {
-                                    flickableItem.contentY = 0;
+                                    exportFlickable.contentY = 0;
                                 }
                             }
                         }
@@ -200,7 +200,7 @@ Item {
                                 id: uploadHistoryLabel
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                text: qsTr("Upload History")
+                                text: Singletons.Strings.uploadHistory
                                 font.pointSize: Singletons.Config.mediumFontSizePoint
                                 font.family: notoRegular
                                 verticalAlignment: Text.AlignVCenter
@@ -225,7 +225,7 @@ Item {
                                         color: app.info.properties.mainButtonBackgroundColor
                                         anchors.centerIn: parent
                                         textFormat: Text.RichText
-                                        text: qsTr("Delete History")
+                                        text: Singletons.Strings.deleteHistory
                                         font.pointSize: Singletons.Config.baseFontSizePoint
                                         font.family: notoRegular
                                     }
@@ -254,6 +254,7 @@ Item {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Flickable {
+                            id: uploadFlickable
                             anchors.fill: parent
                             contentHeight: uploadHistoryTextArea.height
                             clip: true
@@ -270,7 +271,7 @@ Item {
                                     Qt.openUrlExternally(link);
                                 }
                                 Component.onCompleted: {
-                                    flickableItem.contentY = 0;
+                                    uploadFlickable.contentY = 0;
                                 }
                             }
                         }

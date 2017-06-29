@@ -39,9 +39,9 @@ Item {
 
     // Configurable Properties -------------------------------------------------
 
-    property string drawnExtentOutlineColor: "#de2900"
-    property string drawingExtentFillColor: "#10de2900"
-    property int mapSpatialReference: 4326
+    property string drawnExtentOutlineColor: Singletons.Colors.drawnExtentOutlineColor //"#de2900"
+    property string drawingExtentFillColor: Singletons.Colors.drawingExtentFillColor //"#10de2900"
+    property int mapSpatialReference: Singletons.Constants.kQtMapSpatialReference //4326
     property double mapDefaultLat: 0
     property double mapDefaultLong: 0
     property var mapDefaultCenter: {"lat": mapDefaultLat, "long": mapDefaultLong }
@@ -62,9 +62,9 @@ Item {
     property bool mapTileServiceUsesToken: true
 
     property string geometryType: ""
-    property bool drawEnvelope: geometryType === "envelope" ? true : false
-    property bool drawPolygon: geometryType === "polygon" ? true : false
-    property bool drawMultipath: geometryType === "multipath" ? true : false
+    property bool drawEnvelope: geometryType === Singletons.Constants.kEnvelope ? true : false //"envelope" ? true : false
+    property bool drawPolygon: geometryType === Singletons.Constants.kPolygon ? true : false //"polygon" ? true : false
+    property bool drawMultipath: geometryType === Singletons.Constants.kMultipath ? true : false //"multipath" ? true : false
 
     readonly property alias map: previewMap.map
     readonly property alias clearExtentButton: clearExtentBtn
@@ -147,7 +147,7 @@ Item {
         anchors.bottomMargin: sf(10)
         anchors.rightMargin: sf(10)
         z: previewMap.z + 3
-        radius: 5 * AppFramework.displayScaleFactor
+        radius: sf(5)
         color: "transparent"
 
         ColumnLayout{
@@ -158,7 +158,9 @@ Item {
                 id: mapZoomIn
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                ToolTip.text: qsTr("Zoom In")
+                ToolTip.text: Singletons.Strings.zoomIn
+                ToolTip.visible: hovered
+
                 background: Rectangle {
                     anchors.fill: parent
                     color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : "#eee"
@@ -190,7 +192,8 @@ Item {
                 id: mapZoomOut
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                ToolTip.text: qsTr("Zoom Out")
+                ToolTip.text: Singletons.Strings.zoomOut
+                ToolTip.visible: hovered
 
                 background: Rectangle {
                     anchors.fill: parent
@@ -242,7 +245,7 @@ Item {
             // drag.urls
         }
         onDropped: {
-            if(isJson(drop.urls.toString())){
+            if (isJson(drop.urls.toString())) {
                 var path = AppFramework.resolvedPath(AppFramework.resolvedUrl(drop.urls[0]));
                 geoJsonHelper.parseGeometryFromFile(path);
             }
@@ -283,7 +286,7 @@ Item {
             }
             */
 
-            if(mouse.modifiers === Qt.ShiftModifier){
+            if (mouse.modifiers === Qt.ShiftModifier) {
                 mouse.accepted = false;
                 allowMapToPan = true;
                 multipathDrawingMouseArea.cursorShape = Qt.OpenHandCursor;
@@ -309,20 +312,21 @@ Item {
         onReleased: {
             mouse.accepted = true;
 
-            if(!endDrawingByDoubleClick){
+            if (!endDrawingByDoubleClick) {
                 var coordinate = screenPositionToLatLong(mouse);
                 pathCoordinates.push({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }});
-                if(pathCoordinates.length > 1){
+                if (pathCoordinates.length > 1) {
                     addMultipathToMap("draft");
                 }
             }
-            else{
+            else {
                 pathCoordinates.pop();
-                if(mapViewPlus.pathCoordinates.length <= 1){
+                if (mapViewPlus.pathCoordinates.length <= 1) {
                     clearDrawingCanvas();
                     previewMap.map.clearMapItems();
                     drawingFinished();
-                }else{
+                }
+                else {
                     addMultipathToMap("final");
                 }
                 endDrawingByDoubleClick = false;
@@ -332,17 +336,17 @@ Item {
         onPositionChanged: { 
             var lastKnownPosition; //= {"x": mouse.x, "y": mouse.y, "lat": z, "long": z};
 
-            if(!mapWasPanned){
-                if(pathCoordinates.length > 0){
+            if (!mapWasPanned) {
+                if (pathCoordinates.length > 0) {
                     drawHelperLine(mouse.x, mouse.y);
                 }
-                if(mouse !== null){
+                if (mouse !== null) {
                     var coordinate = screenPositionToLatLong(mouse);
                     mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }});
                     lastKnownPosition = {"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }};
                 }
             }
-            else{
+            else {
                 mapWasPanned = false;
             }
         }
@@ -353,29 +357,29 @@ Item {
         }
 
         Keys.onPressed: {
-            if(event.key === Qt.Key_Return || event.key === Qt.Key_Enter){
+            if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                 addMultipathToMap("final");
             }
-            if(event.key === Qt.Key_Delete || event.key === Qt.Key_Backspace){
+            if (event.key === Qt.Key_Delete || event.key === Qt.Key_Backspace) {
                 mapViewPlus.pathCoordinates.pop();
-                if(mapViewPlus.pathCoordinates.length === 0){
+                if (mapViewPlus.pathCoordinates.length === 0) {
                     clearDrawingCanvas();
                     previewMap.map.clearMapItems();
                 }
-                else{
+                else {
                     addMultipathToMap("draft");
                     if(lastKnownPosition !== null){
                         drawHelperLine(lastKnownPosition.screen.x, lastKnownPosition.screen.y);
                     }
                 }
             }
-            if(event.key === Qt.Key_Shift){
+            if (event.key === Qt.Key_Shift) {
                 multipathDrawingMouseArea.cursorShape = Qt.OpenHandCursor;
             }
         }
 
         Keys.onReleased: {
-            if(event.key === Qt.Key_Shift){
+            if (event.key === Qt.Key_Shift) {
                 multipathDrawingMouseArea.cursorShape = Qt.CrossCursor;
             }
         }
@@ -469,10 +473,10 @@ Item {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onPressed: {
-            if(mouse.button === Qt.LeftButton){
+            if (mouse.button === Qt.LeftButton) {
                 mouse.accepted = false;
             }
-            if(!drawing){
+            if (!drawing) {
                previewMap.focus = true;
             }
         }
@@ -482,7 +486,7 @@ Item {
         }
 
         onPositionChanged: {
-            if(mouse !== null){
+            if (mouse !== null) {
                 var coordinate = screenPositionToLatLong(mouse);
                 mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }})
             }
@@ -495,12 +499,13 @@ Item {
 
         onDoubleClicked: {
             mouse.accepted = true;
-            if(mouse !== null && mouse.button === Qt.RightButton){
+            if (mouse !== null && mouse.button === Qt.RightButton) {
                 var coordinate = screenPositionToLatLong(mouse);
                 mapViewPlus.map.center = QtPositioning.coordinate(coordinate.latitude, coordinate.longitude);
-                if(mouse.modifiers === Qt.ControlModifier){
+                if (mouse.modifiers === Qt.ControlModifier) {
                     mapZoomOut.clicked();
-                }else{
+                }
+                else {
                     mapZoomIn.clicked();
                 }
             }
@@ -529,26 +534,26 @@ Item {
         }
 
         onMapPanningFinished: {
-            if(multipathDrawingMouseArea.enabled){
+            if (multipathDrawingMouseArea.enabled) {
                 multipathDrawingMouseArea.mapPanningFinished();
             }
         }
 
         onMapPanningStarted: {
-            if(multipathDrawingMouseArea.enabled){
+            if (multipathDrawingMouseArea.enabled) {
                 multipathDrawingMouseArea.mapPanningStarted();
             }
         }
 
         Keys.onPressed: {
-            if( (event.key === Qt.Key_V) && (event.modifiers === Qt.ControlModifier) ){
+            if ( (event.key === Qt.Key_V) && (event.modifiers === Qt.ControlModifier) ) {
                 console.log("paste")
-                if(AppFramework.clipboard.dataAvailable){
-                    try{
+                if (AppFramework.clipboard.dataAvailable) {
+                    try {
                         var json = JSON.parse(AppFramework.clipboard.text)
                         geoJsonHelper.parseGeometry(json);
                     }
-                    catch(e){
+                    catch(e) {
                         console.log("not json")
                     }
                 }
@@ -627,14 +632,14 @@ Item {
         onSuccess: {
             drawingStarted();
             pathCoordinates = geometry.coordinatesForQML;
-            if(geometry.type !== ""){
-                if(geometry.type === "esriGeometryPolygon"){
-                    geometryType = "polygon";
+            if (geometry.type !== "") {
+                if (geometry.type === "esriGeometryPolygon") {
+                    geometryType = Singletons.Constants.kPolygon; //"polygon";
                     addPolygonToMap("final");
                 }
 
-                if(geometry.type === "esriGeometryPolyline"){
-                    geometryType = "multipath";
+                if (geometry.type === "esriGeometryPolyline") {
+                    geometryType = Singletons.Constants.kMultipath; //"multipath";
                     addMultipathToMap("final");
                 }
             }
@@ -653,19 +658,19 @@ Item {
     function getCurrentGeometry(){
         console.log(geometryType);
         var g;
-        if(drawMultipath){
+        if (drawMultipath) {
             console.log("drawMultipath ", drawMultipath);
             g = getMutlipathGeometry();
         }
-        else if(drawEnvelope){
+        else if (drawEnvelope) {
             console.log("drawEnvelope ", drawEnvelope)
             g = getEnvelopeGeometry();
         }
-        else if(drawPolygon){
+        else if (drawPolygon) {
             console.log("drawPolygon ", drawPolygon)
             g = getPolygonGeometry();
         }
-        else{
+        else {
             console.log('no geometry');
             g = null;
         }
@@ -682,7 +687,8 @@ Item {
 
         if (userDrawnExtent === true) {
             rect = drawnExtent
-        } else {
+        }
+        else {
             rect = QtPositioning.shapeToRectangle(previewMap.map.visibleRegion)
         }
 
@@ -723,7 +729,7 @@ Item {
             }]
         };
 
-        for(var i = 0; i < pathCoordinates.length; i++){
+        for (var i = 0; i < pathCoordinates.length; i++) {
             esriPolygonObject.geometries[0].rings[0].push([pathCoordinates[i].coordinate.longitude, pathCoordinates[i].coordinate.latitude]);
         }
 
@@ -748,9 +754,9 @@ Item {
 
             };
 
-            for(var i = 0; i < pathCoordinates.length; i++){
-                esriPolyLineObject.geometries[0].paths[0].push([pathCoordinates[i].coordinate.longitude, pathCoordinates[i].coordinate.latitude]);
-            }
+        for (var i = 0; i < pathCoordinates.length; i++) {
+            esriPolyLineObject.geometries[0].paths[0].push([pathCoordinates[i].coordinate.longitude, pathCoordinates[i].coordinate.latitude]);
+        }
 
         return esriPolyLineObject;
     }
@@ -817,7 +823,7 @@ Item {
 
         previewMap.map.addMapItem(drawnPolyline);
 
-        if(typeOfPath === "final"){
+        if (typeOfPath === "final") {
             userDrawnExtent = true;
             clearDrawingCanvas();
 
@@ -838,7 +844,8 @@ Item {
         clearMap();
 
         var path = [];
-        for(var i = 0; i < pathCoordinates.length; i++){
+
+        for (var i = 0; i < pathCoordinates.length; i++) {
             path.push(pathCoordinates[i]['coordinate']);
         }
 
@@ -846,7 +853,7 @@ Item {
 
         mapViewPlus.map.addMapItem(drawnPolygon);
 
-        if(typeOfPath === "final"){
+        if (typeOfPath === "final") {
             userDrawnExtent = true;
             clearDrawingCanvas();
 
@@ -950,7 +957,8 @@ Item {
         if ( (item.indexOf(jsonExtension, item.lastIndexOf('/') + 1)) > -1 || (item.indexOf(geoJsonExtension, item.lastIndexOf('/') + 1)) > -1  ) {
             console.log('is json');
             return true;
-        } else {
+        }
+        else {
             console.log('is not json');
             return false;
         }

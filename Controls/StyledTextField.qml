@@ -31,7 +31,7 @@ TextField {
     }
     color: Singletons.Colors.darkGray
     font.family: notoRegular
-    font.pointSize: Singletons.Config.xSmallFontSizePoint
+    font.pointSize: Singletons.Config.smallFontSizePoint
 
     Accessible.role: Accessible.EditableText
     Accessible.focusable: true

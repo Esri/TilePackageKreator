@@ -72,11 +72,11 @@ Rectangle {
 
     //--------------------------------------------------------------------------
 
-    RowLayout{
+    RowLayout {
         anchors.fill: parent
         spacing: 0
 
-        Text{
+        Text {
             id: statusText
             Layout.fillHeight: true
             Layout.fillWidth: true
@@ -95,7 +95,7 @@ Rectangle {
             }
         }
 
-        Button{
+        Button {
             visible: showDismissButton
             enabled: showDismissButton
             Layout.fillHeight: true
@@ -113,7 +113,7 @@ Rectangle {
                 color: "transparent"
                 anchors.margins: sf(8)
 
-                Text{
+                Text {
                     anchors.centerIn: parent
                     font.pointSize: Singletons.Config.mediumFontSizePoint
                     color: messageType.borderColor
@@ -133,7 +133,7 @@ Rectangle {
     onShow: {
        esriStatusIndicator.opacity = 1;
        esriStatusIndicator.visible = true;
-        if(hideAutomatically===true){
+        if (hideAutomatically) {
             hideStatusMessage.start();
         }
     }
@@ -156,8 +156,8 @@ Rectangle {
 
     //--------------------------------------------------------------------------
 
-    PropertyAnimation{
-        id:fader
+    PropertyAnimation {
+        id: fader
         from: 1
         to: 0
         duration: 1000
@@ -168,7 +168,7 @@ Rectangle {
 
         onStopped: {
             esriStatusIndicator.visible = false;
-            if(hideStatusMessage.running===true){
+            if (hideStatusMessage.running) {
                 hideStatusMessage.stop();
             }
         }

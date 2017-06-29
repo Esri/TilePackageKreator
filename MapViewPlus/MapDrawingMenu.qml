@@ -100,7 +100,7 @@ Rectangle{
                         anchors.fill: parent
                         font.family: notoRegular
                         verticalAlignment: Text.AlignVCenter
-                        text: (!drawing) ? ( (!drawingExists) ? qsTr("Draw an extent or path") : qsTr("Extent / Path Drawn") ) : (activeGeometryType === "envelope") ? qsTr("Drawing Extent") : qsTr("Drawing Path")
+                        text: (!drawing) ? ( (!drawingExists) ? Singletons.Strings.drawAnExtentOrPath : Singletons.Strings.extentOrPathDrawn ) : (activeGeometryType === "envelope") ? Singletons.Strings.drawingExtent : Singletons.Strings.drawingPath
                     }
                 }
             }
@@ -167,6 +167,7 @@ Rectangle{
                 visible: available
                 property string g: geometryType
                 ToolTip.text: name
+                ToolTip.visible: hovered
 
                 background: Rectangle {
                     anchors.fill: parent

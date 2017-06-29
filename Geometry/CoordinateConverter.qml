@@ -66,7 +66,7 @@ QtObject {
     //--------------------------------------------------------------------------
 
     function _fixLongitude(lon){
-        if(lon < -180 || lon > 180){
+        if (lon < -180 || lon > 180) {
             lon += 180;
             lon = lon % 360.0
             lon = (lon < 0) ? 180 + lon : -180 + lon;

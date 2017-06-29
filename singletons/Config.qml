@@ -24,6 +24,8 @@ QtObject {
 
     id: appConfig
 
+    readonly property string browseOrgViewSearchQuery: '(type:("Tile Package") AND group:(access:org OR access:private))'
+
     property var availableServicesView: {
         "gridMargin": 8,
         "highlightColor": "#196fa6",
@@ -59,10 +61,10 @@ QtObject {
     property double mediumFontSizePoint: baseFontSizePoint * 1.1
     property double largeFontSizePoint: baseFontSizePoint * 1.3
 
-    property int qtMapSpatialReference: 4326
-    property int webMercLatestWKID: 3857
-    property int webMercWKID: 102100
-    property string webMercSR: "WGS_1984_Web_Mercator_Auxiliary_Sphere"
+//    property int qtMapSpatialReference: 4326
+//    property int webMercLatestWKID: 3857
+//    property int webMercWKID: 102100
+//    property string webMercSR: "WGS_1984_Web_Mercator_Auxiliary_Sphere"
     //property double mapDefaultLat: 39.8665
     //property double mapDefaultLong: -97.3105
     //property int mapDefaultZoomLevel: 3

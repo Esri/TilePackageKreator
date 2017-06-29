@@ -80,7 +80,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = true;
         mainView.appToolBar.backButtonVisible = true;
         mainView.appToolBar.historyButtonEnabled = true;
-        mainView.appToolBar.toolBarTitleLabel = qsTr("Create New Tile Package")
+        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage
     }
 
     //--------------------------------------------------------------------------
@@ -104,7 +104,7 @@ Item {
         exporting = false;
         fader.start();
         exportDetails.reset();
-        tilePackageSizeEstimate.text = "Tiles: -- Size: --";
+        tilePackageSizeEstimate.text = Singletons.Strings.tilesXSizeX.arg("--").arg("--");
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -126,7 +126,7 @@ Item {
             Layout.fillHeight: true
             enabled: (exporting) ? false : true
             clip: true
-            color: Singletons.Config.subtleBackground
+            color: Singletons.Colors.mediumGray
 
             RowLayout {
                 anchors.fill: parent
@@ -177,14 +177,14 @@ Item {
                             }
 
                             onDrawingCleared: {
-                                tilePackageSizeEstimate.text = "Tiles: -- Size: --";
+                                tilePackageSizeEstimate.text = Singletons.Strings.tilesXSizeX.arg("--").arg("--");
                             }
 
                             onDrawingStarted: {
                             }
 
                             onDrawingFinished: {
-                                if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null && mapViewPlus.geometryType !== "multipath"){
+                                if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null && mapViewPlus.geometryType !== Singletons.Constants.kMultipath /*"multipath"*/){
                                     var tlAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.topLeft));
                                     var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
                                     //tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
@@ -202,25 +202,25 @@ Item {
 
                         // MAP TOOL BAR ////////////////////////////////////////
 
-                        Rectangle{
+                        Rectangle {
                             id: mapInfoToolbar
                             Layout.preferredHeight: sf(50)
                             Layout.fillWidth: true
                             color:Singletons.Config.subtleBackground
 
-                            RowLayout{
+                            RowLayout {
                                 anchors.fill: parent
                                 spacing: sf(1)
 
                                 //----------------------------------------------
 
-                                Rectangle{
+                                Rectangle {
                                     id: zoomLevelIndicatorContainer
                                     Layout.fillHeight: true
                                     Layout.preferredWidth: sf(140)
 
                                     ColumnLayout{
-                                        spacing:0
+                                        spacing: 0
                                         anchors.fill: parent
 
                                         Rectangle{
@@ -230,7 +230,7 @@ Item {
 
                                             Text{
                                                 anchors.fill: parent
-                                                text: qsTr("Zoom Level")
+                                                text: Singletons.Strings.zoomLevel
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
@@ -256,7 +256,7 @@ Item {
 
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
-                                                Accessible.description: qsTr("This text indicated the current zoom level of the map.")
+                                                Accessible.description: Singletons.Strings.zoomLevelDesc
                                             }
                                         }
                                     }
@@ -280,7 +280,7 @@ Item {
 
                                             Text{
                                                 anchors.fill: parent
-                                                text: qsTr("Cursor Coordinate")
+                                                text: Singletons.Strings.cursorCoord
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
@@ -306,7 +306,7 @@ Item {
 
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
-                                                Accessible.description: qsTr("This text denotes the current latitude and longitude position of the mouse cursor on the map.")
+                                                Accessible.description: Singletons.Strings.cursorCoordDesc
                                             }
                                         }
                                     }
@@ -330,7 +330,7 @@ Item {
 
                                             Text{
                                                 anchors.fill: parent
-                                                text: qsTr("Estimated Output Size")
+                                                text: Singletons.Strings.estimatedOutputSize
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
@@ -348,32 +348,32 @@ Item {
 
                                             Text{
                                                 anchors.fill: parent
-                                                visible: mapViewPlus.geometryType === "multipath"
+                                                visible: mapViewPlus.geometryType === Singletons.Constants.kMultipath // "multipath"
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
-                                                text: "Not Available with Paths"
+                                                text: Singletons.Strings.notAvailableWithPaths
                                                 font.family: notoRegular
 
-                                                Accessible.ignored: mapViewPlus.geometryType !== "multipath"
+                                                Accessible.ignored: mapViewPlus.geometryType !== Singletons.Constants.kMultipath // "multipath"
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
-                                                Accessible.description: qsTr("This text denotes the estimated output size for the current geometry and zoom levels. Not currently available with paths.")
+                                                Accessible.description: Singletons.Strings.estimatedOutputSizeDesc
 
                                             }
 
                                             Text{
                                                 id:tilePackageSizeEstimate
-                                                visible: mapViewPlus.geometryType !== "multipath"
+                                                visible: mapViewPlus.geometryType !== Singletons.Constants.kMultipath // "multipath"
                                                 anchors.fill: parent
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "Tiles: -- Size: --"
                                                 font.family: notoRegular
 
-                                                Accessible.ignored: mapViewPlus.geometryType === "multipath"
+                                                Accessible.ignored: mapViewPlus.geometryType === Singletons.Constants.kMultipath // "multipath"
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
-                                                Accessible.description: qsTr("This text denotes the estimated output size for the current geometry and zoom levels.")
+                                                Accessible.description: Singletons.Strings.estimatedOutputSizeDesc
                                             }
                                         }
                                     }
@@ -572,7 +572,7 @@ Item {
                                 verticalAlignment: Text.AlignVCenter
                                 horizontalAlignment: Text.AlignHCenter
                                 textFormat: Text.RichText
-                                text: (!exporting) ? qsTr("Create Tile Package") : "Creating"
+                                text: (!exporting) ? Singletons.Strings.createTilePackage : Singletons.Strings.create
                                 font.pointSize: Singletons.Config.baseFontSizePoint
                                 font.family: notoRegular
                             }
@@ -608,12 +608,12 @@ Item {
                             if(exportDetails.uploadToPortal){
                                 outPortalOptions = {};
                                 outPortalOptions.uploadToPortal = true;
-                                outPortalOptions.serviceTitle = (exportDetails.tpkTitle !== "") ? exportDetails.tpkTitle : "NoTitle";
-                                outPortalOptions.serviceDescription = (exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : "No Description";
+                                outPortalOptions.serviceTitle = (exportDetails.tpkTitle !== "") ? exportDetails.tpkTitle : Singletons.Strings.noTitle;
+                                outPortalOptions.serviceDescription = (exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.noDesc;
                             }
 
-                            exportDetails.currentExportRequest.serviceTitle = (exportDetails.tpkTitle !== "") ? exportDetails.tpkTitle : "NoTitle";
-                            exportDetails.currentExportRequest.serviceDescription = (exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : "No Description";
+                            exportDetails.currentExportRequest.serviceTitle = (exportDetails.tpkTitle !== "") ? exportDetails.tpkTitle : Singletons.Strings.noTitle;
+                            exportDetails.currentExportRequest.serviceDescription = (exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.noDesc;
 
                             var tileService = {
                                 "url": currentTileService.url,
@@ -653,7 +653,7 @@ Item {
                             color: app.info.properties.mainButtonBackgroundColor
                             anchors.centerIn: parent
                             textFormat: Text.RichText
-                            text: "Cancel"
+                            text: Singletons.Strings.cancel
                             font.pointSize: Singletons.Config.baseFontSizePoint
                             font.family: notoRegular
                         }
@@ -685,25 +685,25 @@ Item {
         onExportGeometryTransformStarted: {
             estimateSizeProgressIndicator.show();
             estimateSizeProgressIndicator.progressIcon = estimateSizeProgressIndicator.working;
-            estimateSizeProgressIndicator.progressText = "Creating buffer geometry";
+            estimateSizeProgressIndicator.progressText = Singletons.Strings.creatingBufferGeometry;
         }
 
         onExportEstimateSizeStarted: {
             estimateSizeProgressIndicator.show();
             estimateSizeProgressIndicator.progressIcon = estimateSizeProgressIndicator.working;
-            estimateSizeProgressIndicator.progressText = "Estimating tile package size.";
+            estimateSizeProgressIndicator.progressText = Singletons.Strings.estimatingTPKSize;
         }
 
         onExportEstimateSizeComplete: {
             estimateSizeProgressIndicator.progressIcon = estimateSizeProgressIndicator.success;
-            estimateSizeProgressIndicator.progressText = "Estimated Size: " + response.sizeInMegabytes + "MB, Number of Tiles: " + response.numberOfTiles;
+            estimateSizeProgressIndicator.progressText = Singletons.Strings.estimatedSizeXNumOfTilesX.arg(response.sizeInMegabytes).arg(response.numberOfTiles) //"Estimated Size: " + response.sizeInMegabytes + "MB, Number of Tiles: " + response.numberOfTiles;
             exportDetails.currentExportRequest.package_size = response.sizeInMegabytes;
             exportDetails.currentExportRequest.number_of_tiles = response.numberOfTiles;
         }
 
         onExportStarted: {
             exportCompleteProgressIndicator.progressIcon = exportCompleteProgressIndicator.working;
-            exportCompleteProgressIndicator.progressText = "Export Started";
+            exportCompleteProgressIndicator.progressText = Singletons.Strings.exportStarted;
             exportCompleteProgressIndicator.show();
         }
 
@@ -711,12 +711,12 @@ Item {
             exportDetails.currentExportRequest.download_url = itemUrl;
             exportDetails.currentExportRequest.export_date = Date.now();
             exportCompleteProgressIndicator.progressIcon = exportCompleteProgressIndicator.success;
-            exportCompleteProgressIndicator.progressText = "Export Complete.";
+            exportCompleteProgressIndicator.progressText = Singletons.Strings.exportComplete;
         }
 
         onExportError: {
             exportStatusIndicator.messageType = exportStatusIndicator.error;
-            exportStatusIndicator.message = "Export Failed. " + message
+            exportStatusIndicator.message = Singletons.Strings.exportFailed +  " " + message;
             exportStatusIndicator.show();
             try{
                 throw new Error(message);
@@ -729,13 +729,13 @@ Item {
 
         onExportDownloadStarted: {
             downloadProgressIndicator.progressIcon = downloadProgressIndicator.working;
-            downloadProgressIndicator.progressText = "Downloading.";
+            downloadProgressIndicator.progressText = Singletons.Strings.downloading; //"Downloading.";
             downloadProgressIndicator.show();
         }
 
         onExportDownloadComplete: {
             downloadProgressIndicator.progressIcon = downloadProgressIndicator.success;
-            downloadProgressIndicator.progressText = "Download Complete.";
+            downloadProgressIndicator.progressText = Singletons.Strings.downloadComplete; // "Download Complete.";
             exportDetails.currentExportRequest.filepath = file.path;
             exportDetails.currentExportRequest.filename = file.name
             try{
@@ -748,9 +748,9 @@ Item {
                 if(!exportDetails.uploadToPortal){
                     exportStatusIndicator.messageType = exportStatusIndicator.success;
                     if(calledFromAnotherApp && dlr.successCallback !== ""){
-                        exportStatusIndicator.message = "Complete. <a href='%1?isShared=%2&isOnline=%3&localPath=%4'>Return to %5</a>".arg(dlr.successCallback).arg("false").arg("false").arg(encodeURI(file.path)).arg(dlr.callingApplication);
+                        exportStatusIndicator.message = Singletons.Strings.completeReturnToX.arg(dlr.successCallback).arg("false").arg("false").arg(encodeURI(file.path)).arg(dlr.callingApplication); //"Complete. <a href='%1?isShared=%2&isOnline=%3&localPath=%4'>Return to %5</a>".arg(dlr.successCallback).arg("false").arg("false").arg(encodeURI(file.path)).arg(dlr.callingApplication);
                     }else{
-                        exportStatusIndicator.message = "Downloaded to %1".arg(file.path);
+                        exportStatusIndicator.message = Singletons.Strings.downloadedToX.arg(file.path);
                     }
                     exportView.exportComplete();
                     exportStatusIndicator.show();
@@ -763,7 +763,7 @@ Item {
 
         onExportCancelled: {
             exportStatusIndicator.messageType = exportStatusIndicator.info;
-            exportStatusIndicator.message = "Export Cancelled.";
+            exportStatusIndicator.message = Singletons.Strings.exportCancelled; //"Export Cancelled.";
             exportStatusIndicator.show();
             exportView.exportComplete();
         }
@@ -783,7 +783,7 @@ Item {
         onUploadStarted: {
             uploading = true;
             uploadProgressIndicator.progressIcon = downloadProgressIndicator.working;
-            uploadProgressIndicator.progressText = "Uploading to portal.";
+            uploadProgressIndicator.progressText = Singletons.Strings.uploadingToPortal; // "Uploading to portal.";
             uploadProgressIndicator.show();
         }
 
@@ -793,7 +793,7 @@ Item {
                 history.writeHistory(history.uploadHistoryKey,
                             {   "transaction_date": Date.now(),
                                 "title": exportDetails.tpkTitle,
-                                "description": (exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : "Created via Tile Export. Update Description using Browse or online at link below.",
+                                "description": (exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.defaultTPKDesc,
                                 "service_url" : portal.owningSystemUrl + "/home/item.html?id=" + id
                             });
              }
@@ -805,18 +805,18 @@ Item {
                 exportDetails.currentExportRequest.service_url = portal.owningSystemUrl + "/home/item.html?id=" + id;
 
                 if(exportDetails.currentSharing !== ""){
-                    uploadProgressIndicator.progressText = "Sharing item.";
+                    uploadProgressIndicator.progressText = Singletons.Strings.sharingItem;
                     tpkUpdate.share(id, exportDetails.currentSharing);
                 }
                 else{
                     uploadProgressIndicator.progressIcon = downloadProgressIndicator.success;
-                    uploadProgressIndicator.progressText = "Uploaded.";
+                    uploadProgressIndicator.progressText = Singletons.Strings.uploaded;
                     exportStatusIndicator.messageType = exportStatusIndicator.success;
                     if(calledFromAnotherApp && dlr.successCallback !== ""){
-                         exportStatusIndicator.message = "Complete. <a href='%1?isShared=%2&isOnline=%3&itemId=%4'>Return to %5</a>".arg(dlr.successCallback).arg("false").arg("true").arg(id).arg(dlr.callingApplication);
+                         exportStatusIndicator.message = Singletons.Strings.completeReturnToX.arg(dlr.successCallback).arg("false").arg("true").arg(id).arg(dlr.callingApplication); //"Complete. <a href='%1?isShared=%2&isOnline=%3&itemId=%4'>Return to %5</a>".arg(dlr.successCallback).arg("false").arg("true").arg(id).arg(dlr.callingApplication);
                     }
                     else{
-                        exportStatusIndicator.message = "Uploaded. <a href=\"" + exportDetails.currentExportRequest.service_url + "\">See Tile Package Item</a>";
+                        exportStatusIndicator.message = Singletons.Strings.uploadedSeeX.arg(exportDetails.currentExportRequest.service_url) //"Uploaded. <a href=\"" + exportDetails.currentExportRequest.service_url + "\">See Tile Package Item</a>";
                     }
                     exportStatusIndicator.show();
                     exportView.exportComplete();
@@ -835,7 +835,7 @@ Item {
         onUploadCancelled: {
             uploading = false;
             exportStatusIndicator.messageType = exportStatusIndicator.info;
-            exportStatusIndicator.message = "Export Upload Cancelled.";
+            exportStatusIndicator.message = Singletons.Strings.exportUploadCancelled //"Export Upload Cancelled.";
             exportStatusIndicator.show();
             exportView.exportComplete();
             exportView.exportComplete();
@@ -847,15 +847,15 @@ Item {
             var failMessage = "onUploadFailed"
 
             if(error.message.indexOf("already exists") > -1){
-                failMessage = "A tpk file with that name already exists.";
+                failMessage = Singletons.Strings.tpkWithThatNameAlreadyExistsError;
             }
 
             exportStatusIndicator.messageType = exportStatusIndicator.error;
-            exportStatusIndicator.message = "Export Upload Failed. " + failMessage;
+            exportStatusIndicator.message = Singletons.Strings.exportUploadFailed + " " + failMessage;
 
             if(error.message.indexOf("Cancelled") > -1){
                 exportStatusIndicator.messageType = exportStatusIndicator.info;
-                exportStatusIndicator.message = "Export Upload Cancelled";
+                exportStatusIndicator.message = Singletons.Strings.exportUploadCancelled;
             }
 
             try{
@@ -873,7 +873,7 @@ Item {
             uploading = false;
             var failMessage = "onUploadError"
             exportStatusIndicator.messageType = exportStatusIndicator.error;
-            exportStatusIndicator.message = "Export Upload Failed. " + failMessage;
+            exportStatusIndicator.message = Singletons.Strings.exportUploadFailed + " " + failMessage;
             exportStatusIndicator.show();
             exportView.exportComplete();
 
@@ -889,7 +889,7 @@ Item {
             if(aborted){
                 uploading = false;
                 uploadProgressIndicator.progressIcon = downloadProgressIndicator.failed;
-                uploadProgressIndicator.progressText = "Cancelling Upload.";
+                uploadProgressIndicator.progressText = Singletons.Strings.cancellingUpload;
             }
         }
     }
@@ -904,9 +904,9 @@ Item {
             uploadProgressIndicator.progressText = "Shared";
             exportStatusIndicator.messageType = exportStatusIndicator.success;
             if(calledFromAnotherApp && dlr.successCallback !== ""){
-                exportStatusIndicator.message = "Complete. <a href='%1?isShared=%2&isOnline=%3&itemId=%4'>Return to %5</a>".arg(dlr.successCallback).arg("true").arg("true").arg(itemId).arg(dlr.callingApplication);
+                exportStatusIndicator.message = Singletons.Strings.completeReturnToX.arg(dlr.successCallback).arg("true").arg("true").arg(itemId).arg(dlr.callingApplication); //"Complete. <a href='%1?isShared=%2&isOnline=%3&itemId=%4'>Return to %5</a>".arg(dlr.successCallback).arg("true").arg("true").arg(itemId).arg(dlr.callingApplication);
             }else{
-                exportStatusIndicator.message = "Uploaded and Shared. <a href=\"" + exportDetails.currentExportRequest.service_url + "\">See Tile Package Item</a>";
+                exportStatusIndicator.message = Singletons.Strings.uploadingAndSharedSeeX.arg(exportDetails.currentExportRequest.service_url); //"Uploaded and Shared. <a href=\"" + exportDetails.currentExportRequest.service_url + "\">See Tile Package Item</a>";
             }
             exportStatusIndicator.show();
             exportView.exportComplete();
@@ -922,7 +922,7 @@ Item {
             var inMb = (parseFloat(estimate.bytes,10) / 1048576).toFixed(2);
             var numTiles = estimate.tiles < 100000 ? ("~" + estimate.tiles) : "100,000+";
             var mb = inMb < 1000 ? ("~" + inMb + "Mb") : "1Gb+";
-            tilePackageSizeEstimate.text = "Tiles: %1 Size: %2".arg(numTiles).arg(mb);
+            tilePackageSizeEstimate.text = Singletons.Strings.tilesXSizeX.arg(numTiles).arg(mb); //"Tiles: %1 Size: %2".arg(numTiles).arg(mb);
         }
     }
 

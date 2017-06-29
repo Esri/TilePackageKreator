@@ -222,7 +222,7 @@ Item {
     //--------------------------------------------------------------------------
 
     function _isWebMercator(sr){
-        if (sr === Singletons.Config.webMercSR || sr === Singletons.Config.webMercLatestWKID.toString() || sr === Singletons.Config.webMercWKID.toString()){
+        if ( sr === Singletons.Constants.kWebMercSR || sr === Singletons.Constants.kWebMercLatestWKID.toString() || sr === Singletons.Constants.kWebMercWKID.toString() ){
             return true;
         }
         else{

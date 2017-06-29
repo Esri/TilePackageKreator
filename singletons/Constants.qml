@@ -19,18 +19,15 @@ import QtQuick 2.7
 
 QtObject {
 
-    id: colors
+    id: strings
 
-    readonly property color lightGray: "#f8f8f8"
-    readonly property color mediumGray: "#e0e0e0"
-    readonly property color darkGray: "#595959"
-    readonly property color veryDarkGray: "#323232"
+    readonly property string kEnvelope: "envelope"
+    readonly property string kMultipath: "multipath"
+    readonly property string kPolygon: "polygon"
 
-    readonly property color specialBackground: "#ddeedb"
+    readonly property int kQtMapSpatialReference: 4326
+    readonly property int kWebMercLatestWKID: 3857
+    readonly property int kWebMercWKID: 102100
+    readonly property string kWebMercSR: "WGS_1984_Web_Mercator_Auxiliary_Sphere"
 
-    readonly property color mainButtonBackgroundColor: "#196fa6"
-    readonly property color mainButtonPressedColor: "#166090"
-
-    readonly property string drawnExtentOutlineColor: "#de2900"
-    readonly property string drawingExtentFillColor: "#10de2900"
 }

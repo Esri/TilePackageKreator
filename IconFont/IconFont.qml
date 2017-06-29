@@ -14,9 +14,9 @@
  *
  */
 
-import QtQuick 2.5
+import QtQuick 2.7
 
-FontLoader{
+FontLoader {
 
     // ttf font file created with https://icomoon.io
 

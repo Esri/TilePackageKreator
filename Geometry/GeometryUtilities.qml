@@ -62,7 +62,7 @@ QtObject {
         var ymin = coordinates[0][1];
         var ymax = coordinates[coordinates.length - 1][1];
 
-        if(ymin < 0 && ymax < 0){
+        if (ymin < 0 && ymax < 0) {
             ymin = coordinates[coordinates.length - 1][1];
             ymax = coordinates[0][1];
         }

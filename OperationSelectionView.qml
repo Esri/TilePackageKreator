@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ Item {
     //--------------------------------------------------------------------------
 
     StackView.onActivating: {
-        mainView.appToolBar.toolBarTitleLabel = qsTr("Select an Operation");
+        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.selectAnOperation;
         mainView.appToolBar.enabled = true;
         mainView.appToolBar.backButtonEnabled = false;
         mainView.appToolBar.backButtonVisible = false;
@@ -53,7 +53,7 @@ Item {
             anchors.centerIn: parent
             width: sf(710)
             height: sf(230)
-            color:  "white"
+            color: "white"
 
             RowLayout {
                 anchors.fill: parent
@@ -109,9 +109,10 @@ Item {
                                     verticalAlignment: Text.AlignVCenter
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("UPLOAD")
+                                    text: Singletons.Strings.upload
                                     font.pointSize: Singletons.Config.largeFontSizePoint * .8
                                     font.family: notoRegular
+                                    font.capitalization: Font.AllUppercase
                                 }
                             }
                             Item {
@@ -123,7 +124,7 @@ Item {
                                     verticalAlignment: Text.AlignTop
                                     color:app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("Local Tile Package")
+                                    text: Singletons.Strings.localTilePackage
                                     font.pointSize: Singletons.Config.baseFontSizePoint
                                     font.family: notoRegular
                                 }
@@ -139,7 +140,7 @@ Item {
                         }
 
                         Accessible.role: Accessible.Button
-                        Accessible.name: qsTr("Upload a local tile package")
+                        Accessible.name: Singletons.Strings.uploadTilePackage
                         Accessible.onPressAction: {
                             if(enabled && visible){
                                 clicked();
@@ -198,9 +199,10 @@ Item {
                                     verticalAlignment: Text.AlignVCenter
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("CREATE")
+                                    text: Singletons.Strings.create
                                     font.pointSize: Singletons.Config.largeFontSizePoint * .8
                                     font.family: notoRegular
+                                    font.capitalization: Font.AllUppercase
                                 }
                             }
                             Item {
@@ -212,7 +214,7 @@ Item {
                                     verticalAlignment: Text.AlignTop
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("New Tile Package")
+                                    text: Singletons.Strings.newTilePackage
                                     font.pointSize: Singletons.Config.baseFontSizePoint
                                     font.family: notoRegular
                                 }
@@ -228,7 +230,7 @@ Item {
                         }
 
                         Accessible.role: Accessible.Button
-                        Accessible.name: qsTr("Create a new tile package")
+                        Accessible.name: Singletons.Strings.createNewTilePackage
                         Accessible.onPressAction: {
                             if(enabled && visible){
                                 clicked();
@@ -276,7 +278,7 @@ Item {
                                     height: parent.height
                                     fillMode: Image.PreserveAspectFit
                                 }
-                             }
+                            }
                             Item {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: sf(25)
@@ -287,9 +289,10 @@ Item {
                                     verticalAlignment: Text.AlignVCenter
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("BROWSE")
+                                    text: Singletons.Strings.browse
                                     font.pointSize: Singletons.Config.largeFontSizePoint * .8
                                     font.family: notoRegular
+                                    font.capitalization: Font.AllUppercase
                                 }
                             }
                             Item {
@@ -301,7 +304,7 @@ Item {
                                     verticalAlignment: Text.AlignTop
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("Organization Tile Packages")
+                                    text: Singletons.Strings.organizationTilePackages
                                     font.pointSize: Singletons.Config.baseFontSizePoint
                                     font.family: notoRegular
                                 }
@@ -317,7 +320,7 @@ Item {
                         }
 
                         Accessible.role: Accessible.Button
-                        Accessible.name: qsTr("Browse organization tile packages")
+                        Accessible.name: Singletons.Strings.browseOrgTilePackages
                         Accessible.onPressAction: {
                             if(enabled && visible){
                                 clicked();
