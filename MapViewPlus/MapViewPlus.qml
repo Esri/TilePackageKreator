@@ -35,6 +35,7 @@ Item {
 
     id: mapViewPlus
 
+    objectName: "MapViewPlus"
     property Portal mapViewPlusPortal
 
     // Configurable Properties -------------------------------------------------
@@ -112,11 +113,12 @@ Item {
     // UI //////////////////////////////////////////////////////////////////////
 
     Item {
-        width: (parent.width < 1000) ? sf(parent.width - 20) : sf(980)
+        width: (parent.width < sf(1000)) ? parent.width - sf(20) : sf(980)
         anchors.top: parent.top
         anchors.topMargin: sf(10)
         anchors.horizontalCenter: parent.horizontalCenter
         height: sf(58)
+
         z: previewMap.z + 3
 
         RowLayout {

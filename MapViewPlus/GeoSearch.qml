@@ -247,18 +247,22 @@ Rectangle{
                     text: location ? location.address.text : ""
                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                     verticalAlignment: Text.AlignVCenter
+                    color: Singletons.Colors.darkGray
 
                     font {
-                        pointSize: 16
+                        family: notoRegular
+                        pointSize: Singletons.Config.smallFontSizePoint
                     }
                 }
 
                 Text {
                     visible: Math.round(distance) > 0
                     text: displayDistance(distance)
+                    color: Singletons.Colors.darkGray
 
                     font {
-                        pointSize: 12
+                        family: notoRegular
+                        pointSize: Singletons.Config.xSmallFontSizePoint
                     }
                 }
 
