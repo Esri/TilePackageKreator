@@ -29,7 +29,7 @@ Rectangle{
 
     id: mapDrawingToolMenu
 
-    width: (parent.width < 700) ? sf(parent.width - 20) : sf(500)
+    width: parent.width //(parent.width < 700) ? sf(parent.width - 20) : sf(500)
     height: sf(58)
     color: "white"
     radius: sf(5)
@@ -73,7 +73,7 @@ Rectangle{
                 "borderColor": "#E4A793"
             }
             Layout.fillHeight: true
-            Layout.preferredWidth: sf(200)
+            Layout.preferredWidth: sf(150)
 
             RowLayout{
                 anchors.fill: parent
@@ -100,6 +100,7 @@ Rectangle{
                         anchors.fill: parent
                         font.family: notoRegular
                         verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.Wrap
                         text: (!drawing) ? ( (!drawingExists) ? Singletons.Strings.drawAnExtentOrPath : Singletons.Strings.extentOrPathDrawn ) : (activeGeometryType === "envelope") ? Singletons.Strings.drawingExtent : Singletons.Strings.drawingPath
                     }
                 }

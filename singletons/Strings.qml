@@ -160,6 +160,7 @@ QtObject {
     readonly property string saveToDesc: qsTr("This button will open a file dialog chooser that allows the user to select the folder to save the tile package to locally.")
     readonly property string saveToLocationDesc: qsTr("Selected save to location")
     readonly property string saveTpkLocally: qsTr("Save tile package locally")
+    readonly property string searchAddressOrLatLon: qsTr("Search address or @lat,lon")
     readonly property string selectAnOperation: qsTr("Select an Operation")
     readonly property string selectTileService: qsTr("Select tile service to be used as the source for the tile package")
     readonly property string selectTileServiceDesc: qsTr("This control will select the tile service to export tiles from and will transition to the export area and details selection view.")

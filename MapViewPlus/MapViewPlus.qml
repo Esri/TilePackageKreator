@@ -111,34 +111,90 @@ Item {
 
     // UI //////////////////////////////////////////////////////////////////////
 
-    MapDrawingMenu{
-        id: drawingMenu
+    Item {
+        width: (parent.width < 1000) ? sf(parent.width - 20) : sf(980)
         anchors.top: parent.top
         anchors.topMargin: sf(10)
         anchors.horizontalCenter: parent.horizontalCenter
+        height: sf(58)
         z: previewMap.z + 3
-        enabled: (drawing) ? false : true
-        drawingExists: userDrawnExtent
 
-        onDrawingRequest: {
-            drawingStarted();
-            geometryType = g;
+        RowLayout {
+            anchors.fill: parent
+            spacing: sf(10)
+
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                GeoSearch {
+                    id: geoSearch
+                    anchors.fill: parent
+                    enabled: drawing ? false : true
+                    opacity: !drawing ? 1 : .4
+
+                    referenceCoordinate: mapViewPlus.map.center
+
+                    onLocationClicked: {
+                        mapViewPlus.map.center = location.coordinate;
+                        if (mapViewPlus.map.zoomLevel < 13){
+                            mapViewPlus.map.zoomLevel = 13;
+                        }
+                    }
+
+                    onInputCoordinate: {
+                        mapViewPlus.map.center = coordinate;
+                        if (mapViewPlus.map.zoomLevel < 13){
+                            mapViewPlus.map.zoomLevel = 13;
+                        }
+                    }
+                }
+
+                DropShadow {
+                   anchors.fill: geoSearch
+                   horizontalOffset: 0
+                   verticalOffset: 0
+                   radius: 4
+                   samples: 8
+                   color: "#80000000"
+                   source: geoSearch
+                   z: previewMap.z + 3
+                   visible: !drawing
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                MapDrawingMenu {
+                    id: drawingMenu
+                    anchors.fill: parent
+                    enabled: (drawing) ? false : true
+                    drawingExists: userDrawnExtent
+
+                    onDrawingRequest: {
+                        drawingStarted();
+                        geometryType = g;
+                    }
+                }
+
+                DropShadow {
+                       anchors.fill: drawingMenu
+                       horizontalOffset: 0
+                       verticalOffset: 0
+                       radius: 4
+                       samples: 8
+                       color: "#80000000"
+                       source: drawingMenu
+                       z: previewMap.z + 3
+                       visible: !drawing
+                }
+            }
         }
     }
 
-    DropShadow {
-           anchors.fill: drawingMenu
-           horizontalOffset: 0
-           verticalOffset: 0
-           radius: 4
-           samples: 8
-           color: "#80000000"
-           source: drawingMenu
-           z: previewMap.z + 3
-           visible: !drawing
-    }
-
-    Rectangle{
+    Rectangle {
         id: mapZoomTools
         width: sf(30)
         height: (width * 2) + 1

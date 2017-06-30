@@ -39,6 +39,7 @@ FontLoader {
 
     property string loop: "\uea2e"
 
+    property string magnifying_glass: "\ue986"
     property string minus_sign: "\uea0b"
 
     property string plus_sign: "\uea0a"
@@ -46,7 +47,6 @@ FontLoader {
     property string question: "\uea09"
 
     property string sad_face: "\ue9e5"
-    property string search: "\ue986"
     property string sign_out: "\ue902"
     property string spinner: "\ue982"
     property string spinner2: "\ue97d"
