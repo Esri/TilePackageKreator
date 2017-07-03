@@ -117,7 +117,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: sf(10)
         anchors.horizontalCenter: parent.horizontalCenter
-        height: sf(58)
+        height: sf(50)
 
         z: previewMap.z + 3
 

@@ -134,7 +134,7 @@ Rectangle {
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 
-    RotationAnimation{
+    RotationAnimation {
         id:rotator
         direction: RotationAnimation.Clockwise
         from: 0

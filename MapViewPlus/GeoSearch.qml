@@ -35,8 +35,7 @@ Rectangle{
 
     id: geoSearchMenu
 
-    width: parent.width
-    height: sf(58)
+    anchors.fill: parent
     color: "white"
     radius: sf(5)
 
@@ -61,6 +60,16 @@ Rectangle{
 
     //--------------------------------------------------------------------------
 
+    onBusyChanged: {
+        if (busy){
+            rotator.start();
+        }
+        else {
+            rotator.stop();
+            searchAndStatus.rotation = 0;
+        }
+    }
+
     // UI //////////////////////////////////////////////////////////////////////
 
     Controls.StyledTextField {
@@ -75,7 +84,7 @@ Rectangle{
                 geoSearchMenu.clear();
             }
             else {
-               geocodeTimer.restart();
+                geocodeTimer.restart();
             }
         }
 
@@ -141,18 +150,30 @@ Rectangle{
         anchors.left: textField.left
 
         Text {
+            id: searchAndStatus
             anchors.centerIn: parent
             font.pointSize: Singletons.Config.largeFontSizePoint
-            color: app.info.properties.mainButtonBorderColor
+            color: !busy ? app.info.properties.mainButtonBorderColor : "green"
             font.family: icons.name
-            text: icons.magnifying_glass
+            text: busy ? icons.spinner2 : icons.magnifying_glass
+        }
+
+        RotationAnimation {
+            id: rotator
+            direction: RotationAnimation.Clockwise
+            from: 0
+            to: 360
+            duration: 2000
+            property: "rotation"
+            target: searchAndStatus
+            loops: Animation.Infinite
         }
     }
 
     Item {
         id: clearButton
         height: textField.height
-        width: textField.height - sf(10)
+        width: textField.height - sf(7)
         anchors.top: textField.top
         anchors.right: textField.right
         visible: textField.text > ""
@@ -170,8 +191,10 @@ Rectangle{
                 radius: width / 2
                 color: clearText.enabled ? app.info.properties.mainButtonBorderColor : Singletons.Colors.lightGray
                 Text {
-                    anchors.centerIn: parent
-                    font.pointSize: Singletons.Config.mediumFontSizePoint * .7
+                    anchors.fill: parent
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pointSize: 10
                     color: "#fff"
                     font.family: icons.name
                     text: icons.x_cross
@@ -273,7 +296,7 @@ Rectangle{
     Timer {
         id: geocodeTimer
 
-        interval: 1000
+        interval: 600
         repeat: false
 
         onTriggered: {

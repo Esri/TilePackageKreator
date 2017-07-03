@@ -29,13 +29,12 @@ Rectangle{
 
     id: mapDrawingToolMenu
 
-    width: parent.width //(parent.width < 700) ? sf(parent.width - 20) : sf(500)
-    height: sf(58)
+    anchors.fill: parent
     color: "white"
     radius: sf(5)
     opacity: (!drawing) ? 1 : .4
 
-    property int buttonWidth: sf(50)
+    property int buttonWidth: layoutView.height
 
     property bool drawing: false
     property bool drawingExists: false
@@ -46,6 +45,7 @@ Rectangle{
     // UI //////////////////////////////////////////////////////////////////////
 
     RowLayout{
+        id: layoutView
         anchors.fill: parent
         anchors.margins: sf(4)
         anchors.rightMargin: sf(6)
