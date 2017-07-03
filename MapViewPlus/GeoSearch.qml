@@ -35,13 +35,11 @@ Rectangle{
 
     id: geoSearchMenu
 
-    width: parent.width //(parent.width < 700) ? sf(parent.width - 20) : sf(500)
+    width: parent.width
     height: sf(58)
     color: "white"
     radius: sf(5)
 
-    readonly property bool clearVisible: text > ""
-    property alias text: textField.text
     property alias geocodeModel: geocodeModel
     readonly property bool busy: geocodeModel.status === GeocodeModel.Loading
     property alias textChangedTimeout: geocodeTimer.interval
@@ -65,8 +63,6 @@ Rectangle{
 
     // UI //////////////////////////////////////////////////////////////////////
 
-
-
     Controls.StyledTextField {
         id: textField
         anchors.fill: parent
@@ -74,36 +70,18 @@ Rectangle{
         leftPadding: searchButton.width + sf(2)
         rightPadding: clearButton.width + sf(2)
 
-        Component.onCompleted: {
-            if (clearVisible) {
-               // clearButtonLoader.active = true;
-            }
-
-           // __panel.leftMargin = searchButton.width + searchButton.anchors.margins * 1.5;
-        }
-
-
-        onLengthChanged: {
-            if (length > 0) {
-                //clearButtonLoader.active = true;
+        onTextChanged: {
+            if (text <= "") {
+                geoSearchMenu.clear();
             }
             else {
-                geocodeModel.reset();
-                if (locationPopup.visible) {
-                    locationPopup.close();
-                }
+               geocodeTimer.restart();
             }
-        }
-
-        onTextChanged: {
-            geocodeTimer.restart();
         }
 
         onEditingFinished: {
             if (text.substr(0, 1) === '@') {
                 parseCoordinate(text.substr(1).trim());
-            } else {
-                geocodeModel.startSearch(text);
             }
         }
 
@@ -125,15 +103,6 @@ Rectangle{
             color: "#fff"
             border.color: Singletons.Colors.mediumGray
             border.width: sf(1)
-        }
-
-        Connections {
-            target: geocodeModel
-               onCountChanged: {
-                if(geocodeModel.count > 0){
-                    locationPopup.open();
-                }
-            }
         }
 
         ListView {
@@ -163,7 +132,6 @@ Rectangle{
             text: Singletons.Strings.searchAddressOrLatLon
         }
     }
-
 
     Item {
         id: searchButton
@@ -265,16 +233,6 @@ Rectangle{
                         pointSize: Singletons.Config.xSmallFontSizePoint
                     }
                 }
-
-//                Image {
-//                    Layout.preferredHeight: minimumLocationDelegateHeight * 0.75
-//                    Layout.preferredWidth: Layout.preferredHeight
-
-//                    opacity: Math.round(distance) > 1 ? 1 : 0
-//                    fillMode: Image.PreserveAspectFit
-//                    rotation: azimuth
-//                    source: "images/direction_arrow.png"
-//                }
             }
 
             Rectangle {
@@ -323,12 +281,22 @@ Rectangle{
         }
     }
 
+    //--------------------------------------------------------------------------
+
     GeocodeModel {
         id: geocodeModel
 
         autoUpdate: false
         limit: -1
 
+        onCountChanged: {
+             if (geocodeModel.count > 0) {
+                 locationPopup.open();
+             }
+             else {
+                 locationPopup.close();
+             }
+        }
 
         plugin: Plugin {
             preferred: ["AppStudio"]
@@ -337,8 +305,6 @@ Rectangle{
         onLocationsChanged: {
             console.log("locationsChanged:", count);
         }
-
-
 
         function startSearch(text) {
             cancel();
@@ -352,9 +318,9 @@ Rectangle{
     //--------------------------------------------------------------------------
 
     function clear() {
+        console.log("function clear()");
         geocodeTimer.stop();
         geocodeModel.reset();
-        text = "";
     }
 
     //--------------------------------------------------------------------------
@@ -399,8 +365,6 @@ Rectangle{
             inputCoordinate(coordinate);
         }
     }
-
-
 
     // END /////////////////////////////////////////////////////////////////////
 }
