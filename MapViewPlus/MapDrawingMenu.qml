@@ -146,7 +146,7 @@ Rectangle{
         ListElement {
             name: qsTr("Draw Rectangle")
             property bool available: true
-            property string geometryType: "envelope"
+            property string geometryType: "polygon"
             property url iconPath: "images/draw_extent.png"
             property string fontIcon: "draw_extent"
         }

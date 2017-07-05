@@ -138,7 +138,7 @@ Item {
         if (mapLoaded) {
             if (lastKnownCenter !== null && lastKnownZoomLevel > -1) {
                 map.center = lastKnownCenter;
-                map.zoomLevel = lastKnownZoomLevel;
+                map.zoomLevel = lastKnownZoomLevel > map.maximumZoomLevel ? map.maximumZoomLevel : lastKnownZoomLevel;
             }
         }
     }

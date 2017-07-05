@@ -58,6 +58,9 @@ Rectangle {
     readonly property string kOrgSharing: "org"
     readonly property string kPublicSharing: "everyone"
 
+    property int lastKnownBottomZoomLevel
+    property int lastKnownTopZoomLevel
+
     property alias tpkZoomLevels: desiredLevelsSlider.second
     property alias tpkBottomZoomLevel: desiredLevelsSlider.first
     property alias tpkTopZoomLevel: desiredLevelsSlider.second
@@ -84,6 +87,12 @@ Rectangle {
 
     onCurrentBufferInMetersChanged: {
         console.log("currentBufferInMeters: ", currentBufferInMeters);
+    }
+
+    onMaxLevelsChanged: {
+        desiredLevelsSlider.to = maxLevels;
+        desiredLevelsSlider.first.value = 0;
+        desiredLevelsSlider.second.value = 3;
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -225,7 +234,7 @@ Rectangle {
                             Connections {
                                 target: desiredLevelsSlider.second
                                 onValueChanged: {
-                                   tpkDetailsForm.exportZoomLevelsChanged();
+                                    tpkDetailsForm.exportZoomLevelsChanged();
                                 }
                             }
 

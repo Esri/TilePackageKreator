@@ -210,6 +210,19 @@ Item {
                                 exportStatusIndicator.message = error;
                                 exportStatusIndicator.show();
                             }
+
+                            onBasemapLoaded: {
+                                var serviceInfo = currentTileService["serviceInfo"];
+                                if(serviceInfo !== null){
+                                    if(serviceInfo.hasOwnProperty("tileInfo")){
+                                        if(serviceInfo.tileInfo.hasOwnProperty("lods")){
+                                            var availableLevels = (parseInt(serviceInfo.tileInfo.lods.length,10) - 1);
+                                            exportDetails.maxLevels = availableLevels > 19 ? 19 : availableLevels;
+                                            mapViewPlus.map.maximumZoomLevel = exportDetails.maxLevels;
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         // MAP TOOL BAR ////////////////////////////////////////
@@ -613,14 +626,20 @@ Item {
 
                             exportDetails.currentExportRequest = {}
                             exportDetails.currentExportRequest.service = currentTileService["title"];
+                            console.log("-----exportDetails.currentExportRequest.service: ", exportDetails.currentExportRequest.service)
                             exportDetails.currentExportRequest.extent = JSON.stringify(mapViewPlus.getCurrentGeometry());
+                            console.log("----- exportDetails.currentExportRequest.extent: ",  exportDetails.currentExportRequest.extent)
+
                             if(mapViewPlus.drawMultipath){
                                 exportDetails.currentExportRequest.buffer = exportDetails.currentBufferInMeters;
+                                console.log("----- exportDetails.currentExportRequest.buffer: ",  exportDetails.currentExportRequest.buffer)
                             }
-                            exportDetails.currentLevels = (exportDetails.tpkTopZoomLevel.value > 0) ? "%1-%2".arg(exportDetails.tpkBottomZoomLevel.value.toString()).arg(exportDetails.tpkTopZoomLevel.value.toString()) : "0";
+                            exportDetails.currentLevels = (exportDetails.tpkTopZoomLevel.value > 0) ? "%1-%2".arg(exportDetails.tpkBottomZoomLevel.value).arg(exportDetails.tpkTopZoomLevel.value) : "0";
+                            console.log("----- exportDetails.currentLevels: ",  exportDetails.currentLevels)
                             exportDetails.currentExportRequest.levels = exportDetails.currentLevels
-
+                            console.log("----- exportDetails.currentExportRequest.levels: ", exportDetails.currentExportRequest.levels)
                             var outFileName = (exportDetails.currentExportTitle != "") ? exportDetails.currentExportTitle : "tpk_export"
+                            console.log("-----outFileName: ", outFileName)
 
                             var outPortalOptions = null;
 

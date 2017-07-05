@@ -65,7 +65,7 @@ Item {
     property bool historyAvailable: false
 
     property string geometryType: ""
-    property bool drawEnvelope: geometryType === Singletons.Constants.kEnvelope ? true : false //"envelope" ? true : false
+    property bool drawEnvelope: geometryType === Singletons.Constants.kPolygon ? true : false //"envelope" ? true : false
     property bool drawPolygon: geometryType === Singletons.Constants.kPolygon ? true : false //"polygon" ? true : false
     property bool drawMultipath: geometryType === Singletons.Constants.kMultipath ? true : false //"multipath" ? true : false
 
@@ -79,6 +79,7 @@ Item {
     signal zoomLevelChanged(var level)
     signal positionChanged(var position)
     signal redraw()
+    signal basemapLoaded()
 
     // SIGNAL IMPLEMENTATION ///////////////////////////////////////////////////
 
@@ -102,10 +103,14 @@ Item {
         drawingStarted();
         if (lastDrawing.type === Singletons.Constants.kMultipath) {
             pathCoordinates = lastDrawing.geometry;
+            userDrawnExtent = true;
+            geometryType = Singletons.Constants.kMultipath;
             addMultipathToMap("final");
         }
         if (lastDrawing.type === Singletons.Constants.kPolygon) {
             pathCoordinates = lastDrawing.geometry;
+            userDrawnExtent = true;
+            geometryType = Singletons.Constants.kPolygon;
             addPolygonToMap("final");
         }
 
@@ -126,6 +131,7 @@ Item {
         drawing = false;
         clearDrawingCanvas();
         drawingMenu.drawingRequestComplete();
+        console.log("----------------onDrawingFinished:", geometryType);
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -270,7 +276,7 @@ Item {
                     }
                 }
             }
-            Button{
+            Button {
                 id: mapZoomOut
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -298,7 +304,7 @@ Item {
                     }
                 }
                 onClicked: {
-                    if(map.zoomLevel > 0){
+                    if(map.zoomLevel > 0 && map.zoomLevel > map.minimumZoomLevel){
                         map.zoomLevel = Math.ceil(map.zoomLevel) - 1;
                     }
                 }
@@ -628,6 +634,7 @@ Item {
                 if (previewMap.lastKnownZoomLevel > -1) {
                     previewMap.map.zoomLevel = previewMap.lastKnownZoomLevel;
                 }
+                basemapLoaded();
             }
         }
 
@@ -753,12 +760,14 @@ Item {
     // METHODS /////////////////////////////////////////////////////////////////
 
     function getCurrentGeometry(){
+        console.log("----------------getCurrentGeometry():", geometryType);
         var g;
         if (drawMultipath) {
             g = getMutlipathGeometry();
         }
         else if (drawEnvelope) {
-            g = getEnvelopeGeometry();
+            // g = getEnvelopeGeometry();
+            g = getPolygonGeometry();
         }
         else if (drawPolygon) {
             g = getPolygonGeometry();

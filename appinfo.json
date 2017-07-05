@@ -13,6 +13,8 @@
         "android": {
             "packageName": ""
         },
+        "arcgisRuntimeExtensionsLicense": "",
+        "arcgisRuntimeLicense": "",
         "clientId": "qX6liWtssLPP0sif",
         "ios": {
             "bundleId": "",
@@ -82,7 +84,7 @@
     "urlScheme": "arcgis-tilepackage",
     "version": {
         "major": 1,
-        "micro": 4,
+        "micro": 6,
         "minor": 2
     }
 }
