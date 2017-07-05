@@ -9,17 +9,17 @@ ComboBox {
 
     onActivated: {
         console.log(currentIndex)
-        console.log(model.get(currentIndex).text)
+        console.log(model.get(currentIndex)[control.textRole])
     }
     onHighlighted: {
         console.log(currentIndex)
-        console.log(model.get(currentIndex).text)
+        console.log(model.get(currentIndex)[control.textRole])
     }
 
     delegate: ItemDelegate {
         width: control.width
         contentItem: Text {
-            text: model.text
+            text: model[control.textRole]
             color: Singletons.Colors.darkGray
             font: control.font
             elide: Text.ElideRight
@@ -57,7 +57,7 @@ ComboBox {
         leftPadding: 0
         rightPadding: control.indicator.width + control.spacing
 
-        text: control.model.get(control.currentIndex).text
+        text: control.model.get(control.currentIndex)[control.textRole]
         font.family: notoRegular
         font.pointSize: Singletons.Config.smallFontSizePoint
         color: Singletons.Colors.darkGray

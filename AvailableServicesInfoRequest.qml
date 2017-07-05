@@ -50,12 +50,12 @@ NetworkRequest {
     onReadyStateChanged: {
 
         //console.log("url: ", url);
-        console.log(readyState);
+        //console.log(readyState);
 
         if (readyState === NetworkRequest.ReadyStateComplete) {
 
-            console.log("url: ", url);
-            console.log(responseText);
+            //console.log("url: ", url);
+            //console.log(responseText);
 
             if(status === 200){
                 try{

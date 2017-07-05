@@ -24,6 +24,7 @@ QtObject {
     readonly property string kEnvelope: "envelope"
     readonly property string kMultipath: "multipath"
     readonly property string kPolygon: "polygon"
+    readonly property string kRedraw: "redraw"
 
     readonly property int kQtMapSpatialReference: 4326
     readonly property int kWebMercLatestWKID: 3857

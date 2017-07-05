@@ -26,14 +26,22 @@ Item {
     property Portal portal
     property url mapService
     property bool useToken
+    property bool mapLoaded: mapLoader.status === Loader.Ready
 
     readonly property Map map: mapLoader.item
     property var defaultCenter: { "lat":0, "long":0 }
     property int defaultZoomLevel: 10
+
+    property var currentCenter: null
+    property int currentZoomLevel: -1
+    property var lastKnownCenter: null
+    property int lastKnownZoomLevel: -1
+
     signal zoomLevelChanged(var level)
     signal mapPanningFinished()
     signal mapPanningStarted()
     signal mapItemsCleared()
+    signal mapCenterChanged(var center)
 
     Loader {
         id: mapLoader
@@ -54,7 +62,7 @@ Item {
         id: mapComponent
 
         Map {
-            id:baseMap
+            id: baseMap
             plugin: Plugin {
                 preferred: ["AppStudio"]
 
@@ -94,12 +102,16 @@ Item {
             }
 
             Component.onCompleted: {
-                console.log(mapService);
                 clearData();
             }
 
             onZoomLevelChanged: {
                 mapView.zoomLevelChanged(baseMap.zoomLevel);
+                currentZoomLevel = baseMap.zoomLevel;
+            }
+
+            onCenterChanged: {
+                currentCenter = baseMap.center;
             }
 
             onMapItemsChanged: {
@@ -113,11 +125,22 @@ Item {
     //--------------------------------------------------------------------------
 
     onMapServiceChanged: {
+        lastKnownCenter = currentCenter !== null ? currentCenter : null;
+        lastKnownZoomLevel = currentZoomLevel !== -1 ? currentZoomLevel : -1
         update();
     }
 
     onMapItemsCleared: {
         console.log('all map items removed');
+    }
+
+    onMapLoadedChanged: {
+        if (mapLoaded) {
+            if (lastKnownCenter !== null && lastKnownZoomLevel > -1) {
+                map.center = lastKnownCenter;
+                map.zoomLevel = lastKnownZoomLevel;
+            }
+        }
     }
 
     Connections {

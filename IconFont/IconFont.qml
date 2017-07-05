@@ -46,6 +46,8 @@ FontLoader {
 
     property string question: "\uea09"
 
+    property string redraw_last_path: "\ue903"
+
     property string sad_face: "\ue9e5"
     property string sign_out: "\ue902"
     property string spinner: "\ue982"

@@ -40,12 +40,12 @@ Item {
 
     // Configurable Properties -------------------------------------------------
 
-    property string drawnExtentOutlineColor: Singletons.Colors.drawnExtentOutlineColor //"#de2900"
-    property string drawingExtentFillColor: Singletons.Colors.drawingExtentFillColor //"#10de2900"
-    property int mapSpatialReference: Singletons.Constants.kQtMapSpatialReference //4326
+    property string drawnExtentOutlineColor: Singletons.Colors.drawnExtentOutlineColor
+    property string drawingExtentFillColor: Singletons.Colors.drawingExtentFillColor
+    property int mapSpatialReference: Singletons.Constants.kQtMapSpatialReference
     property double mapDefaultLat: 0
     property double mapDefaultLong: 0
-    property var mapDefaultCenter: {"lat": mapDefaultLat, "long": mapDefaultLong }
+    property var mapDefaultCenter: { "lat": mapDefaultLat, "long": mapDefaultLong }
     property int mapDefaultZoomLevel: 5
     property var mapTileService: null
 
@@ -55,12 +55,14 @@ Item {
     property var drawingStartCoord: {'x': null, 'y': null}
     property var drawingEndCoord: {'x': null, 'y': null}
     property var pathCoordinates: []
+    property var drawingHistory: []
     property var topLeft: null
     property var bottomRight: null
     property bool userDrawnExtent: false
     property bool cursorIsOffMap: true
     property bool allowMapToPan: false
     property bool mapTileServiceUsesToken: true
+    property bool historyAvailable: false
 
     property string geometryType: ""
     property bool drawEnvelope: geometryType === Singletons.Constants.kEnvelope ? true : false //"envelope" ? true : false
@@ -76,6 +78,7 @@ Item {
     signal drawingError(string error)
     signal zoomLevelChanged(var level)
     signal positionChanged(var position)
+    signal redraw()
 
     // SIGNAL IMPLEMENTATION ///////////////////////////////////////////////////
 
@@ -84,20 +87,35 @@ Item {
         resetProperties();
         clearDrawingCanvas();
 
-        if(clearExtentMapItem.visible){
+        if (clearExtentMapItem.visible) {
             clearExtentBtn.clicked();
         }
-        else if(previewMap.map.mapItems.length > 0){
+        else if (previewMap.map.mapItems.length > 0) {
             clearMap();
         }
-        else{
+        else {
         }
+    }
+
+    onRedraw: {
+        var lastDrawing = drawingHistory[drawingHistory.length-1];
+        drawingStarted();
+        if (lastDrawing.type === Singletons.Constants.kMultipath) {
+            pathCoordinates = lastDrawing.geometry;
+            addMultipathToMap("final");
+        }
+        if (lastDrawing.type === Singletons.Constants.kPolygon) {
+            pathCoordinates = lastDrawing.geometry;
+            addPolygonToMap("final");
+        }
+
+        mapViewPlus.map.fitViewportToMapItems();
     }
 
     //--------------------------------------------------------------------------
 
     onDrawingCleared: {
-        if(!drawing){
+        if (!drawing) {
             resetProperties();
         }
     }
@@ -113,7 +131,8 @@ Item {
     // UI //////////////////////////////////////////////////////////////////////
 
     Item {
-        width: (parent.width < sf(1000)) ? parent.width - sf(20) : sf(980)
+        id: topMenu
+        width: ( parent.width < sf(1000) ) ? parent.width - sf(20) : sf(980)
         anchors.top: parent.top
         anchors.topMargin: sf(10)
         anchors.horizontalCenter: parent.horizontalCenter
@@ -135,7 +154,7 @@ Item {
                     enabled: drawing ? false : true
                     opacity: !drawing ? 1 : .4
 
-                    referenceCoordinate: mapViewPlus.map.center
+                    //referenceCoordinate: mapViewPlus.map.center
 
                     onLocationClicked: {
                         mapViewPlus.map.center = location.coordinate;
@@ -174,10 +193,16 @@ Item {
                     anchors.fill: parent
                     enabled: (drawing) ? false : true
                     drawingExists: userDrawnExtent
+                    historyAvailable: mapViewPlus.historyAvailable && (previewMap.map !== null ? previewMap.map.mapItems.length <= 0 : false)
 
                     onDrawingRequest: {
-                        drawingStarted();
-                        geometryType = g;
+                        if (g === Singletons.Constants.kRedraw){
+                            redraw();
+                        }
+                        else {
+                            drawingStarted();
+                            geometryType = g;
+                        }
                     }
                 }
 
@@ -226,7 +251,6 @@ Item {
                     border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
                     radius: sf(3)
                 }
-
 
                 Rectangle {
                     anchors.fill: parent
@@ -591,6 +615,22 @@ Item {
             mapViewPlus.drawingCleared();
         }
 
+        onMapServiceChanged: {
+            resetProperties();
+        }
+
+        onMapLoadedChanged: {
+            if (mapLoaded){
+                console.log("Loaded: ", mapService)
+                if (previewMap.lastKnownCenter !== null){
+                    previewMap.map.center = previewMap.lastKnownCenter;
+                }
+                if (previewMap.lastKnownZoomLevel > -1) {
+                    previewMap.map.zoomLevel = previewMap.lastKnownZoomLevel;
+                }
+            }
+        }
+
         onMapPanningFinished: {
             if (multipathDrawingMouseArea.enabled) {
                 multipathDrawingMouseArea.mapPanningFinished();
@@ -639,7 +679,7 @@ Item {
     //--------------------------------------------------------------------------
 
     MapPolygon{
-        id:drawnPolygon
+        id: drawnPolygon
         color: drawingExtentFillColor
         border.width: sf(2)
         border.color: drawnExtentOutlineColor
@@ -692,17 +732,16 @@ Item {
             pathCoordinates = geometry.coordinatesForQML;
             if (geometry.type !== "") {
                 if (geometry.type === "esriGeometryPolygon") {
-                    geometryType = Singletons.Constants.kPolygon; //"polygon";
+                    geometryType = Singletons.Constants.kPolygon;
                     addPolygonToMap("final");
                 }
 
                 if (geometry.type === "esriGeometryPolyline") {
-                    geometryType = Singletons.Constants.kMultipath; //"multipath";
+                    geometryType = Singletons.Constants.kMultipath;
                     addMultipathToMap("final");
                 }
             }
 
-            //addMultipathToMap("final");
             mapViewPlus.map.fitViewportToMapItems();
         }
 
@@ -714,22 +753,17 @@ Item {
     // METHODS /////////////////////////////////////////////////////////////////
 
     function getCurrentGeometry(){
-        console.log(geometryType);
         var g;
         if (drawMultipath) {
-            console.log("drawMultipath ", drawMultipath);
             g = getMutlipathGeometry();
         }
         else if (drawEnvelope) {
-            console.log("drawEnvelope ", drawEnvelope)
             g = getEnvelopeGeometry();
         }
         else if (drawPolygon) {
-            console.log("drawPolygon ", drawPolygon)
             g = getPolygonGeometry();
         }
         else {
-            console.log('no geometry');
             g = null;
         }
 
@@ -848,22 +882,36 @@ Item {
         topLeft = screenPositionToLatLong(drawingStartCoord);
         bottomRight = screenPositionToLatLong(drawingEndCoord);
 
-        // Clean up canvas
-        clearDrawingCanvas();
+        var path = [];
+        path.push({"coordinate": {"longitude": topLeft.longitude, "latitude": topLeft.latitude}});
+        path.push({"coordinate": {"longitude": bottomRight.longitude, "latitude": topLeft.latitude}});
+        path.push({"coordinate": {"longitude": bottomRight.longitude, "latitude": bottomRight.latitude}});
+        path.push({"coordinate": {"longitude": topLeft.longitude, "latitude": bottomRight.latitude}});
+        path.push({"coordinate": {"longitude": topLeft.longitude, "latitude": topLeft.latitude}});
 
-        // Draw extent
-        drawnExtent.topLeft = topLeft;
-        drawnExtent.bottomRight = bottomRight;
-        previewMap.map.addMapItem(drawnExtent);
+        pathCoordinates = path;
+        addPolygonToMap("final")
 
-        // Add Clear Button
-        previewMap.map.addMapItem(clearExtentMapItem)
-        clearExtentMapItem.anchorPoint = Qt.point(-3,-3);
-        clearExtentMapItem.coordinate = QtPositioning.coordinate(topLeft.latitude, topLeft.longitude);
-        clearExtentMapItem.visible = true;
-        clearExtentMapItem.enabled = true;
+//        drawingHistory.push({
+//                                "type": Singletons.Constants.kPolygon,
+//                                "geometry": path
+//                            });
+//        // Clean up canvas
+//        clearDrawingCanvas();
 
-        drawingFinished();
+//        // Draw extent
+//        drawnExtent.topLeft = topLeft;
+//        drawnExtent.bottomRight = bottomRight;
+//        previewMap.map.addMapItem(drawnExtent);
+
+//        // Add Clear Button
+//        previewMap.map.addMapItem(clearExtentMapItem)
+//        clearExtentMapItem.anchorPoint = Qt.point(-3,-3);
+//        clearExtentMapItem.coordinate = QtPositioning.coordinate(topLeft.latitude, topLeft.longitude);
+//        clearExtentMapItem.visible = true;
+//        clearExtentMapItem.enabled = true;
+
+//        drawingFinished();
     }
 
     //--------------------------------------------------------------------------
@@ -873,7 +921,7 @@ Item {
         clearMap();
 
         var path = [];
-        for(var i = 0; i < pathCoordinates.length; i++){
+        for (var i = 0; i < pathCoordinates.length; i++) {
             path.push(pathCoordinates[i]['coordinate']);
         }
 
@@ -882,6 +930,11 @@ Item {
         previewMap.map.addMapItem(drawnPolyline);
 
         if (typeOfPath === "final") {
+            _updateDrawingHistory("add",
+                                  {
+                                      "type": Singletons.Constants.kMultipath,
+                                      "geometry": pathCoordinates
+                                  });
             userDrawnExtent = true;
             clearDrawingCanvas();
 
@@ -908,10 +961,18 @@ Item {
         }
 
         drawnPolygon.path = path;
+        console.log(path)
 
         mapViewPlus.map.addMapItem(drawnPolygon);
 
+
+
         if (typeOfPath === "final") {
+            _updateDrawingHistory("add",
+                                  {
+                                      "type": Singletons.Constants.kPolygon,
+                                      "geometry": pathCoordinates
+                                  });
             userDrawnExtent = true;
             clearDrawingCanvas();
 
@@ -923,7 +984,6 @@ Item {
 
             drawingFinished();
         }
-
     }
 
     //--------------------------------------------------------------------------
@@ -1022,15 +1082,27 @@ Item {
         }
     }
 
-    // UNIMPLEMENTED ///////////////////////////////////////////////////////////
+    //--------------------------------------------------------------------------
 
-    Timer {
-        id: animationTimer
-        interval: 47
-        running: false
-        repeat: true
-        onTriggered: {
+    function _updateDrawingHistory(op, geo){
 
+        if (op === "add") {
+            drawingHistory.push(geo);
+        }
+        else if (op === "delete") {
+            // todo
+        }
+        else if (op === "clear") {
+            drawingHistory = [];
+        }
+        else {
+        }
+
+        if (drawingHistory.length > 0){
+            historyAvailable = true;
+        }
+        else {
+            historyAvailable = false;
         }
     }
 

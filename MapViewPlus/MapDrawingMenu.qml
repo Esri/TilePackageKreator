@@ -39,6 +39,7 @@ Rectangle{
     property bool drawing: false
     property bool drawingExists: false
     property string activeGeometryType: ""
+    property bool historyAvailable: false
 
     signal drawingRequest(string g)
 
@@ -73,7 +74,7 @@ Rectangle{
                 "borderColor": "#E4A793"
             }
             Layout.fillHeight: true
-            Layout.preferredWidth: sf(150)
+            Layout.preferredWidth: sf(130)
 
             RowLayout{
                 anchors.fill: parent
@@ -82,7 +83,7 @@ Rectangle{
                     color: "transparent"
                     Layout.fillHeight: true
                     Layout.preferredWidth: parent.height - sf(10)
-                    Layout.rightMargin: sf(10)
+                    Layout.rightMargin: sf(8)
 
                     Text {
                         anchors.centerIn: parent
@@ -99,6 +100,7 @@ Rectangle{
                         id: drawingNotice
                         anchors.fill: parent
                         font.family: notoRegular
+                        font.pointSize: Singletons.Config.smallFontSizePoint
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.Wrap
                         text: (!drawing) ? ( (!drawingExists) ? Singletons.Strings.drawAnExtentOrPath : Singletons.Strings.extentOrPathDrawn ) : (activeGeometryType === "envelope") ? Singletons.Strings.drawingExtent : Singletons.Strings.drawingPath
@@ -134,7 +136,14 @@ Rectangle{
 
         id: drawingTypesModel
 
-        ListElement{
+        ListElement {
+            name: qsTr("Redraw Last")
+            property bool available: true
+            property string geometryType: "redraw"
+            property string fontIcon: "redraw_last_path"
+        }
+
+        ListElement {
             name: qsTr("Draw Rectangle")
             property bool available: true
             property string geometryType: "envelope"
@@ -142,7 +151,7 @@ Rectangle{
             property string fontIcon: "draw_extent"
         }
 
-        ListElement{
+        ListElement {
             name: qsTr("Draw Path")
             property bool available: true
             property string geometryType: "multipath"
@@ -154,7 +163,7 @@ Rectangle{
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: drawingButtonComponent
 
         Rectangle{
@@ -164,7 +173,7 @@ Rectangle{
 
             Button {
                 anchors.fill: parent
-                enabled: available
+                enabled: geometryType !== Singletons.Constants.kRedraw ? available : available && historyAvailable
                 visible: available
                 property string g: geometryType
                 ToolTip.text: name
@@ -190,7 +199,7 @@ Rectangle{
                         Text{
                             anchors.centerIn: parent
                             font.pointSize: Singletons.Config.largeFontSizePoint * 1.5
-                            color: (activeGeometryType === geometryType) ? "#fff" : app.info.properties.mainButtonBorderColor
+                            color: parent.enabled ? (activeGeometryType === geometryType) ? "#fff" : app.info.properties.mainButtonBorderColor : "#ddd"
                             font.family: iconFont
                             text: icons[fontIcon]
                         }
@@ -215,8 +224,8 @@ Rectangle{
 
                 onClicked: {
                     drawing = true;
-                    drawingRequest(g);
                     activeGeometryType = g;
+                    drawingRequest(g);
                 }
             }
         }

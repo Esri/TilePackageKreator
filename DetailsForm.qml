@@ -45,6 +45,9 @@ Rectangle {
     property int currentBufferInMeters: desiredBufferInput.unitInMeters
     property string defaultSaveToLocation: ""
 
+    property ListModel tileServicesSimpleListModel
+    property int currentTileIndex: 0
+
     property bool exportAndUpload: true
     property bool exportOnly: false
     property bool uploadOnly: false
@@ -65,6 +68,7 @@ Rectangle {
 
     signal exportZoomLevelsChanged()
     signal exportBufferDistanceChanged()
+    signal changeTileService(int index)
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
@@ -108,17 +112,75 @@ Rectangle {
         }
 
         ColumnLayout{
+            id: detailsControls
             anchors.fill: parent
             anchors.margins: sf(10)
             spacing: 0
 
-            Component.onCompleted: {
-               details.contentHeight = childrenRect.height;
+            onHeightChanged: {
+                console.log("onHeightChanged")
+                _setDetailFormHeight();
             }
 
-            //----------------------------------------------------------------------
+            Component.onCompleted: {
+                console.log("Component.onCompleted")
+                _setDetailFormHeight();
+            }
+
+            //------------------------------------------------------------------
 
             Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(70)
+                visible: exportOnly
+                enabled: exportOnly
+
+                ColumnLayout{
+                    anchors.fill: parent
+                    spacing: 0
+
+                    Text {
+                        text: Singletons.Strings.currentTileService
+                        color: Singletons.Colors.darkGray
+                        font.pointSize: Singletons.Config.smallFontSizePoint
+                        font.family: notoRegular
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        Accessible.role: Accessible.Heading
+                        Accessible.name: text
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: sf(40)
+                        Controls.StyledComboBox {
+                            anchors.fill: parent
+                            model: tileServicesSimpleListModel
+                            textRole: "title"
+                            currentIndex: currentTileIndex
+
+                            onCurrentIndexChanged: {
+                                currentTileIndex = currentIndex;
+                                changeTileService(currentTileIndex);
+                            }
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(2)
+                Layout.topMargin: sf(8)
+                Layout.bottomMargin: sf(8)
+                color: Singletons.Colors.mediumGray
+                visible: exportAndUpload
+                Accessible.ignored: true
+            }
+
+            Item {
+                objectName: "one"
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(70)
                 visible: exportAndUpload
@@ -126,7 +188,7 @@ Rectangle {
 
                 ColumnLayout{
                     anchors.fill: parent
-                    spacing:0
+                    spacing: 0
 
                     Text {
                         text: Singletons.Strings.numberOfZoomLevels
@@ -198,6 +260,7 @@ Rectangle {
             //----------------------------------------------------------------------
 
             StatusIndicator{
+                objectName: "levelsWarning"
                 id: levelsWarning
                 Layout.fillWidth: true
                 Layout.topMargin: sf(5)
@@ -215,6 +278,7 @@ Rectangle {
             }
 
             Rectangle {
+                objectName: "spacer"
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(2)
                 Layout.topMargin: sf(8)
@@ -227,6 +291,7 @@ Rectangle {
             //----------------------------------------------------------------------
 
             Rectangle {
+                objectName: "bufferRadiusContainer"
                 id: bufferRadiusContainer
                 property int controlHeight: sf(70)
                 color: "#fff"
@@ -302,6 +367,7 @@ Rectangle {
             }
 
             Rectangle {
+                objectName: "spacer"
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(2)
                 Layout.topMargin: sf(8)
@@ -318,6 +384,8 @@ Rectangle {
             //----------------------------------------------------------------------
 
             Rectangle{
+                objectName: "tpkTitleLabels"
+
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(30)
                 color:"#fff"
@@ -345,6 +413,8 @@ Rectangle {
              }
 
              Rectangle{
+                 objectName: "tpkTitleTextField"
+
                  Layout.fillWidth: true
                  Layout.preferredHeight: sf(40)
                  Layout.bottomMargin: sf(5)
@@ -370,6 +440,8 @@ Rectangle {
             }
 
             Rectangle {
+                objectName: "tpkFileTitleName"
+
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(10)
                 visible: false
@@ -384,6 +456,7 @@ Rectangle {
             }
 
             Rectangle {
+                objectName: "spacer"
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(2)
                 Layout.topMargin: sf(8)
@@ -396,6 +469,8 @@ Rectangle {
             //----------------------------------------------------------------------
 
             Text {
+                objectName: "Save_To"
+
                 text: Singletons.Strings.saveTo //qsTr("Save To")
                 color: Singletons.Colors.darkGray
                 font.pointSize: Singletons.Config.smallFontSizePoint
@@ -408,6 +483,8 @@ Rectangle {
             }
 
             Item {
+                objectName: "saveToLocationRadioButton"
+
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(40)
                 visible: exportAndUpload
@@ -432,6 +509,8 @@ Rectangle {
             }
 
             Rectangle {
+                objectName: "saveToLocationDetails"
+
                 id: saveToLocationDetails
                 Layout.fillWidth: true
                 Layout.bottomMargin: sf(10)
@@ -502,6 +581,8 @@ Rectangle {
             //----------------------------------------------------------------------
 
             Rectangle {
+                objectName: "uploadToPortalRadioButton"
+
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(40)
                 color: "#fff"
@@ -527,8 +608,11 @@ Rectangle {
             //----------------------------------------------------------------------
 
             Rectangle {
+                objectName: "uploadToPortalDetailsContainer"
+
                 id: uploadToPortalDetailsContainer
-                Layout.fillHeight: true
+                //Layout.fillHeight: true
+                Layout.preferredHeight: sf(265)
                 Layout.fillWidth: true
                 Layout.leftMargin: uploadOnly ? 0 : sf(20)
                 color: uploadOnly ? "white" : Singletons.Colors.lightGray
@@ -720,6 +804,12 @@ Rectangle {
                         }
                 }
             }
+
+            Item {
+                objectName: "finalSpacer"
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+            }
         }
     }
 
@@ -747,6 +837,25 @@ Rectangle {
     }
 
     // METHODS /////////////////////////////////////////////////////////////////
+
+    function _setDetailFormHeight(){
+        var controls = detailsControls.children
+        var initHeight = 0;
+        for (var child in controls){
+            if(controls[child].objectName !== "finalSpacer"){
+                //console.log("--- %1 : %2 : %3".arg(controls[child].objectName).arg(controls[child].height).arg(controls[child].Layout.topMargin))
+                initHeight += (controls[child].height + controls[child].Layout.topMargin + controls[child].Layout.bottomMargin);
+                if(controls[child].height === 0){
+                    //console.log("hidden: ",controls[child].objectName)
+                    initHeight += controls[child].Layout.preferredHeight;
+                }
+            }
+        }
+
+        details.contentHeight = initHeight;
+    }
+
+    //--------------------------------------------------------------------------
 
     function _sanatizeTitle(inText){
         var title = inText.replace(/[^a-zA-Z0-9]/g,"_").toLocaleLowerCase();

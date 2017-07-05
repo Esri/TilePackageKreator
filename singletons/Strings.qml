@@ -55,6 +55,7 @@ QtObject {
     readonly property string createPItemDesc: qsTr("This menu item will open up a file dialog and save a pitem file to the location specified in the dialog.")
     readonly property string creating: qsTr("Creating")
     readonly property string creatingBufferGeometry: qsTr("Creating buffer geometry")
+    readonly property string currentTileService: qsTr("Current Tile Service")
     readonly property string cursorCoord: qsTr("Cursor Coordinate")
     readonly property string cursorCoordDesc: qsTr("This text denotes the current latitude and longitude position of the mouse cursor on the map.")
 
@@ -153,6 +154,9 @@ QtObject {
     readonly property string queryingServices: qsTr("Querying Services. Please wait.")
 
     // R -----------------------------------------------------------------------
+    readonly property string redrawLastEnvelope: qsTr("Redraw last envelope.")
+    readonly property string redrawLastPath: qsTr("Redraw last path")
+    readonly property string redrawLastPolygon: qsTr("Redraw last polygon")
 
 
     // S -----------------------------------------------------------------------

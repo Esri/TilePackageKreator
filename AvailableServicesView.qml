@@ -500,7 +500,11 @@ Item {
                         }
                         else {
                            servicesGridView.currentIndex = index;
-                           mainStackView.push(etv,{ currentTileService: currentTileService });
+                           mainStackView.push(etv,{
+                                                  currentTileIndex: index,
+                                                  currentTileService: currentTileService,
+                                                  availableServices: asm.servicesListModel
+                                              });
                         }
                     }
                     onDoubleClicked: {

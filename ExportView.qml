@@ -32,6 +32,7 @@ import "DeepLinkingRequest"
 import "HistoryManager"
 import "Geometry"
 import "MapViewPlus" as MapView
+import "Controls" as Controls
 import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
@@ -45,9 +46,20 @@ Item {
     property bool exporting: false
     property bool uploading: false
     property var currentTileService: null
+    property ListModel availableServices
+    property int currentTileIndex: 0
 
     signal exportStarted()
     signal exportComplete()
+
+//    onAvailableServicesChanged: {
+//        exportDetails.tileServicesSimpleListModel.clear();
+//        for (var x = 0; x < availableServices.count; x++) {
+//            console.log(availableServices[x]);
+//            var service = availableServices[x];
+//            exportDetails.tileServicesSimpleListModel.append({title: service.title})
+//        }
+//    }
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
@@ -314,12 +326,12 @@ Item {
 
                                 //----------------------------------------------
 
-                                Rectangle{
+                                Rectangle {
                                     id: tilePackageSizeEstimateContainer
                                     Layout.fillHeight: true
                                     Layout.fillWidth: true
 
-                                    ColumnLayout{
+                                    ColumnLayout {
                                         spacing:0
                                         anchors.fill: parent
 
@@ -392,7 +404,7 @@ Item {
                     color: "#fff"
                     Accessible.role: Accessible.Pane
 
-                   DetailsForm{
+                   DetailsForm {
                         id: exportDetails
                         height: parent.height
                         width: parent.width
@@ -402,7 +414,14 @@ Item {
                         exportAndUpload: true
                         exportPathBuffering: mapViewPlus.geometryType === "multipath"
                         currentTileService: exportView.currentTileService
+                        tileServicesSimpleListModel: availableServices
+                        currentTileIndex: exportView.currentTileIndex
                         tpkTitle: exportView.extractDefaultTPKTitle(exportView.currentTileService.title)
+
+                        onChangeTileService: {
+                            exportView.currentTileIndex = index;
+                            exportView.currentTileService = availableServices.get(index);
+                        }
 
                         onExportZoomLevelsChanged: {
                             if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null){
@@ -419,28 +438,28 @@ Item {
 
             // EXPORT OVERLAY //////////////////////////////////////////////////
 
-            Rectangle{
+            Rectangle {
                 id: tpkExportStatusOverlay
                 color:"transparent"
                 anchors.fill: parent
                 visible: false
 
-                Rectangle{
+                Rectangle {
                     anchors.fill:parent
                     opacity: .9
-                    color:Singletons.Config.subtleBackground
+                    color: Singletons.Config.subtleBackground
                     z: 100
                 }
 
-                ColumnLayout{
-                    id:exportStatus
+                ColumnLayout {
+                    id: exportStatus
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.margins: sf(10)
                     z: 101
 
-                    ProgressIndicator{
+                    ProgressIndicator {
                         id: estimateSizeProgressIndicator
                         statusTextFontSize: Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
@@ -930,6 +949,13 @@ Item {
 
     CoordinateConverter{
         id: coordConverter
+    }
+
+    //--------------------------------------------------------------------------
+
+    AvailableServicesModel {
+        id: asm
+        portal: exportView.portal
     }
 
     //--------------------------------------------------------------------------
