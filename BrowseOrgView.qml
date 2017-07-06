@@ -113,6 +113,21 @@ Item {
             currentIndex: -1
             z: 999
         }
+
+        Rectangle {
+            id: noServicesMessage
+            anchors.fill: parent
+            visible: false
+            color: "#fff"
+            z: servicesGridView.z + 1
+            Text {
+                anchors.centerIn: parent
+                text: Singletons.Strings.noOrgTileServices
+                font.family: notoBold
+                font.pointSize: Singletons.Config.largeFontSizePoint
+                color: Singletons.Config.boldUIElementFontColor
+            }
+        }
     }
 
     // COMPONENTS //////////////////////////////////////////////////////////////
@@ -468,8 +483,8 @@ Item {
         id: highlight
 
         Item {
-            width: sf(servicesGridView.cellWidth)
-            height: sf(servicesGridView.cellHeight)
+            width: servicesGridView.cellWidth
+            height: servicesGridView.cellHeight
             x: servicesGridView.currentItem.x
             y: servicesGridView.currentItem.y
             z: 1000
@@ -478,7 +493,7 @@ Item {
             Rectangle {
                 color: "transparent"
                 anchors.fill: parent
-                anchors.margins: sf(gridMargin / 2)
+                anchors.margins: gridMargin / 2
                 visible: true
                 border.width: sf(1)
                 border.color: Singletons.Config.availableServicesView.highlightColor
@@ -542,6 +557,10 @@ Item {
                     activityIndicator.visible = false;
                 }
                 rotator.stop();
+
+                if ( !(servicesListModel.count > 0) ){
+                    noServicesMessage.visible = true;
+                }
             }
         }
 

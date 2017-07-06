@@ -75,7 +75,7 @@ Rectangle{
                 "borderColor": "#E4A793"
             }
             Layout.fillHeight: true
-            Layout.preferredWidth: sf(130)
+            Layout.preferredWidth: sf(135)
 
             RowLayout{
                 anchors.fill: parent
@@ -100,9 +100,10 @@ Rectangle{
                         id: drawingNotice
                         anchors.fill: parent
                         font.family: notoRegular
-                        font.pointSize: Singletons.Config.smallFontSizePoint
+                        font.pointSize: Singletons.Config.xSmallFontSizePoint
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.Wrap
+                        lineHeight: .8
                         text: (!drawing) ? ( (!drawingExists) ? Singletons.Strings.drawAnExtentOrPath : Singletons.Strings.extentOrPathDrawn ) : (activeGeometryType === "envelope") ? Singletons.Strings.drawingExtent : Singletons.Strings.drawingPath
                     }
                 }

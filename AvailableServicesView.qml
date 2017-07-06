@@ -424,9 +424,10 @@ Item {
             anchors.left: parent.left
             visible: false
             color: "#fff"
+            z: servicesGridView.z + 1
             Text {
                 anchors.centerIn: parent
-                text: Singletons.Strings.noTileServices
+                text: Singletons.Strings.noExportTileServices
                 font.family: notoBold
                 font.pointSize: Singletons.Config.largeFontSizePoint
                 color: Singletons.Config.boldUIElementFontColor
