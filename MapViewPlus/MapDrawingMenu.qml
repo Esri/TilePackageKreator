@@ -91,13 +91,6 @@ Rectangle{
                         iconSizeMultiplier: 1.2
                         icon: (!drawing) ? ( (!drawingExists) ? _icons.warning : _icons.checkmark ) : _icons.happy_face
                     }
-
-//                    Text {
-//                        anchors.centerIn: parent
-//                        font.pointSize: Singletons.Config.largeFontSizePoint * 1.2
-//                        font.family: iconFontLegacy
-//                        text: (!drawing) ? ( (!drawingExists) ? iconsLegacy.warning : iconsLegacy.checkmark ) : iconsLegacy.happy_face
-//                    }
                 }
                 Rectangle{
                     Layout.fillHeight: true
@@ -209,14 +202,6 @@ Rectangle{
                             color: parent.enabled ? (activeGeometryType === geometryType) ? "#fff" : app.info.properties.mainButtonBorderColor : "#ddd"
                             icon: _icons[fontIcon]
                         }
-
-//                        Text{
-//                            anchors.centerIn: parent
-//                            font.pointSize: Singletons.Config.largeFontSizePoint * 1.5
-//                            color: parent.enabled ? (activeGeometryType === geometryType) ? "#fff" : app.info.properties.mainButtonBorderColor : "#ddd"
-//                            font.family: iconFontLegacy
-//                            text: iconsLegacy[fontIcon]
-//                        }
                     }
                     Rectangle {
                         Layout.fillWidth: true

@@ -158,15 +158,6 @@ Rectangle{
             color: !busy ? app.info.properties.mainButtonBorderColor : "green"
         }
 
-//        Text {
-//            id: searchAndStatus
-//            anchors.centerIn: parent
-//            font.pointSize: Singletons.Config.largeFontSizePoint
-//            color: !busy ? app.info.properties.mainButtonBorderColor : "green"
-//            font.family: iconsLegacy.name
-//            text: busy ? iconsLegacy.spinner2 : iconsLegacy.magnifying_glass
-//        }
-
         RotationAnimation {
             id: rotator
             direction: RotationAnimation.Clockwise
@@ -204,20 +195,10 @@ Rectangle{
                     anchors.fill: parent
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
-                    font.pointSize: 10
+                    font.pointSize: 9
                     color: "#fff"
                     icon: _icons.x_cross
                 }
-
-//                Text {
-//                    anchors.fill: parent
-//                    verticalAlignment: Text.AlignVCenter
-//                    horizontalAlignment: Text.AlignHCenter
-//                    font.pointSize: 10
-//                    color: "#fff"
-//                    font.family: iconsLegacy.name
-//                    text: iconsLegacy.x_cross
-//                }
             }
             onClicked: {
                 textField.clear();

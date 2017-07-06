@@ -48,9 +48,9 @@ Rectangle {
     property alias progressText: statusText.text
     property alias statusText: statusText
 
-    readonly property string success: _icons.checkmark // iconsLegacy.checkmark
-    readonly property string failed: _icons.x_cross // iconsLegacy.x_cross
-    readonly property string working: _icons.spinner2 // iconsLegacy.spinner2
+    readonly property string success: _icons.checkmark
+    readonly property string failed: _icons.x_cross
+    readonly property string working: _icons.spinner2
 
     signal show()
     signal hide()
@@ -61,7 +61,7 @@ Rectangle {
 
     //--------------------------------------------------------------------------
 
-    Rectangle{
+    Rectangle {
         id: statusIconContainer
         anchors.left: parent.left
         anchors.leftMargin: iconContainerLeftMargin
@@ -79,62 +79,30 @@ Rectangle {
             fontSizeMode: Text.Fit
             minimumPointSize: Singletons.Config.smallFontSizePoint
             onTextChanged: {
-                if(text === working){
+                if (text === working) {
                     rotator.start();
                 }
-                else{
+                else {
                     rotator.stop();
                     statusIcon.rotation = 0;
                 }
-                if(iconContainerBackground !== "transparent") {
-                    if( text === working ){
+                if (iconContainerBackground !== "transparent") {
+                    if ( text === working ) {
                         statusIconContainer.color = workingBackground;
                     }
-                    if( text === success ){
+                    if ( text === success ) {
                         statusIconContainer.color = successBackground;
                     }
-                    if( text === failed ){
+                    if ( text === failed ) {
                         statusIconContainer.color = failedBackground;
                     }
                 }
             }
         }
-
-//        Text {
-//            id:_statusIcon
-//            anchors.centerIn: parent
-//            font.pointSize: Singletons.Config.largeFontSizePoint
-//            color: "#fff"
-//            font.family: iconFontLegacy
-//            text: ""
-//            fontSizeMode: Text.Fit
-//            minimumPointSize: Singletons.Config.smallFontSizePoint
-
-//            onTextChanged: {
-//                if(text === working){
-//                    rotator.start();
-//                }
-//                else{
-//                    rotator.stop();
-//                    statusIcon.rotation = 0;
-//                }
-//                if(iconContainerBackground !== "transparent") {
-//                    if( text === working ){
-//                        statusIconContainer.color = workingBackground;
-//                    }
-//                    if( text === success ){
-//                        statusIconContainer.color = successBackground;
-//                    }
-//                    if( text === failed ){
-//                        statusIconContainer.color = failedBackground;
-//                    }
-//                }
-//            }
-//        }
     }
 
-    Text{
-        id:statusText
+    Text {
+        id: statusText
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.bottom: parent.bottom

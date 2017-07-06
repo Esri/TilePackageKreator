@@ -96,19 +96,6 @@ Item {
                     Accessible.name: Singletons.Strings.animatedSpinner
                     Accessible.description: Singletons.Strings.animatedSpinnerDesc
                 }
-
-//                Text{
-//                    id: refreshSpinner
-//                    anchors.centerIn: parent
-//                    font.pointSize: Singletons.Config.largeFontSizePoint * 3
-//                    color: "#888"
-//                    font.family: iconFontLegacy
-//                    text: iconsLegacy.spinner2
-
-//                    Accessible.role: Accessible.Animation
-//                    Accessible.name: Singletons.Strings.animatedSpinner
-//                    Accessible.description: Singletons.Strings.animatedSpinnerDesc
-//                }
             }
         }
 

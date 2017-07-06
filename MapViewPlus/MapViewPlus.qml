@@ -268,13 +268,6 @@ Item {
                         color: app.info.properties.mainButtonBorderColor
                         icon: _icons.plus_sign
                     }
-//                    Text {
-//                        anchors.centerIn: parent
-//                        font.pointSize: Singletons.Config.smallFontSizePoint
-//                        color: app.info.properties.mainButtonBorderColor
-//                        font.family: iconFontLegacy
-//                        text: iconsLegacy.plus_sign
-//                    }
                 }
 
                 onClicked: {
@@ -308,14 +301,6 @@ Item {
                         color: app.info.properties.mainButtonBorderColor
                         icon: _icons.minus_sign
                     }
-
-//                    Text{
-//                        anchors.centerIn: parent
-//                        font.pointSize: Singletons.Config.smallFontSizePoint
-//                        color: app.info.properties.mainButtonBorderColor
-//                        font.family: iconFontLegacy
-//                        text: iconsLegacy.minus_sign
-//                    }
                 }
                 onClicked: {
                     if(map.zoomLevel > 0 && map.zoomLevel > map.minimumZoomLevel){

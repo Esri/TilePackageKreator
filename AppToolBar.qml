@@ -104,15 +104,6 @@ Item {
                     Accessible.ignored: true
                 }
 
-//                Text{
-//                    anchors.centerIn: parent
-//                    font.pointSize: Singletons.Config.largeFontSizePoint
-//                    color: _returnButtonColor(backButton)
-//                    font.family: iconFontLegacy
-//                    text: iconsLegacy.chevron_left
-//                    Accessible.ignored: true
-//                }
-
                 onClicked: {
                     stackView.pop();
                 }
@@ -174,15 +165,6 @@ Item {
                     Accessible.ignored: true
                 }
 
-//                Text{
-//                    anchors.centerIn: parent
-//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
-//                    color: _returnButtonColor(updatesButton)
-//                    font.family: iconFontLegacy
-//                    text: iconsLegacy.download_circle
-//                    Accessible.ignored: true
-//                }
-
                 Rectangle{
                     id: numberOfUpdatesIndicator
                     visible: false
@@ -240,14 +222,6 @@ Item {
                     Accessible.ignored: true
                 }
 
-//                Text{
-//                    anchors.centerIn: parent
-//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
-//                    color: _returnButtonColor(feedbackButton)
-//                    font.family: iconFontLegacy
-//                    text: iconsLegacy.chat_bubble
-//                }
-
                 onClicked: {
                     feedbackDialog.open();
                 }
@@ -283,15 +257,6 @@ Item {
                     color: _returnButtonColor(aboutButton)
                     Accessible.ignored: true
                 }
-
-
-//                Text{
-//                    anchors.centerIn: parent
-//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
-//                    color: _returnButtonColor(aboutButton)
-//                    font.family: iconFontLegacy
-//                    text: iconsLegacy.info
-//                }
 
                 onClicked: {
                     aboutDialog.open()
@@ -329,14 +294,6 @@ Item {
                     Accessible.ignored: true
                 }
 
-//                Text{
-//                    anchors.centerIn: parent
-//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
-//                    color: _returnButtonColor(historyButton)
-//                    font.family: iconFontLegacy
-//                    text: iconsLegacy.history
-//                }
-
                 onClicked: {
                     stackView.push(hv);
                 }
@@ -373,14 +330,6 @@ Item {
                     color: _returnButtonColor(userButton)
                     Accessible.ignored: true
                 }
-
-//                Text{
-//                    anchors.centerIn: parent
-//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
-//                    color: _returnButtonColor(userButton)
-//                    font.family: iconFontLegacy
-//                    text: iconsLegacy.sign_out
-//                }
 
                 onClicked: {
                     portal.signOut();
