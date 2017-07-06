@@ -33,15 +33,14 @@ App {
     property bool calledFromAnotherApp: false
     property url incomingUrl
 
-    property string icons: _icons.status == FontLoader.Ready ? _icons.name : "tilepackagekreator"
-//    property string iconFontLegacy: iconsLegacy.status == FontLoader.Ready ? iconsLegacy.name : "tilepackagekreator"
+    property string icons: _icons.status == FontLoader.Ready ? _icons.name : "tpk"
     property string notoRegular: _notoRegular.status == FontLoader.Ready ? _notoRegular.name : "Noto Sans"
     property string notoBold: _notoBold.status == FontLoader.Ready ? _notoBold.name : "Noto Sans"
     property string notoItalic: _notoItalic.status == FontLoader.Ready ? _notoItalic.name : "Noto Sans"
     property string notoBoldItalic: _notoBoldItalic.status == FontLoader.Ready ? _notoBoldItalic.name : "Noto Sans"
 
     Component.onCompleted: {
-        console.log("---------------- icons: ", icons);
+        console.log("---------------- icons: ", _icons.name);
     }
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
@@ -74,23 +73,23 @@ App {
 
     FontLoader {
         id: _notoRegular
-        source: app.folder.fileUrl("fonts/NotoSans-Regular.ttf")
+        source: "fonts/NotoSans-Regular.ttf"
     }
     FontLoader {
         id: _notoBold
-        source: app.folder.fileUrl("fonts/NotoSans-Bold.ttf")
+        source: "fonts/NotoSans-Bold.ttf"
     }
     FontLoader {
         id: _notoItalic
-        source: app.folder.fileUrl("fonts/NotoSans-Italic.ttf")
+        source: "fonts/NotoSans-Italic.ttf"
     }
     FontLoader {
         id: _notoBoldItalic
-        source: app.folder.fileUrl("fonts/NotoSans-BoldItalic.ttf")
+        source: "fonts/NotoSans-BoldItalic.ttf"
     }
     FontLoader {
         id: _icons
-        source: app.folder.fileUrl("fonts/tilepackagekreator.ttf")
+        source: "fonts/tpk.ttf"
         property string chat_bubble: "\ue96e"
         property string checkmark: "\uea10"
         property string chevron_left: "\uf053"
