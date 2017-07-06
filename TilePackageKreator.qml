@@ -39,7 +39,9 @@ App {
     property string notoBoldItalic: _notoBoldItalic.status == FontLoader.Ready ? _notoBoldItalic.name : "Noto Sans"
 
     Component.onCompleted: {
-        console.log("---------------- icons: ", _icons.name);
+        if (!appDatabase.exists()) {
+            appDatabase.create();
+        }
     }
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
@@ -66,6 +68,10 @@ App {
         anchors.fill: parent
         portal: portal
         parentApp: app
+    }
+
+    AppDb {
+        id: appDatabase
     }
 
     //--------------------------------------------------------------------------
