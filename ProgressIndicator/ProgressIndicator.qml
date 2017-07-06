@@ -21,6 +21,7 @@ import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 import "../singletons" as Singletons
+import "../"
 //------------------------------------------------------------------------------
 
 Rectangle {
@@ -47,9 +48,9 @@ Rectangle {
     property alias progressText: statusText.text
     property alias statusText: statusText
 
-    readonly property string success: icons.checkmark
-    readonly property string failed: icons.x_cross
-    readonly property string working: icons.spinner2
+    readonly property string success: _icons.checkmark // iconsLegacy.checkmark
+    readonly property string failed: _icons.x_cross // iconsLegacy.x_cross
+    readonly property string working: _icons.spinner2 // iconsLegacy.spinner2
 
     signal show()
     signal hide()
@@ -70,16 +71,13 @@ Rectangle {
         radius: iconContainerHeight / 2
         color: iconContainerBackground
 
-        Text{
-            id:statusIcon
+        IconFont {
+            id: statusIcon
             anchors.centerIn: parent
-            font.pointSize: Singletons.Config.largeFontSizePoint
+            icon: ""
             color: "#fff"
-            font.family: iconFont
-            text: ""
             fontSizeMode: Text.Fit
             minimumPointSize: Singletons.Config.smallFontSizePoint
-
             onTextChanged: {
                 if(text === working){
                     rotator.start();
@@ -101,6 +99,38 @@ Rectangle {
                 }
             }
         }
+
+//        Text {
+//            id:_statusIcon
+//            anchors.centerIn: parent
+//            font.pointSize: Singletons.Config.largeFontSizePoint
+//            color: "#fff"
+//            font.family: iconFontLegacy
+//            text: ""
+//            fontSizeMode: Text.Fit
+//            minimumPointSize: Singletons.Config.smallFontSizePoint
+
+//            onTextChanged: {
+//                if(text === working){
+//                    rotator.start();
+//                }
+//                else{
+//                    rotator.stop();
+//                    statusIcon.rotation = 0;
+//                }
+//                if(iconContainerBackground !== "transparent") {
+//                    if( text === working ){
+//                        statusIconContainer.color = workingBackground;
+//                    }
+//                    if( text === success ){
+//                        statusIconContainer.color = successBackground;
+//                    }
+//                    if( text === failed ){
+//                        statusIconContainer.color = failedBackground;
+//                    }
+//                }
+//            }
+//        }
     }
 
     Text{

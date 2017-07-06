@@ -21,6 +21,7 @@ import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 import "../singletons" as Singletons
+import "../"
 //------------------------------------------------------------------------------
 
 Rectangle{
@@ -85,12 +86,18 @@ Rectangle{
                     Layout.preferredWidth: parent.height - sf(10)
                     Layout.rightMargin: sf(8)
 
-                    Text {
+                    IconFont {
                         anchors.centerIn: parent
-                        font.pointSize: Singletons.Config.largeFontSizePoint * 1.2
-                        font.family: iconFont
-                        text: (!drawing) ? ( (!drawingExists) ? icons.warning : icons.checkmark ) : icons.happy_face
+                        iconSizeMultiplier: 1.2
+                        icon: (!drawing) ? ( (!drawingExists) ? _icons.warning : _icons.checkmark ) : _icons.happy_face
                     }
+
+//                    Text {
+//                        anchors.centerIn: parent
+//                        font.pointSize: Singletons.Config.largeFontSizePoint * 1.2
+//                        font.family: iconFontLegacy
+//                        text: (!drawing) ? ( (!drawingExists) ? iconsLegacy.warning : iconsLegacy.checkmark ) : iconsLegacy.happy_face
+//                    }
                 }
                 Rectangle{
                     Layout.fillHeight: true
@@ -196,13 +203,20 @@ Rectangle{
                         Layout.preferredWidth: parent.height
                         color: "transparent"
 
-                        Text{
+                        IconFont {
                             anchors.centerIn: parent
-                            font.pointSize: Singletons.Config.largeFontSizePoint * 1.5
+                            iconSizeMultiplier: 1.5
                             color: parent.enabled ? (activeGeometryType === geometryType) ? "#fff" : app.info.properties.mainButtonBorderColor : "#ddd"
-                            font.family: iconFont
-                            text: icons[fontIcon]
+                            icon: _icons[fontIcon]
                         }
+
+//                        Text{
+//                            anchors.centerIn: parent
+//                            font.pointSize: Singletons.Config.largeFontSizePoint * 1.5
+//                            color: parent.enabled ? (activeGeometryType === geometryType) ? "#fff" : app.info.properties.mainButtonBorderColor : "#ddd"
+//                            font.family: iconFontLegacy
+//                            text: iconsLegacy[fontIcon]
+//                        }
                     }
                     Rectangle {
                         Layout.fillWidth: true

@@ -113,13 +113,20 @@ Rectangle {
                 color: "transparent"
                 anchors.margins: sf(8)
 
-                Text {
+                IconFont {
                     anchors.centerIn: parent
                     font.pointSize: Singletons.Config.mediumFontSizePoint
                     color: messageType.borderColor
-                    font.family: iconFont
-                    text: icons.x_cross
+                    icon: _icons.x_cross
                 }
+
+//                Text {
+//                    anchors.centerIn: parent
+//                    font.pointSize: Singletons.Config.mediumFontSizePoint
+//                    color: messageType.borderColor
+//                    font.family: iconFontLegacy
+//                    text: iconsLegacy.x_cross
+//                }
             }
 
             onClicked: {

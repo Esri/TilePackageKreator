@@ -96,14 +96,22 @@ Item {
                     anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: Singletons.Config.largeFontSizePoint
+                    icon: _icons.chevron_left
+                    iconSizeMultiplier: 1
                     color: _returnButtonColor(backButton)
-                    font.family: iconFont
-                    text: icons.chevron_left
                     Accessible.ignored: true
                 }
+
+//                Text{
+//                    anchors.centerIn: parent
+//                    font.pointSize: Singletons.Config.largeFontSizePoint
+//                    color: _returnButtonColor(backButton)
+//                    font.family: iconFontLegacy
+//                    text: iconsLegacy.chevron_left
+//                    Accessible.ignored: true
+//                }
 
                 onClicked: {
                     stackView.pop();
@@ -158,14 +166,22 @@ Item {
                     anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+                    icon: _icons.download_circle
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(updatesButton)
-                    font.family: iconFont
-                    text: icons.download_circle
                     Accessible.ignored: true
                 }
+
+//                Text{
+//                    anchors.centerIn: parent
+//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+//                    color: _returnButtonColor(updatesButton)
+//                    font.family: iconFontLegacy
+//                    text: iconsLegacy.download_circle
+//                    Accessible.ignored: true
+//                }
 
                 Rectangle{
                     id: numberOfUpdatesIndicator
@@ -216,13 +232,21 @@ Item {
                     anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+                    icon: _icons.chat_bubble
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(feedbackButton)
-                    font.family: iconFont
-                    text: icons.chat_bubble
+                    Accessible.ignored: true
                 }
+
+//                Text{
+//                    anchors.centerIn: parent
+//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+//                    color: _returnButtonColor(feedbackButton)
+//                    font.family: iconFontLegacy
+//                    text: iconsLegacy.chat_bubble
+//                }
 
                 onClicked: {
                     feedbackDialog.open();
@@ -252,13 +276,22 @@ Item {
                     anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+                    icon: _icons.info
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(aboutButton)
-                    font.family: iconFont
-                    text: icons.info
+                    Accessible.ignored: true
                 }
+
+
+//                Text{
+//                    anchors.centerIn: parent
+//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+//                    color: _returnButtonColor(aboutButton)
+//                    font.family: iconFontLegacy
+//                    text: iconsLegacy.info
+//                }
 
                 onClicked: {
                     aboutDialog.open()
@@ -288,13 +321,21 @@ Item {
                     anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+                    icon: _icons.history
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(historyButton)
-                    font.family: iconFont
-                    text: icons.history
+                    Accessible.ignored: true
                 }
+
+//                Text{
+//                    anchors.centerIn: parent
+//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+//                    color: _returnButtonColor(historyButton)
+//                    font.family: iconFontLegacy
+//                    text: iconsLegacy.history
+//                }
 
                 onClicked: {
                     stackView.push(hv);
@@ -325,13 +366,21 @@ Item {
                     anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+                    icon: _icons.sign_out
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(userButton)
-                    font.family: iconFont
-                    text: icons.sign_out
+                    Accessible.ignored: true
                 }
+
+//                Text{
+//                    anchors.centerIn: parent
+//                    font.pointSize: Singletons.Config.largeFontSizePoint * 1.1
+//                    color: _returnButtonColor(userButton)
+//                    font.family: iconFontLegacy
+//                    text: iconsLegacy.sign_out
+//                }
 
                 onClicked: {
                     portal.signOut();

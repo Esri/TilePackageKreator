@@ -27,6 +27,7 @@ import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "../singletons" as Singletons
 import "../Controls" as Controls
+import "../"
 //------------------------------------------------------------------------------
 
 Rectangle{
@@ -149,14 +150,22 @@ Rectangle{
         anchors.top: textField.top
         anchors.left: textField.left
 
-        Text {
+        IconFont {
             id: searchAndStatus
             anchors.centerIn: parent
-            font.pointSize: Singletons.Config.largeFontSizePoint
+            icon: busy ? _icons.spinner2 : _icons.magnifying_glass
+            iconSizeMultiplier: 1
             color: !busy ? app.info.properties.mainButtonBorderColor : "green"
-            font.family: icons.name
-            text: busy ? icons.spinner2 : icons.magnifying_glass
         }
+
+//        Text {
+//            id: searchAndStatus
+//            anchors.centerIn: parent
+//            font.pointSize: Singletons.Config.largeFontSizePoint
+//            color: !busy ? app.info.properties.mainButtonBorderColor : "green"
+//            font.family: iconsLegacy.name
+//            text: busy ? iconsLegacy.spinner2 : iconsLegacy.magnifying_glass
+//        }
 
         RotationAnimation {
             id: rotator
@@ -190,15 +199,25 @@ Rectangle{
                 height: width
                 radius: width / 2
                 color: clearText.enabled ? app.info.properties.mainButtonBorderColor : Singletons.Colors.lightGray
-                Text {
+
+                IconFont {
                     anchors.fill: parent
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
                     font.pointSize: 10
                     color: "#fff"
-                    font.family: icons.name
-                    text: icons.x_cross
+                    icon: _icons.x_cross
                 }
+
+//                Text {
+//                    anchors.fill: parent
+//                    verticalAlignment: Text.AlignVCenter
+//                    horizontalAlignment: Text.AlignHCenter
+//                    font.pointSize: 10
+//                    color: "#fff"
+//                    font.family: iconsLegacy.name
+//                    text: iconsLegacy.x_cross
+//                }
             }
             onClicked: {
                 textField.clear();

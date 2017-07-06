@@ -19,9 +19,8 @@ import QtQuick 2.7
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
 import "Portal"
-import "IconFont"
+// import "IconFont" as LegacyIconFont
 //------------------------------------------------------------------------------
-
 
 App {
 
@@ -34,11 +33,16 @@ App {
     property bool calledFromAnotherApp: false
     property url incomingUrl
 
-    property string iconFont: icons.status == FontLoader.Ready ? icons.name : "tilepackagekreator"
+    property string icons: _icons.status == FontLoader.Ready ? _icons.name : "tilepackagekreator"
+//    property string iconFontLegacy: iconsLegacy.status == FontLoader.Ready ? iconsLegacy.name : "tilepackagekreator"
     property string notoRegular: _notoRegular.status == FontLoader.Ready ? _notoRegular.name : "Noto Sans"
     property string notoBold: _notoBold.status == FontLoader.Ready ? _notoBold.name : "Noto Sans"
     property string notoItalic: _notoItalic.status == FontLoader.Ready ? _notoItalic.name : "Noto Sans"
     property string notoBoldItalic: _notoBoldItalic.status == FontLoader.Ready ? _notoBoldItalic.name : "Noto Sans"
+
+    Component.onCompleted: {
+        console.log("---------------- icons: ", icons);
+    }
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
@@ -68,28 +72,65 @@ App {
 
     //--------------------------------------------------------------------------
 
-    FontLoader{
+    FontLoader {
         id: _notoRegular
         source: app.folder.fileUrl("fonts/NotoSans-Regular.ttf")
     }
-    FontLoader{
+    FontLoader {
         id: _notoBold
         source: app.folder.fileUrl("fonts/NotoSans-Bold.ttf")
     }
-    FontLoader{
+    FontLoader {
         id: _notoItalic
         source: app.folder.fileUrl("fonts/NotoSans-Italic.ttf")
     }
-    FontLoader{
+    FontLoader {
         id: _notoBoldItalic
         source: app.folder.fileUrl("fonts/NotoSans-BoldItalic.ttf")
+    }
+    FontLoader {
+        id: _icons
+        source: app.folder.fileUrl("fonts/tilepackagekreator.ttf")
+        property string chat_bubble: "\ue96e"
+        property string checkmark: "\uea10"
+        property string chevron_left: "\uf053"
+        property string chevron_right: "\uf054"
+        property string download: "\ue9c7"
+        property string download_circle: "\uf01a"
+        property string draw_extent: "\ue900"
+        property string draw_path: "\ue901"
+        property string happy_face: "\ue9df"
+        property string history: "\ue94d"
+        property string info: "\uea0c"
+        property string loop: "\uea2e"
+        property string magnifying_glass: "\ue986"
+        property string minus_sign: "\uea0b"
+        property string plus_sign: "\uea0a"
+        property string question: "\uea09"
+        property string redraw_last_path: "\ue903"
+        property string sad_face: "\ue9e5"
+        property string sign_out: "\ue902"
+        property string spinner: "\ue982"
+        property string spinner2: "\ue97d"
+        property string spinner3: "\ue983"
+        property string trash_bin: "\ue983"
+        property string upload: "\ue9c8"
+        property string user: "\ue971"
+        property string warning: "\uea07"
+        property string x_cross: "\uea0f"
+
+        //--------------------------------------------------------------------------
+
+        function getIconByName(name){
+            return this[name];
+        }
     }
 
     //--------------------------------------------------------------------------
 
-    IconFont{
-        id: icons
-    }
+//    LegacyIconFont.IconFont {
+//        id: iconsLegacy
+//    }
 
     // -------------------------------------------------------------------------
 

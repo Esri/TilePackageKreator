@@ -27,6 +27,7 @@ import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "../Portal"
 import "../singletons" as Singletons
+import "../"
 //------------------------------------------------------------------------------
 
 Item {
@@ -261,13 +262,19 @@ Item {
                 Rectangle {
                     anchors.fill: parent
                     color: "transparent"
-                    Text {
+                    IconFont {
                         anchors.centerIn: parent
                         font.pointSize: Singletons.Config.smallFontSizePoint
                         color: app.info.properties.mainButtonBorderColor
-                        font.family: iconFont
-                        text: icons.plus_sign
+                        icon: _icons.plus_sign
                     }
+//                    Text {
+//                        anchors.centerIn: parent
+//                        font.pointSize: Singletons.Config.smallFontSizePoint
+//                        color: app.info.properties.mainButtonBorderColor
+//                        font.family: iconFontLegacy
+//                        text: iconsLegacy.plus_sign
+//                    }
                 }
 
                 onClicked: {
@@ -295,13 +302,20 @@ Item {
                     anchors.fill: parent
                     color: "transparent"
 
-                    Text{
+                    IconFont {
                         anchors.centerIn: parent
                         font.pointSize: Singletons.Config.smallFontSizePoint
                         color: app.info.properties.mainButtonBorderColor
-                        font.family: iconFont
-                        text: icons.minus_sign
+                        icon: _icons.minus_sign
                     }
+
+//                    Text{
+//                        anchors.centerIn: parent
+//                        font.pointSize: Singletons.Config.smallFontSizePoint
+//                        color: app.info.properties.mainButtonBorderColor
+//                        font.family: iconFontLegacy
+//                        text: iconsLegacy.minus_sign
+//                    }
                 }
                 onClicked: {
                     if(map.zoomLevel > 0 && map.zoomLevel > map.minimumZoomLevel){
