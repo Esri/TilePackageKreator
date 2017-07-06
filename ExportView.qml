@@ -556,7 +556,7 @@ Item {
                             id: exportStatusIndicator
                             anchors.fill: parent
                             containerHeight: parent.height
-                            hideAutomatically: true
+                            hideAutomatically: false
                             statusTextFontSize: Singletons.Config.baseFontSizePoint
                             showDismissButton: true
 
