@@ -34,15 +34,61 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    function transact(sql){
+    function write(sql){
 
         db.open();
+        var query;
 
         try {
-            var query = db.query(sql);
+            query = db.query(sql);
             if (query.error) {
                 console.log("Command error:", query.error.toString());
             }
+        }
+        catch(e) {
+            console.log(e)
+        }
+        finally {
+            db.close();
+        }
+
+        console.log(query);
+
+        return query;
+    }
+
+    //--------------------------------------------------------------------------
+
+    function read(sql){
+
+        db.open();
+        var query;
+
+        try {
+            query = db.queryModel(sql);
+            if (query.error) {
+                console.log("Command error:", query.error.toString());
+            }
+        }
+        catch(e) {
+            console.log(e)
+        }
+        finally {
+            db.close();
+        }
+
+        return query;
+    }
+
+    //--------------------------------------------------------------------------
+
+    function truncate(tableName) {
+        db.open();
+        var truncateSql = "DELETE FROM '%1'".arg(tableName)
+
+        try {
+            db.query(truncateSql);
+            db.query("VACUUM");
         }
         catch(e) {
             console.log(e)

@@ -52,23 +52,14 @@ Item {
     signal exportStarted()
     signal exportComplete()
 
-//    onAvailableServicesChanged: {
-//        exportDetails.tileServicesSimpleListModel.clear();
-//        for (var x = 0; x < availableServices.count; x++) {
-//            console.log(availableServices[x]);
-//            var service = availableServices[x];
-//            exportDetails.tileServicesSimpleListModel.append({title: service.title})
-//        }
-//    }
-
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     Component.onCompleted: {
         console.log(currentTileService);
         var serviceInfo = currentTileService["serviceInfo"];
-        if(serviceInfo !== null){
-            if(serviceInfo.hasOwnProperty("tileInfo")){
-                if(serviceInfo.tileInfo.hasOwnProperty("lods")){
+        if (serviceInfo !== null) {
+            if (serviceInfo.hasOwnProperty("tileInfo")) {
+                if (serviceInfo.tileInfo.hasOwnProperty("lods")) {
                     var availableLevels = (parseInt(serviceInfo.tileInfo.lods.length,10) - 1);
                     exportDetails.maxLevels = availableLevels > 19 ? 19 : availableLevels;
                     mapViewPlus.map.maximumZoomLevel = exportDetails.maxLevels;
@@ -76,11 +67,11 @@ Item {
             }
         }
 
-        if(calledFromAnotherApp && dlr.saveToPath !== null){
+        if (calledFromAnotherApp && dlr.saveToPath !== null ){
             exportDetails.exportToFolder = AppFramework.resolvedPathUrl(dlr.saveToPath);
             exportDetails.defaultSaveToLocation = dlr.saveToPath;
         }
-        else{
+        else {
             exportDetails.defaultSaveToLocation = tpkExport.defaultTpkFolder;
             exportDetails.exportToFolder = AppFramework.resolvedPathUrl(tpkExport.defaultTpkFolder);
         }
@@ -157,7 +148,7 @@ Item {
 
                         // MAP CONTAINER ///////////////////////////////////////
 
-                        MapView.MapViewPlus{
+                        MapView.MapViewPlus {
                             id: mapViewPlus
                             Layout.fillHeight: true
                             Layout.fillWidth: true
@@ -180,10 +171,10 @@ Item {
                             }
 
                             onPositionChanged: {
-                               if(!cursorIsOffMap){
+                               if (!cursorIsOffMap) {
                                     _displayCoordinates(position.coordinate);
                                 }
-                                else{
+                                else {
                                     currentCursorLatLong.text = "-- --";
                                 }
                             }
@@ -196,12 +187,10 @@ Item {
                             }
 
                             onDrawingFinished: {
-                                if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null && mapViewPlus.geometryType !== Singletons.Constants.kMultipath /*"multipath"*/){
+                                if (mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null && mapViewPlus.geometryType !== Singletons.Constants.kMultipath /*"multipath"*/) {
                                     var tlAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.topLeft));
                                     var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
-                                    //tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
                                     tpkEstimateSize.calculateForRange(tlAsXY, brAsXY, exportDetails.tpkBottomZoomLevel.value, exportDetails.tpkTopZoomLevel.value);
-
                                 }
                             }
 
@@ -213,9 +202,9 @@ Item {
 
                             onBasemapLoaded: {
                                 var serviceInfo = currentTileService["serviceInfo"];
-                                if(serviceInfo !== null){
-                                    if(serviceInfo.hasOwnProperty("tileInfo")){
-                                        if(serviceInfo.tileInfo.hasOwnProperty("lods")){
+                                if (serviceInfo !== null) {
+                                    if (serviceInfo.hasOwnProperty("tileInfo")) {
+                                        if (serviceInfo.tileInfo.hasOwnProperty("lods")) {
                                             var availableLevels = (parseInt(serviceInfo.tileInfo.lods.length,10) - 1);
                                             exportDetails.maxLevels = availableLevels > 19 ? 19 : availableLevels;
                                             mapViewPlus.map.maximumZoomLevel = exportDetails.maxLevels;
@@ -244,16 +233,16 @@ Item {
                                     Layout.fillHeight: true
                                     Layout.preferredWidth: sf(140)
 
-                                    ColumnLayout{
+                                    ColumnLayout {
                                         spacing: 0
                                         anchors.fill: parent
 
-                                        Rectangle{
+                                        Rectangle {
                                             Layout.fillWidth: true
                                             Layout.preferredHeight: parent.height / 2
                                             color: app.info.properties.toolBarBackgroundColor
 
-                                            Text{
+                                            Text {
                                                 anchors.fill: parent
                                                 text: Singletons.Strings.zoomLevel
                                                 verticalAlignment: Text.AlignVCenter
@@ -267,11 +256,11 @@ Item {
                                             }
                                         }
 
-                                        Rectangle{
+                                        Rectangle {
                                             Layout.fillHeight: true
                                             Layout.fillWidth: true
 
-                                            Text{
+                                            Text {
                                                 id: zoomLevelIndicator
                                                 anchors.fill: parent
                                                 verticalAlignment: Text.AlignVCenter
@@ -289,21 +278,21 @@ Item {
 
                                 //----------------------------------------------
 
-                                Rectangle{
+                                Rectangle {
                                     id: currentCursorLatLongContainer
                                     Layout.fillHeight: true
                                     Layout.fillWidth: true
 
-                                    ColumnLayout{
+                                    ColumnLayout {
                                         spacing:0
                                         anchors.fill: parent
 
-                                        Rectangle{
+                                        Rectangle {
                                             Layout.fillWidth: true
                                             Layout.preferredHeight: parent.height / 2
                                             color: app.info.properties.toolBarBackgroundColor
 
-                                            Text{
+                                            Text {
                                                 anchors.fill: parent
                                                 text: Singletons.Strings.cursorCoord
                                                 verticalAlignment: Text.AlignVCenter
@@ -317,11 +306,11 @@ Item {
                                             }
                                         }
 
-                                        Rectangle{
+                                        Rectangle {
                                             Layout.fillHeight: true
                                             Layout.fillWidth: true
 
-                                            Text{
+                                            Text {
                                                 id:currentCursorLatLong
                                                 anchors.fill: parent
                                                 verticalAlignment: Text.AlignVCenter
@@ -348,12 +337,12 @@ Item {
                                         spacing:0
                                         anchors.fill: parent
 
-                                        Rectangle{
+                                        Rectangle {
                                             Layout.fillWidth: true
                                             Layout.preferredHeight: parent.height / 2
                                             color: app.info.properties.toolBarBackgroundColor
 
-                                            Text{
+                                            Text {
                                                 anchors.fill: parent
                                                 text: Singletons.Strings.estimatedOutputSize
                                                 verticalAlignment: Text.AlignVCenter
@@ -367,11 +356,11 @@ Item {
                                             }
                                         }
 
-                                        Rectangle{
+                                        Rectangle {
                                             Layout.fillHeight: true
                                             Layout.fillWidth: true
 
-                                            Text{
+                                            Text {
                                                 anchors.fill: parent
                                                 visible: mapViewPlus.geometryType === Singletons.Constants.kMultipath // "multipath"
                                                 verticalAlignment: Text.AlignVCenter
@@ -386,7 +375,7 @@ Item {
 
                                             }
 
-                                            Text{
+                                            Text {
                                                 id:tilePackageSizeEstimate
                                                 visible: mapViewPlus.geometryType !== Singletons.Constants.kMultipath // "multipath"
                                                 anchors.fill: parent
@@ -437,12 +426,10 @@ Item {
                         }
 
                         onExportZoomLevelsChanged: {
-                            if(mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null){
+                            if (mapViewPlus.topLeft !== null && mapViewPlus.bottomRight !== null) {
                                 var tlAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.topLeft));
                                 var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
-                                //tpkEstimateSize.calculate(tlAsXY, brAsXY, exportDetails.tpkZoomLevels);
                                 tpkEstimateSize.calculateForRange(tlAsXY, brAsXY, exportDetails.tpkBottomZoomLevel.value, exportDetails.tpkTopZoomLevel.value);
-
                             }
                         }
                     }
@@ -482,7 +469,7 @@ Item {
                         Layout.fillWidth: true
                         visible: false
                     }
-                    ProgressIndicator{
+                    ProgressIndicator {
                         id:exportCompleteProgressIndicator
                         statusTextFontSize:Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
@@ -493,7 +480,7 @@ Item {
                         visible: false
                     }
 
-                    ProgressIndicator{
+                    ProgressIndicator {
                         id: downloadProgressIndicator
                         statusTextFontSize:Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
@@ -504,7 +491,7 @@ Item {
                         visible: false
                     }
 
-                    ProgressIndicator{
+                    ProgressIndicator {
                         id: uploadProgressIndicator
                         statusTextFontSize:Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
@@ -515,7 +502,7 @@ Item {
                         visible: false
                     }
 
-                    ProgressIndicator{
+                    ProgressIndicator {
                         id: exportErrorProgressIndicator
                         statusTextFontSize:Singletons.Config.smallFontSizePoint
                         statusTextMinimumFontSize: 6
@@ -547,12 +534,12 @@ Item {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
 
-                    Rectangle{
+                    Rectangle {
                         id: exportStatusContainer
                         anchors.fill: parent
                         anchors.margins: sf(10)
 
-                        StatusIndicator{
+                        StatusIndicator {
                             id: exportStatusIndicator
                             anchors.fill: parent
                             containerHeight: parent.height
@@ -592,7 +579,7 @@ Item {
                             border.color: app.info.properties.mainButtonBorderColor
                         }
 
-                        RowLayout{
+                        RowLayout {
                             spacing: 0
                             anchors.fill: parent
 
@@ -609,7 +596,7 @@ Item {
                                 font.family: notoRegular
                             }
 
-                            ProgressIndicator{
+                            ProgressIndicator {
                                 id: btnStatusIndicator
                                 visible: (!exporting) ? false : true
                                 Layout.preferredWidth: parent.height
@@ -626,24 +613,18 @@ Item {
 
                             exportDetails.currentExportRequest = {}
                             exportDetails.currentExportRequest.service = currentTileService["title"];
-                            console.log("-----exportDetails.currentExportRequest.service: ", exportDetails.currentExportRequest.service)
                             exportDetails.currentExportRequest.extent = JSON.stringify(mapViewPlus.getCurrentGeometry());
-                            console.log("----- exportDetails.currentExportRequest.extent: ",  exportDetails.currentExportRequest.extent)
 
-                            if(mapViewPlus.drawMultipath){
+                            if (mapViewPlus.drawMultipath) {
                                 exportDetails.currentExportRequest.buffer = exportDetails.currentBufferInMeters;
-                                console.log("----- exportDetails.currentExportRequest.buffer: ",  exportDetails.currentExportRequest.buffer)
                             }
                             exportDetails.currentLevels = (exportDetails.tpkTopZoomLevel.value > 0) ? "%1-%2".arg(exportDetails.tpkBottomZoomLevel.value).arg(exportDetails.tpkTopZoomLevel.value) : "0";
-                            console.log("----- exportDetails.currentLevels: ",  exportDetails.currentLevels)
                             exportDetails.currentExportRequest.levels = exportDetails.currentLevels
-                            console.log("----- exportDetails.currentExportRequest.levels: ", exportDetails.currentExportRequest.levels)
                             var outFileName = (exportDetails.currentExportTitle != "") ? exportDetails.currentExportTitle : "tpk_export"
-                            console.log("-----outFileName: ", outFileName)
 
                             var outPortalOptions = null;
 
-                            if(exportDetails.uploadToPortal){
+                            if (exportDetails.uploadToPortal) {
                                 outPortalOptions = {};
                                 outPortalOptions.uploadToPortal = true;
                                 outPortalOptions.serviceTitle = (exportDetails.tpkTitle !== "") ? exportDetails.tpkTitle : Singletons.Strings.noTitle;
@@ -697,12 +678,11 @@ Item {
                         }
 
                         onClicked: {
-
-                            if(tpkExport.active){
+                            if (tpkExport.active) {
                                 tpkExport.cancel();
                             }
 
-                            if(tpkUpload.active){
+                            if (tpkUpload.active) {
                                 tpkUpload.cancel();
                             }
                         }
@@ -756,10 +736,10 @@ Item {
             exportStatusIndicator.messageType = exportStatusIndicator.error;
             exportStatusIndicator.message = Singletons.Strings.exportFailed +  " " + message;
             exportStatusIndicator.show();
-            try{
+            try {
                 throw new Error(message);
             }
-            catch(e){
+            catch(e) {
                 appMetrics.reportError(e)
             }
             exportView.exportComplete();
@@ -776,12 +756,12 @@ Item {
             downloadProgressIndicator.progressText = Singletons.Strings.downloadComplete; // "Download Complete.";
             exportDetails.currentExportRequest.filepath = file.path;
             exportDetails.currentExportRequest.filename = file.name
-            try{
-                history.writeHistory(history.exportHistoryKey, exportDetails.currentExportRequest);
+            try {
                 var sql = "INSERT into 'exports' ";
-                sql += "(title, transaction_date, tile_service_name, tile_service_url, uses_token, esri_geometry, tpk_app_geometry, buffer, levels) ";
-                sql += "VALUES('%1', %2, '%3', '%4', '%5', '%6', '%7', '%8', '%9')"
+                sql += "(title, description, transaction_date, tile_service_name, tile_service_url, uses_token, esri_geometry, tpk_app_geometry, buffer, levels, package_size, number_of_tiles, local_filepath, download_url, user) ";
+                sql += "VALUES('%1', '%2', %3, '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15')"
                         .arg(exportDetails.currentExportRequest.serviceTitle)
+                        .arg(exportDetails.currentExportRequest.serviceDescription)
                         .arg(Date.now())
                         .arg(exportDetails.currentExportRequest.service)
                         .arg(currentTileService.url)
@@ -789,24 +769,30 @@ Item {
                         .arg(exportDetails.currentExportRequest.extent)
                         .arg(JSON.stringify(mapViewPlus.getLastDrawing()))
                         .arg(exportDetails.currentExportRequest.buffer)
-                        .arg(exportDetails.currentLevels);
-                appDatabase.transact(sql);
+                        .arg(exportDetails.currentLevels)
+                        .arg(exportDetails.currentExportRequest.package_size)
+                        .arg(exportDetails.currentExportRequest.number_of_tiles)
+                        .arg(exportDetails.currentExportRequest.filepath)
+                        .arg(exportDetails.currentExportRequest.download_url)
+                        .arg(portal.user.email);
+                appDatabase.write(sql);
             }
-            catch(error){
+            catch(error) {
                 appMetrics.reportError(error)
             }
-            finally{
-                if(!exportDetails.uploadToPortal){
+            finally {
+                if (!exportDetails.uploadToPortal) {
                     exportStatusIndicator.messageType = exportStatusIndicator.success;
-                    if(calledFromAnotherApp && dlr.successCallback !== ""){
+                    if (calledFromAnotherApp && dlr.successCallback !== "") {
                         exportStatusIndicator.message = Singletons.Strings.completeReturnToX.arg(dlr.successCallback).arg("false").arg("false").arg(encodeURI(file.path)).arg(dlr.callingApplication); //"Complete. <a href='%1?isShared=%2&isOnline=%3&localPath=%4'>Return to %5</a>".arg(dlr.successCallback).arg("false").arg("false").arg(encodeURI(file.path)).arg(dlr.callingApplication);
-                    }else{
+                    }
+                    else {
                         exportStatusIndicator.message = Singletons.Strings.downloadedToX.arg(file.path);
                     }
                     exportView.exportComplete();
                     exportStatusIndicator.show();
                 }
-                else{
+                else {
                     tpkUpload.upload(file.path, currentItemPortalOptions.serviceTitle, currentItemPortalOptions.serviceDescription)
                 }
             }
@@ -840,53 +826,47 @@ Item {
 
         onUploadComplete: {
             uploading = false;
-            try{
-                history.writeHistory(history.uploadHistoryKey,
-                            {   "transaction_date": Date.now(),
-                                "title": exportDetails.tpkTitle,
-                                "description": (exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.defaultTPKDesc,
-                                "service_url" : portal.owningSystemUrl + "/home/item.html?id=" + id
-                            });
-
+            try {
                 var sql = "INSERT into 'uploads' ";
-                sql += "(title, transaction_date, description, published_service_url) ";
-                sql += "VALUES('%1', %2, '%3','%4')"
+                sql += "(title, transaction_date, description, published_service_url, user) ";
+                sql += "VALUES('%1', %2, '%3','%4', '%5')"
                         .arg(exportDetails.tpkTitle)
                         .arg(Date.now())
                         .arg((exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.defaultTPKDesc)
-                        .arg(portal.owningSystemUrl + "/home/item.html?id=" + id);
-                appDatabase.transact(sql);
+                        .arg(portal.owningSystemUrl + "/home/item.html?id=" + id)
+                        .arg(portal.user.email);
+                appDatabase.write(sql);
              }
-            catch(error){
+            catch(error) {
                 appMetrics.reportError(error);
             }
-            finally{
+            finally {
 
                 exportDetails.currentExportRequest.service_url = portal.owningSystemUrl + "/home/item.html?id=" + id;
 
-                if(exportDetails.currentSharing !== ""){
+                if (exportDetails.currentSharing !== "") {
                     uploadProgressIndicator.progressText = Singletons.Strings.sharingItem;
                     tpkUpdate.share(id, exportDetails.currentSharing);
                 }
-                else{
+                else {
                     uploadProgressIndicator.progressIcon = downloadProgressIndicator.success;
                     uploadProgressIndicator.progressText = Singletons.Strings.uploaded;
                     exportStatusIndicator.messageType = exportStatusIndicator.success;
-                    if(calledFromAnotherApp && dlr.successCallback !== ""){
+                    if (calledFromAnotherApp && dlr.successCallback !== "") {
                          exportStatusIndicator.message = Singletons.Strings.completeReturnToX.arg(dlr.successCallback).arg("false").arg("true").arg(id).arg(dlr.callingApplication); //"Complete. <a href='%1?isShared=%2&isOnline=%3&itemId=%4'>Return to %5</a>".arg(dlr.successCallback).arg("false").arg("true").arg(id).arg(dlr.callingApplication);
                     }
-                    else{
+                    else {
                         exportStatusIndicator.message = Singletons.Strings.uploadedSeeX.arg(exportDetails.currentExportRequest.service_url) //"Uploaded. <a href=\"" + exportDetails.currentExportRequest.service_url + "\">See Tile Package Item</a>";
                     }
                     exportStatusIndicator.show();
                     exportView.exportComplete();
                 }
 
-                try{
+                try {
                    tpkExport.deleteLocalTilePackage(exportDetails.currentExportRequest.filepath);
                    getPKInfo.get(exportDetails.currentExportRequest.filename, id);
                 }
-                catch(e){
+                catch(e) {
                     console.log(e);
                 }
             }
@@ -906,22 +886,22 @@ Item {
 
             var failMessage = "onUploadFailed"
 
-            if(error.message.indexOf("already exists") > -1){
+            if (error.message.indexOf("already exists") > -1) {
                 failMessage = Singletons.Strings.tpkWithThatNameAlreadyExistsError;
             }
 
             exportStatusIndicator.messageType = exportStatusIndicator.error;
             exportStatusIndicator.message = Singletons.Strings.exportUploadFailed + " " + failMessage;
 
-            if(error.message.indexOf("Cancelled") > -1){
+            if (error.message.indexOf("Cancelled") > -1) {
                 exportStatusIndicator.messageType = exportStatusIndicator.info;
                 exportStatusIndicator.message = Singletons.Strings.exportUploadCancelled;
             }
 
-            try{
+            try {
                 throw new Error(failMessage);
             }
-            catch(e){
+            catch(e) {
                 appMetrics.reportError(e)
             }
 
@@ -937,16 +917,16 @@ Item {
             exportStatusIndicator.show();
             exportView.exportComplete();
 
-            try{
+            try {
                 throw new Error(error);
             }
-            catch(e){
+            catch(e) {
                 appMetrics.reportError(e)
             }
         }
 
         onAbortedChanged: {
-            if(aborted){
+            if (aborted) {
                 uploading = false;
                 uploadProgressIndicator.progressIcon = downloadProgressIndicator.failed;
                 uploadProgressIndicator.progressText = Singletons.Strings.cancellingUpload;
@@ -956,16 +936,17 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    TilePackageUpdate{
+    TilePackageUpdate {
         id: tpkUpdate
         portal: exportView.portal
         onShared: {
             uploadProgressIndicator.progressIcon = downloadProgressIndicator.success;
             uploadProgressIndicator.progressText = "Shared";
             exportStatusIndicator.messageType = exportStatusIndicator.success;
-            if(calledFromAnotherApp && dlr.successCallback !== ""){
+            if (calledFromAnotherApp && dlr.successCallback !== "") {
                 exportStatusIndicator.message = Singletons.Strings.completeReturnToX.arg(dlr.successCallback).arg("true").arg("true").arg(itemId).arg(dlr.callingApplication); //"Complete. <a href='%1?isShared=%2&isOnline=%3&itemId=%4'>Return to %5</a>".arg(dlr.successCallback).arg("true").arg("true").arg(itemId).arg(dlr.callingApplication);
-            }else{
+            }
+            else {
                 exportStatusIndicator.message = Singletons.Strings.uploadingAndSharedSeeX.arg(exportDetails.currentExportRequest.service_url); //"Uploaded and Shared. <a href=\"" + exportDetails.currentExportRequest.service_url + "\">See Tile Package Item</a>";
             }
             exportStatusIndicator.show();
@@ -975,7 +956,7 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    TilePackageEstimateSize{
+    TilePackageEstimateSize {
         id:tpkEstimateSize
 
         onCalculationComplete: {
@@ -988,7 +969,7 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    CoordinateConverter{
+    CoordinateConverter {
         id: coordConverter
     }
 
@@ -1005,24 +986,13 @@ Item {
         id: getPKInfo
         path: (tpkExport.userDefinedTpkFolder === null) ? tpkExport.defaultTpkFolder + "/" : tpkExport.userDefinedTpkFolder + "/" //exportDetails.currentSaveToLocation + "/"
         portal: exportView.portal
-        onComplete: {
-            //if(!tpkUpdate.active){
-            //    uploading = false;
-            //    exportView.exportComplete();
-            //}
-        }
+        onComplete: {}
     }
 
     // -------------------------------------------------------------------------
 
-    HistoryManager{
-        id: history
-    }
-
-    // -------------------------------------------------------------------------
-
-    PropertyAnimation{
-        id:fader
+    PropertyAnimation {
+        id: fader
         from: 1
         to: 0
         duration: 1000
@@ -1043,11 +1013,11 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Connections{
+    Connections {
         target: app
 
         onIncomingUrlChanged: {
-            if(mapViewPlus.userDrawnExtent){
+            if (mapViewPlus.userDrawnExtent) {
                 mapViewPlus.clearExtentButton.clicked();
             }
         }
@@ -1055,7 +1025,7 @@ Item {
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function _displayCoordinates(coords){
+    function _displayCoordinates(coords) {
         var latDir = coords.latitude > 0 ? "N" : "S";
         var longDir = coords.longitude > 0 ? "E" : "W";
         currentCursorLatLong.text = "%1%2  %3%4".arg(Math.abs(coords.latitude)).arg(latDir).arg(Math.abs(coords.longitude)).arg(longDir);
@@ -1063,14 +1033,14 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    function extractDefaultTPKTitle(service_title){
+    function extractDefaultTPKTitle(service_title) {
         var defaultTitle;
 
-        if(service_title.indexOf("(") > -1){
+        if (service_title.indexOf("(") > -1) {
             defaultTitle = service_title.substring(0, service_title.indexOf("("));
             defaultTitle = defaultTitle.replace(/_/g, " ");
         }
-        else{
+        else {
              defaultTitle = service_title.substring(0,30);
         }
         return defaultTitle.trim() + " TPK";
@@ -1078,18 +1048,18 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    function _uiEntryElementStates(control){
-        if(!control.enabled){
+    function _uiEntryElementStates(control) {
+        if (!control.enabled) {
             return Singletons.Config.formElementDisabledBackground;
         }
-        else{
+        else {
             return Singletons.Config.formElementBackground;
         }
     }
 
     //--------------------------------------------------------------------------
 
-    function positionToArray(position){
+    function positionToArray(position) {
         return [position.longitude, position.latitude];
     }
 

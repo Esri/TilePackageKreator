@@ -198,7 +198,7 @@ Item {
                     serviceAdded();
 
                     try {
-                        appDatabase.transact("INSERT into 'other_tile_services' (url) VALUES ('%1')".arg(newService.url))
+                        appDatabase.write("INSERT into 'other_tile_services' (url, user) VALUES ('%1', '%2')".arg(newService.url).arg(portal.user.email))
                     }
                     catch(e) {
                         console.log(e);

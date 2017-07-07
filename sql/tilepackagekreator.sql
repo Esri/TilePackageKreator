@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS exports;
 CREATE TABLE exports (
     OBJECTID INTEGER primary key autoincrement not null,
     title TEXT,
+    description TEXT,
     transaction_date INTEGER,
     tile_service_name TEXT,
     tile_service_url TEXT,
@@ -12,7 +13,12 @@ CREATE TABLE exports (
     esri_geometry TEXT,
     tpk_app_geometry TEXT,
     buffer INTEGER,
-    levels TEXT
+    levels TEXT,
+    package_size TEXT,
+    number_of_tiles TEXT,
+    local_filepath TEXT,
+    download_url TEXT,
+    user TEXT
     );
 
 COMMIT;
@@ -26,7 +32,8 @@ CREATE TABLE uploads (
     title TEXT,
     transaction_date INTEGER,
     description TEXT,
-    published_service_url TEXT
+    published_service_url TEXT,
+    user TEXT
     );
 
 COMMIT;
@@ -38,7 +45,8 @@ DROP TABLE IF EXISTS bookmarks;
 CREATE TABLE bookmarks (
     OBJECTID INTEGER primary key autoincrement not null,
     name TEXT,
-    tpk_app_geometry TEXT
+    tpk_app_geometry TEXT,
+    user TEXT
     );
 
 COMMIT;
@@ -49,7 +57,8 @@ DROP TABLE IF EXISTS other_tile_services;
 
 CREATE TABLE other_tile_services (
     OBJECTID INTEGER primary key autoincrement not null,
-    url TEXT
+    url TEXT,
+    user TEXT
     );
 
 COMMIT;

@@ -35,9 +35,14 @@ Item {
     property bool exportHistoryExists: false
     property bool uploadHistoryExists: false
 
+//    property var xHistory
+//    property var uHistory
+
+
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     Component.onCompleted: {
+//        xHistory = appDatabase.read("SELECT * FROM 'exports' ORDER BY OBJECTID DESC");
         getExportHistory();
         getUploadHistory();
     }
@@ -116,7 +121,7 @@ Item {
                                     }
 
                                     onClicked: {
-                                        history.deleteHistory(history.exportHistoryKey);
+                                        appDatabase.truncate("exports")
                                         getExportHistory();
                                     }
                                 }
@@ -139,6 +144,33 @@ Item {
                     Item {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
+
+//                        ListView {
+//                            id: exportListView
+//                            width: parent.width
+//                            height: parent.height
+//                            clip: true
+//                            flickableDirection: Flickable.VerticalFlick
+//                            model: xHistory
+//                            spacing: sf(5)
+//                            delegate: Rectangle {
+//                                width: parent.width
+//                                height: childrenRect.height
+//                                color: "gold"
+//                                Column{
+//                                    anchors.fill: parent
+//                                    Text {
+//                                        width: parent.width
+//                                        text: title
+//                                    }
+//                                    Text {
+//                                        width: parent.width
+//                                        text: new Date(transaction_date).toLocaleDateString() + " " + new Date(transaction_date).toLocaleTimeString()
+//                                    }
+//                                }
+//                            }
+//                        }
+
                         Flickable {
                             id: exportFlickable
                             anchors.fill: parent
@@ -231,7 +263,7 @@ Item {
                                     }
 
                                     onClicked: {
-                                        history.deleteHistory(history.uploadHistoryKey);
+                                        appDatabase.truncate("uploads");
                                         getUploadHistory();
                                     }
                                 }
@@ -281,39 +313,33 @@ Item {
         }
     }
 
-    // COMPONENTS //////////////////////////////////////////////////////////////
-
-    HistoryManager {
-        id: history
-    }
-
     // METHODS /////////////////////////////////////////////////////////////////
 
     function getExportHistory(){
+        var exportHistory = appDatabase.read("SELECT * FROM 'exports' WHERE user IS '%1' ORDER BY OBJECTID DESC".arg(portal.user.email));
         exportHistoryTextArea.text = "";
-        var exportHistory = history.readHistory(history.exportHistoryKey);
-        if (exportHistory !== null && exportHistory.length > 0) {
-            var reversedHistory = exportHistory.reverse();
-            for (var i=0; i < reversedHistory.length; i++) {
-               exportHistoryTextArea.append("<h3 style=\"color:darkorange;\">" + reversedHistory[i].serviceTitle + "</h3>");
-               exportHistoryTextArea.append("<p>" + new Date(reversedHistory[i].export_date).toLocaleDateString() + " " + new Date(reversedHistory[i].export_date).toLocaleTimeString() + "</p>");
+        if (exportHistory !== null && exportHistory.count > 0) {
+            for (var i=0; i < exportHistory.count; i++) {
+               var entry = exportHistory.get(i);
+               exportHistoryTextArea.append("<h3 style=\"color:darkorange;\">" + entry.title + "</h3>");
+               exportHistoryTextArea.append("<p>" + new Date(entry.transaction_date).toLocaleDateString() + " " + new Date(entry.transaction_date).toLocaleTimeString() + "</p>");
                exportHistoryTextArea.append("<h4>Tile Service</h4>");
-               exportHistoryTextArea.append(reversedHistory[i].service);
-               var extent = JSON.parse(reversedHistory[i].extent)
+               exportHistoryTextArea.append(entry.tile_service_name);
+               var extent = JSON.parse(entry.esri_geometry)
                exportHistoryTextArea.append("<h4>Geometry</h4>");
                     exportHistoryTextArea.append("<p>" + JSON.stringify(extent.geometries) + "<br/>");
-                    if (reversedHistory[i].hasOwnProperty("buffer")) {
-                        exportHistoryTextArea.append("Buffer: " + reversedHistory[i].buffer + "</p><hr/>");
+                    if (extent.hasOwnProperty("buffer")) {
+                        exportHistoryTextArea.append("Buffer: " + entry.buffer + "</p><hr/>");
                     }
                     exportHistoryTextArea.append("Type: " + extent.geometryType + "</p><hr/>");
                exportHistoryTextArea.append("<h4>Export Parameters</h4>");
-               exportHistoryTextArea.append("<p>Levels: " + reversedHistory[i].levels + "</p>");
-               exportHistoryTextArea.append("<p>Package Size: " + reversedHistory[i].package_size + "</p>");
-               exportHistoryTextArea.append("<p>Number of Tiles: " + reversedHistory[i].number_of_tiles + "</p>");
-               exportHistoryTextArea.append("<p>Description: " + reversedHistory[i].serviceDescription + "</p>");
+               exportHistoryTextArea.append("<p>Levels: " + entry.levels + "</p>");
+               exportHistoryTextArea.append("<p>Package Size: " + entry.package_size + "</p>");
+               exportHistoryTextArea.append("<p>Number of Tiles: " + entry.number_of_tiles + "</p>");
+               exportHistoryTextArea.append("<p>Description: " + entry.description + "</p>");
                exportHistoryTextArea.append("<h4>File Information</h4>");
-               exportHistoryTextArea.append("<p>Local File Path: " + reversedHistory[i].filepath + "</p>");
-               exportHistoryTextArea.append("<a href=\"" + reversedHistory[i].download_url + "\">Download Link [link may have expired]</a>");
+               exportHistoryTextArea.append("<p>Local File Path: " + entry.local_filepath + "</p>");
+               exportHistoryTextArea.append("<a href=\"" + entry.download_url + "\">Download Link [link may have expired]</a>");
              }
             exportHistoryExists = true;
         }
@@ -326,15 +352,15 @@ Item {
     //--------------------------------------------------------------------------
 
     function getUploadHistory(){
+        var uploadHistory = appDatabase.read("SELECT * FROM 'uploads' WHERE user IS '%1' ORDER BY OBJECTID DESC".arg(portal.user.email));
         uploadHistoryTextArea.text = "";
-        var uploadHistory = history.readHistory(history.uploadHistoryKey);
-        if (uploadHistory !== null && uploadHistory.length > 0) {
-            var reversedHistory = uploadHistory.reverse();
-            for (var i=0; i < reversedHistory.length; i++) {
-               uploadHistoryTextArea.append("<h3 style=\"color:darkblue;\">" + reversedHistory[i].title + "</h3>");
-               uploadHistoryTextArea.append("<p>" + new Date(reversedHistory[i].transaction_date).toLocaleDateString() + " " + new Date(reversedHistory[i].transaction_date).toLocaleTimeString() + "</p>");
-               uploadHistoryTextArea.append("<p>Description: " + reversedHistory[i].description + "</p>");
-               uploadHistoryTextArea.append("<a href=\"" + reversedHistory[i].service_url + "\">Published ArcGIS Service Link</a>");
+        if (uploadHistory !== null && uploadHistory.count > 0) {
+            for (var i=0; i < uploadHistory.count; i++) {
+               var entry = uploadHistory.get(i);
+               uploadHistoryTextArea.append("<h3 style=\"color:darkblue;\">" + entry.title + "</h3>");
+               uploadHistoryTextArea.append("<p>" + new Date(entry.transaction_date).toLocaleDateString() + " " + new Date(entry.transaction_date).toLocaleTimeString() + "</p>");
+               uploadHistoryTextArea.append("<p>Description: " + entry.description + "</p>");
+               uploadHistoryTextArea.append("<a href=\"" + entry.published_service_url + "\">Published ArcGIS Service Link</a>");
             }
             uploadHistoryExists = true;
         }

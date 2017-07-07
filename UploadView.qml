@@ -525,22 +525,23 @@ Item {
 
         onUploadComplete: {
             try {
-                var uploadData = {
-                    transaction_date: Date.now(),
-                    title: tpkUploadDetails.tpkTitle,
-                    description: tpkUploadDetails.tpkDescription,
-                    service_url: portal.owningSystemUrl + "/home/item.html?id=" + id
-                }
-                history.writeHistory(history.uploadHistoryKey, uploadData);
+//                var uploadData = {
+//                    transaction_date: Date.now(),
+//                    title: tpkUploadDetails.tpkTitle,
+//                    description: tpkUploadDetails.tpkDescription,
+//                    service_url: portal.owningSystemUrl + "/home/item.html?id=" + id
+//                }
+//                history.writeHistory(history.uploadHistoryKey, uploadData);
 
                 var sql = "INSERT into 'uploads' ";
-                sql += "(title, transaction_date, description, published_service_url) ";
-                sql += "VALUES('%1', %2, '%3','%4')"
+                sql += "(title, transaction_date, description, published_service_url, user) ";
+                sql += "VALUES('%1', %2, '%3','%4', '%5')"
                         .arg(tpkUploadDetails.tpkTitle)
                         .arg(Date.now())
                         .arg((tpkUploadDetails.tpkDescription !== "") ? tpkUploadDetails.tpkDescription : Singletons.Strings.defaultTPKDesc)
-                        .arg(portal.owningSystemUrl + "/home/item.html?id=" + id);
-                appDatabase.transact(sql);
+                        .arg(portal.owningSystemUrl + "/home/item.html?id=" + id)
+                        .arg(portal.user.email);
+                appDatabase.write(sql);
             }
             catch (error) {
                 appMetrics.reportError(error);
@@ -640,9 +641,9 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    HistoryManager{
-        id: history
-    }
+//    HistoryManager{
+//        id: history
+//    }
 
     // METHODS /////////////////////////////////////////////////////////////////
 

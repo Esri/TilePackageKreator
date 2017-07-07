@@ -42,6 +42,8 @@ App {
         if (!appDatabase.exists()) {
             appDatabase.createDatabase();
         }
+
+         appDatabase.read("SELECT * FROM 'exports'");
     }
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
@@ -95,6 +97,7 @@ App {
     FontLoader {
         id: _icons
         source: "fonts/tilepackage.ttf"
+        property string bookmark: "C"
         property string chat_bubble: "g"
         property string checkmark: "p"
         property string chevron_left: "A"

@@ -17,7 +17,7 @@
 import QtQuick 2.6
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
-import QtQuick.Dialogs 1.2
+//import QtQuick.Dialogs 1.2
 import QtLocation 5.3
 import QtPositioning 5.3
 import QtGraphicalEffects 1.0
@@ -699,34 +699,67 @@ Item {
         enabled: false
 
         sourceItem: Rectangle {
-            width: sf(30)
+            width: sf(62)
             height: sf(30)
             color: "transparent"
-            Button {
-                id: clearExtentBtn
+            RowLayout {
                 anchors.fill: parent
-                ToolTip.text: qsTr("Clear Extent")
+                spacing: sf(2)
+                Button {
+                    id: clearExtentBtn
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    ToolTip.text: qsTr("Clear Extent")
+                    ToolTip.visible: hovered
 
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: "#fff"
-                    radius: 0
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: "#fff"
+                        radius: 0
 
-                    Image {
-                        source: "images/clear_extent.png"
-                        fillMode: Image.PreserveAspectFit
-                        width: parent.width - sf(4)
-                        anchors.centerIn: parent
+                        Image {
+                            source: "images/clear_extent.png"
+                            fillMode: Image.PreserveAspectFit
+                            width: parent.width - sf(4)
+                            anchors.centerIn: parent
+                        }
+                    }
+                    onClicked: {
+                        clearExtentMapItem.visible = false;
+                        clearExtentMapItem.enabled = false;
+                        mapViewPlus.clearMap();
                     }
                 }
-                onClicked: {
-                    clearExtentMapItem.visible = false;
-                    clearExtentMapItem.enabled = false;
-                    mapViewPlus.clearMap();
+                Button {
+                    id: saveBookmarkBtn
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    ToolTip.text: qsTr("Save as bookmark")
+                    ToolTip.visible: hovered
+                    //enabled: false
+
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: "#fff"
+                        radius: 0
+
+
+                        IconFont {
+                            anchors.centerIn: parent
+                            color: app.info.properties.mainButtonBorderColor
+                            icon: _icons.bookmark
+                        }
+                    }
+                    onClicked: {
+                        addBookmarkDialog.open();
+                        //console.log(pathCoordinates);
+                        //appDatabase.write();
+                    }
                 }
             }
         }
     }
+
 
     //--------------------------------------------------------------------------
 
@@ -754,6 +787,41 @@ Item {
         onError: {
             drawingError(message);
         }
+    }
+
+    Dialog {
+        id: addBookmarkDialog
+        title: "Title"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: sf(200)
+        height: sf(200)
+
+        TextField {
+            id: bookmarkTitle
+            width: parent.width
+            height: sf(20)
+            placeholderText: qsTr("Enter a title")
+        }
+
+        onAccepted: {
+            if(bookmarkTitle.text > ""){
+                var sql = "INSERT into 'bookmarks' ";
+                sql += "(name, tpk_app_geometry, user) ";
+                sql += "VALUES('%1', '%2', '%3')"
+                        .arg(bookmarkTitle.text)
+                        .arg(JSON.stringify(pathCoordinates))
+                        .arg(portal.user.email);
+                appDatabase.write(sql);
+                bookmarkTitle.clear();
+                addBookmarkDialog.close();
+                saveBookmarkBtn.enabled = false;
+            }
+        }
+
+        onRejected: addBookmarkDialog.close();
+
+
     }
 
     // METHODS /////////////////////////////////////////////////////////////////
@@ -947,10 +1015,11 @@ Item {
             clearDrawingCanvas();
 
             previewMap.map.addMapItem(clearExtentMapItem)
-            clearExtentMapItem.anchorPoint = Qt.point(15,15);
+            clearExtentMapItem.anchorPoint = Qt.point(31,15);
             clearExtentMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude);
             clearExtentMapItem.visible = true;
             clearExtentMapItem.enabled = true;
+            saveBookmarkBtn.enabled = true;
 
             drawingFinished();
         }
@@ -973,8 +1042,6 @@ Item {
 
         mapViewPlus.map.addMapItem(drawnPolygon);
 
-
-
         if (typeOfPath === "final") {
             _updateDrawingHistory("add",
                                   {
@@ -985,10 +1052,11 @@ Item {
             clearDrawingCanvas();
 
             mapViewPlus.map.addMapItem(clearExtentMapItem);
-            clearExtentMapItem.anchorPoint = Qt.point(15,15);
+            clearExtentMapItem.anchorPoint = Qt.point(31,15);
             clearExtentMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude);
             clearExtentMapItem.visible = true;
             clearExtentMapItem.enabled = true;
+            saveBookmarkBtn.enabled = true;
 
             drawingFinished();
         }
@@ -1124,9 +1192,6 @@ Item {
             historyAvailable = false;
         }
     }
-
-
-
 
     // END /////////////////////////////////////////////////////////////////////
 }
