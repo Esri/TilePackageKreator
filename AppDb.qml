@@ -21,6 +21,8 @@ Item {
         }
     }
 
+    //--------------------------------------------------------------------------
+
     function exists() {
         if (dataFolder.fileExists(Singletons.Constants.kDatabaseName)){
             return true;
@@ -32,49 +34,66 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    function create() {
-        console.log("----------------------------create")
-        if ( dataFolder.makeFolder() ){
-           // var dbName = Singletons.Constants.kDatabaseName
+    function transact(sql){
+
+        db.open();
+
+        try {
+            var query = db.query(sql);
+            if (query.error) {
+                console.log("Command error:", query.error.toString());
+            }
+        }
+        catch(e) {
+            console.log(e)
+        }
+        finally {
+            db.close();
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
+    function readSql(sqlFile) {
+
+        var text = folder.readTextFile(sqlFile);
+
+        var sqlCommands =  text.split(";");
+
+        return sqlCommands;
+    }
+
+    //--------------------------------------------------------------------------
+
+    function createDatabase(){
+
+        if (dataFolder.makeFolder()) {
             var sqlFile = "tilepackagekreator.sql";
-           // db.databaseName = dataFolder.filePath(dbName);
 
             if (!db.open()) {
                 console.error("Error opening database:", filePath);
             }
 
             var sqlCommands = readSql(sqlFile);
-            console.log(JSON.stringify(sqlCommands));
 
-            var errorCount = 0;
-            var successCount = 0;
+            try {
+                sqlCommands.forEach(function (sql) {
+                    sql = sql.trim();
+                    if (!sql.length) {
+                        return;
+                    }
+                    var query = db.query(sql);
 
-            sqlCommands.forEach(function (sql) {
-                sql = sql.trim();
-                if (!sql.length) {
-                    return;
-                }
-
-                console.log("-----------------------------------sql:", sql);
-
-                var query = db.query(sql);
-
-                if (query.error) {
-                    console.log("Command sql:", sql);
-                    console.log("Command error:", query.error.toString());
-                    errorCount++;
-                }
-                else {
-                    console.log("Command succeeded");
-                    successCount++;
-                }
-            });
-
-            console.log("Closing database:", db.databaseName);
-            db.close();
-
-            console.log(successCount, "commmands succeeded");
-            console.log(errorCount, "commands failed");
+                    if (query.error) {
+                        // throw error
+                    }
+                });
+            }
+            catch(e) {
+            }
+            finally {
+                db.close();
+            }
         }
         else {
             console.log("---------------didn't make folder")
@@ -89,24 +108,12 @@ Item {
         url: "sql"
     }
 
+    //--------------------------------------------------------------------------
+
     FileFolder {
         id: dataFolder
         path: Singletons.Constants.kDatabasePath
     }
 
-    function readSql(sqlFile) {
-        console.log("---------------------------------------------Reading sql:", sqlFile);
-
-        var text = folder.readTextFile(sqlFile);
-
-        // console.log("text:", text);
-
-        var sqlCommands =  text.split(";");
-
-        console.log(sqlCommands.length, " commands");
-
-        return sqlCommands;
-    }
-
-    //--------------------------------------------------------------------------
+    // END /////////////////////////////////////////////////////////////////////
 }

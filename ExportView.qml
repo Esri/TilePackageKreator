@@ -778,6 +778,19 @@ Item {
             exportDetails.currentExportRequest.filename = file.name
             try{
                 history.writeHistory(history.exportHistoryKey, exportDetails.currentExportRequest);
+                var sql = "INSERT into 'exports' ";
+                sql += "(title, transaction_date, tile_service_name, tile_service_url, uses_token, esri_geometry, tpk_app_geometry, buffer, levels) ";
+                sql += "VALUES('%1', %2, '%3', '%4', '%5', '%6', '%7', '%8', '%9')"
+                        .arg(exportDetails.currentExportRequest.serviceTitle)
+                        .arg(Date.now())
+                        .arg(exportDetails.currentExportRequest.service)
+                        .arg(currentTileService.url)
+                        .arg(currentTileService.useTokenToAccess)
+                        .arg(exportDetails.currentExportRequest.extent)
+                        .arg(JSON.stringify(mapViewPlus.getLastDrawing()))
+                        .arg(exportDetails.currentExportRequest.buffer)
+                        .arg(exportDetails.currentLevels);
+                appDatabase.transact(sql);
             }
             catch(error){
                 appMetrics.reportError(error)
@@ -834,6 +847,15 @@ Item {
                                 "description": (exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.defaultTPKDesc,
                                 "service_url" : portal.owningSystemUrl + "/home/item.html?id=" + id
                             });
+
+                var sql = "INSERT into 'uploads' ";
+                sql += "(title, transaction_date, description, published_service_url) ";
+                sql += "VALUES('%1', %2, '%3','%4')"
+                        .arg(exportDetails.tpkTitle)
+                        .arg(Date.now())
+                        .arg((exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.defaultTPKDesc)
+                        .arg(portal.owningSystemUrl + "/home/item.html?id=" + id);
+                appDatabase.transact(sql);
              }
             catch(error){
                 appMetrics.reportError(error);

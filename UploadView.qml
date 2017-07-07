@@ -532,13 +532,24 @@ Item {
                     service_url: portal.owningSystemUrl + "/home/item.html?id=" + id
                 }
                 history.writeHistory(history.uploadHistoryKey, uploadData);
-            } catch (error) {
+
+                var sql = "INSERT into 'uploads' ";
+                sql += "(title, transaction_date, description, published_service_url) ";
+                sql += "VALUES('%1', %2, '%3','%4')"
+                        .arg(tpkUploadDetails.tpkTitle)
+                        .arg(Date.now())
+                        .arg((tpkUploadDetails.tpkDescription !== "") ? tpkUploadDetails.tpkDescription : Singletons.Strings.defaultTPKDesc)
+                        .arg(portal.owningSystemUrl + "/home/item.html?id=" + id);
+                appDatabase.transact(sql);
+            }
+            catch (error) {
                 appMetrics.reportError(error);
-            } finally {
+            }
+            finally {
                 if (tpkUploadDetails.currentSharing !== "") {
                     uploadTPKUpdate.share(id, tpkUploadDetails.currentSharing);
                 }
-                else{
+                else {
                     uploadStatusIndicator.messageType = uploadStatusIndicator.success;
                     if(calledFromAnotherApp && dlr.successCallback !== ""){
                         uploadStatusIndicator.message = "Upload Complete. <a href='%1?isShared=%2&isOnline=%3&itemId=%4'>Return to %5</a>".arg(dlr.successCallback).arg("false").arg("true").arg(id).arg(dlr.callingApplication);

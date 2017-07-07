@@ -196,6 +196,13 @@ Item {
 
                     servicesListModel.append(newService);
                     serviceAdded();
+
+                    try {
+                        appDatabase.transact("INSERT into 'other_tile_services' (url) VALUES ('%1')".arg(newService.url))
+                    }
+                    catch(e) {
+                        console.log(e);
+                    }
                 }
                 else{
                     serviceNotAdded();

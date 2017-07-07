@@ -40,7 +40,7 @@ App {
 
     Component.onCompleted: {
         if (!appDatabase.exists()) {
-            appDatabase.create();
+            appDatabase.createDatabase();
         }
     }
 

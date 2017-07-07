@@ -1092,6 +1092,17 @@ Item {
 
     //--------------------------------------------------------------------------
 
+    function getLastDrawing(){
+        if (historyAvailable){
+            return drawingHistory[drawingHistory.length -1];
+        }
+        else {
+            return "";
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
     function _updateDrawingHistory(op, geo){
 
         if (op === "add") {
@@ -1113,6 +1124,9 @@ Item {
             historyAvailable = false;
         }
     }
+
+
+
 
     // END /////////////////////////////////////////////////////////////////////
 }
