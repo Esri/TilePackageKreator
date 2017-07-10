@@ -158,7 +158,7 @@ Rectangle{
 
         ListElement {
             name: qsTr("Draw Polygon")
-            property bool available: false
+            property bool available: true
             property string geometryType: "polygon"
             property string fontIcon: "draw_polygon"
         }

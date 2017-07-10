@@ -488,7 +488,13 @@ Item {
                     addMultipathToMap("draft");
                 }
                 if (pathCoordinates.length === 1) {
+                    console.log("--------------- pathCoordinates.length === 1")
                     if (drawPolygon){
+                        console.log("--------------- pathCoordinates.length === 1 > drawPolygon")
+                        closePolygonMapItem.anchorPoint = Qt.point(5,5)
+                        closePolygonMapItem.coordinate = QtPositioning.coordinate(coordinate.latitude, coordinate.longitude);
+                        closePolygonMapItem.visible = true;
+                        closePolygonMapItem.enabled = true;
                         // create a close polygon mouse area here.
                     }
                 }
@@ -570,17 +576,11 @@ Item {
             mapDrawCanvas.getContext('2d').lineTo(inX,inY);
             mapDrawCanvas.getContext('2d').stroke();
         }
-    }
 
-//    MouseArea {
-//        id: closePolygonListener
-//        enabled: drawing && drawPolygon
-//        visible: drawing && drawPolygon
-//        clip: true
-//        width: sf(20)
-//        height: sf(20)
-//        z: multipathDrawingMouseArea.z + 1
-//    }
+        function closePolygon(){
+            console.log("Close Polygon");
+        }
+    }
 
     //--------------------------------------------------------------------------
 
@@ -831,7 +831,7 @@ Item {
                     id: clearExtentBtn
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    ToolTip.text: qsTr("Clear Extent")
+                    ToolTip.text: Singletons.Strings.deleteExtent
                     ToolTip.visible: hovered
 
                     background: Rectangle {
@@ -856,10 +856,18 @@ Item {
         }
     }
 
-//    MapQuickItem {
-//        id: closePolygon
+    MapQuickItem {
+        id: closePolygonMapItem
+        visible: false
+        enabled: false
+        sourceItem: Rectangle {
+            width: sf(10)
+            height: sf(10)
+            radius: sf(5)
+            color: "gold"
+        }
 
-//    }
+    }
 
     //--------------------------------------------------------------------------
 
