@@ -26,10 +26,22 @@ QtObject {
     readonly property color darkGray: "#595959"
     readonly property color veryDarkGray: "#323232"
 
-    readonly property color specialBackground: "#ddeedb"
-
+    readonly property color lightBlue: "#d2e9f9"
     readonly property color mainButtonBackgroundColor: "#196fa6"
     readonly property color mainButtonPressedColor: "#166090"
+
+    readonly property color mainLabelFontColor: "#595959"
+    readonly property color subtleBackground: "#efefef"
+
+    readonly property color boldUIElementBackground: "#ddeedb"
+    readonly property color boldUIElementFontColor: "#323232"
+
+    readonly property color formElementBackground: "#fff"
+    readonly property color formElementBorderColor: "#ddd"
+    readonly property color formElementFontColor: "#323232"
+    readonly property color formElementDisabledBackground: "#888"
+
+    readonly property color specialBackground: "#ddeedb"
 
     readonly property string drawnExtentOutlineColor: "#de2900"
     readonly property string drawingExtentFillColor: "#10de2900"

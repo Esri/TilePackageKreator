@@ -32,93 +32,66 @@ Rectangle{
 
     anchors.fill: parent
     color: "white"
-    radius: sf(5)
+    //radius: sf(5)
     opacity: (!drawing) ? 1 : .4
 
-    property int buttonWidth: layoutView.height
+    property int buttonWidth: buttonContainer.height
 
     property bool drawing: false
     property bool drawingExists: false
     property string activeGeometryType: ""
     property bool historyAvailable: false
+    property bool bookmarksAvailable: false
 
     signal drawingRequest(string g)
+    signal bookmarksRequested()
 
     // UI //////////////////////////////////////////////////////////////////////
 
     RowLayout{
         id: layoutView
         anchors.fill: parent
-        anchors.margins: sf(4)
-        anchors.rightMargin: sf(6)
         spacing: 0
 
-        Rectangle{
-            id: infoBar
-            readonly property var success: {
-                "backgroundColor": "#DDEEDB",
-                "borderColor": "#9BC19C"
-            }
-
-            readonly property var info: {
-                "backgroundColor": "#D2E9F9",
-                "borderColor": "#3B8FC4"
-            }
-
-            readonly property var warning: {
-                "backgroundColor": "#F3EDC7",
-                "borderColor": "#D9BF2B"
-            }
-
-            readonly property var error: {
-                "backgroundColor": "#F3DED7",
-                "borderColor": "#E4A793"
-            }
+        Item {
             Layout.fillHeight: true
-            Layout.preferredWidth: sf(135)
-
-            RowLayout{
+            Layout.preferredWidth: height + sf(6)
+            Canvas {
                 anchors.fill: parent
-                spacing: 0
-                Rectangle{
-                    color: "transparent"
-                    Layout.fillHeight: true
-                    Layout.preferredWidth: parent.height - sf(10)
-                    Layout.rightMargin: sf(8)
-
-                    IconFont {
-                        anchors.centerIn: parent
-                        iconSizeMultiplier: 1.2
-                        icon: (!drawing) ? ( (!drawingExists) ? _icons.warning : _icons.checkmark ) : _icons.happy_face
+                onPaint: {
+                    if (available) {
+                        var _width = height;
+                        var ctx = getContext("2d");
+                        ctx.fillStyle = Singletons.Colors.lightBlue;
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(_width,0);
+                        ctx.lineTo(_width + sf(6), height / 2);
+                        ctx.lineTo(_width,height);
+                        ctx.lineTo(0,height);
+                        ctx.closePath();
+                        ctx.fill();
                     }
                 }
-                Rectangle{
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    color: "transparent"
-                    Text {
-                        id: drawingNotice
-                        anchors.fill: parent
-                        font.family: notoRegular
-                        font.pointSize: Singletons.Config.xSmallFontSizePoint
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
-                        lineHeight: .8
-                        text: (!drawing) ? ( (!drawingExists) ? Singletons.Strings.drawAnExtentOrPath : Singletons.Strings.extentOrPathDrawn ) : (activeGeometryType === "envelope") ? Singletons.Strings.drawingExtent : Singletons.Strings.drawingPath
-                    }
+            }
+            Item {
+                width: height
+                height: parent.height
+                anchors.left: parent.left
+                IconFont {
+                    anchors.centerIn: parent
+                    icon: _icons.draw_tool
+                    color: Singletons.Colors.mainButtonBackgroundColor
+                    iconSizeMultiplier: 1.1
                 }
             }
         }
 
-        Rectangle{
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-        }
-
-        Rectangle{
+        Rectangle {
             id: buttonContainer
             Layout.fillHeight: true
-            Layout.preferredWidth: buttonWidth * drawingTypesModel.count
+            Layout.fillWidth: true
+            Layout.margins: sf(5)
             color: "transparent"
             ListView{
                 anchors.fill: parent
@@ -127,6 +100,45 @@ Rectangle{
                 spacing: sf(2)
                 layoutDirection: Qt.LeftToRight
                 orientation: ListView.Horizontal
+            }
+        }
+
+        Rectangle {
+            Layout.fillHeight: true
+            Layout.preferredWidth: sf(1)
+            color: Singletons.Colors.lightBlue
+        }
+
+        Rectangle {
+            Layout.fillHeight: true
+            Layout.preferredWidth: height
+            Layout.margins: sf(5)
+            color: "#fff"
+            Button {
+                anchors.fill: parent
+                enabled: bookmarksAvailable
+                visible: true
+                ToolTip.text: Singletons.Strings.bookmarks
+                ToolTip.visible: hovered
+
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : "#fff"
+                    border.width: app.info.properties.mainButtonBorderWidth
+                    border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    radius: sf(3)
+                }
+
+                IconFont {
+                    anchors.centerIn: parent
+                    iconSizeMultiplier: 1.5
+                    color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    icon: _icons.bookmark
+                }
+
+                onClicked: {
+                    bookmarksRequested();
+                }
             }
         }
     }
@@ -138,28 +150,32 @@ Rectangle{
         id: drawingTypesModel
 
         ListElement {
-            name: qsTr("Redraw Last")
+            name: qsTr("Draw Rectangle")
             property bool available: true
-            property string geometryType: "redraw"
-            property string fontIcon: "redraw_last_path"
+            property string geometryType: "envelope"
+            property string fontIcon: "draw_extent"
         }
 
         ListElement {
-            name: qsTr("Draw Rectangle")
-            property bool available: true
+            name: qsTr("Draw Polygon")
+            property bool available: false
             property string geometryType: "polygon"
-            property url iconPath: "images/draw_extent.png"
-            property string fontIcon: "draw_extent"
+            property string fontIcon: "draw_polygon"
         }
 
         ListElement {
             name: qsTr("Draw Path")
             property bool available: true
             property string geometryType: "multipath"
-            property url iconPath: "images/draw_path.png"
             property string fontIcon: "draw_path"
         }
 
+        ListElement {
+            name: qsTr("Redraw Last")
+            property bool available: true
+            property string geometryType: "redraw"
+            property string fontIcon: "redraw_last_path"
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -175,15 +191,14 @@ Rectangle{
             Button {
                 anchors.fill: parent
                 enabled: geometryType !== Singletons.Constants.kRedraw ? available : available && historyAvailable
-                visible: available
                 property string g: geometryType
                 ToolTip.text: name
                 ToolTip.visible: hovered
 
                 background: Rectangle {
                     anchors.fill: parent
-                    color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : (activeGeometryType === geometryType) ? app.info.properties.mainButtonBorderColor : "#eee"
-                    border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                    color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : (activeGeometryType === geometryType) ? app.info.properties.mainButtonBorderColor : "#fff"
+                    border.width: app.info.properties.mainButtonBorderWidth
                     border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
                     radius: sf(3)
                 }

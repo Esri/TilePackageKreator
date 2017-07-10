@@ -122,7 +122,7 @@ Item {
             id: activityIndicator
             anchors.fill: parent
             visible: false
-            color: Singletons.Config.subtleBackground
+            color: Singletons.Colors.subtleBackground
             opacity: .8
             z: 1000
             Accessible.role: Accessible.Pane
@@ -187,7 +187,7 @@ Item {
             anchors.right: parent.right
             anchors.left: parent.left
             height: sf(60)
-            color: Singletons.Config.subtleBackground
+            color: Singletons.Colors.subtleBackground
             Accessible.role: Accessible.Pane
 
             RowLayout {
@@ -197,7 +197,7 @@ Item {
                 Rectangle {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    color: Singletons.Config.subtleBackground
+                    color: Singletons.Colors.subtleBackground
                     visible: !addServiceEntry.visible
                     enabled: !addServiceEntry.visible
                     Accessible.role: Accessible.Pane
@@ -218,7 +218,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: parent.height - sf(20)
                     Layout.margins: sf(10)
-                    color: Singletons.Config.subtleBackground
+                    color: Singletons.Colors.subtleBackground
                     visible: !addServiceEntry.visible
                     enabled: !addServiceEntry.visible
                     Accessible.role: Accessible.Pane
@@ -234,7 +234,7 @@ Item {
 
                         background: Rectangle {
                             anchors.fill: parent
-                            color: Singletons.Config.subtleBackground
+                            color: Singletons.Colors.subtleBackground
                             radius: sf(3)
                             border.width: sf(1)
                             border.color: app.info.properties.mainButtonBorderColor
@@ -268,7 +268,7 @@ Item {
                     id: addServiceEntry
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    color: Singletons.Config.subtleBackground
+                    color: Singletons.Colors.subtleBackground
                     visible: false
                     enabled: false
                     Accessible.role: Accessible.Pane
@@ -290,11 +290,11 @@ Item {
                                 background: Rectangle {
                                     anchors.fill: parent
                                     border.width: Singletons.Config.formElementBorderWidth
-                                    border.color: Singletons.Config.formElementBorderColor
+                                    border.color: Singletons.Colors.formElementBorderColor
                                     radius: Singletons.Config.formElementRadius
                                     color: _uiEntryElementStates(parent)
                                 }
-                                color: Singletons.Config.formElementFontColor
+                                color: Singletons.Colors.formElementFontColor
                                 font.family: notoRegular
 
                                 validator: RegExpValidator {
@@ -430,7 +430,7 @@ Item {
                 text: Singletons.Strings.noExportTileServices
                 font.family: notoBold
                 font.pointSize: Singletons.Config.largeFontSizePoint
-                color: Singletons.Config.boldUIElementFontColor
+                color: Singletons.Colors.boldUIElementFontColor
             }
         }
 
@@ -533,7 +533,7 @@ Item {
                         id: innerTile
                         anchors.fill: parent
                         Accessible.role: Accessible.Pane
-                        color: Singletons.Config.subtleBackground
+                        color: Singletons.Colors.subtleBackground
 
                         ColumnLayout {
                             spacing: 1
@@ -583,7 +583,7 @@ Item {
                                         pointSize: Singletons.Config.smallFontSizePoint
                                         family: notoRegular
                                     }
-                                    color: Singletons.Config.boldUIElementFontColor
+                                    color: Singletons.Colors.boldUIElementFontColor
                                     verticalAlignment: Text.AlignVCenter
                                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
@@ -595,7 +595,7 @@ Item {
 
                             Rectangle {
                                 id: tileMenu
-                                color: Singletons.Config.subtleBackground
+                                color: Singletons.Colors.subtleBackground
                                 Layout.preferredHeight: 30  * AppFramework.displayScaleFactor
                                 Layout.fillWidth: true
                                 Accessible.role: Accessible.Pane
@@ -720,7 +720,7 @@ Item {
         Accessible.description: Singletons.Strings.metadataDialogDesc
 
         contentItem: Rectangle {
-            color: Singletons.Config.subtleBackground
+            color: Singletons.Colors.subtleBackground
             anchors.fill: parent
             width: app.width - sf(30)
             height: app.height - sf(30)
@@ -768,7 +768,7 @@ Item {
             color: "#fff"
             border {
                 width: sf(1)
-                color: Singletons.Config.subtleBackground
+                color: Singletons.Colors.subtleBackground
             }
         }
 
@@ -776,13 +776,13 @@ Item {
             height: contextMenu.menuItemHeight
             width: parent.width
             background: Rectangle {
-                color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
+                color: parent.hovered ? Singletons.Colors.subtleBackground : "#fff"
             }
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 text: Singletons.Strings.viewMetadata
-                color: Singletons.Config.boldUIElementFontColor
+                color: Singletons.Colors.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
             onClicked: {
@@ -813,7 +813,7 @@ Item {
         Rectangle {
             height: sf(1)
             width: parent.width
-            color: Singletons.Config.subtleBackground
+            color: Singletons.Colors.subtleBackground
         }
 
         Button {
@@ -822,13 +822,13 @@ Item {
             visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
             enabled: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
             background: Rectangle {
-                color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
+                color: parent.hovered ? Singletons.Colors.subtleBackground : "#fff"
             }
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 text: !portal.isPortal ? Singletons.Strings.viewOnArcgis : Singletons.Strings.viewOnPortal
-                color: Singletons.Config.boldUIElementFontColor
+                color: Singletons.Colors.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
             onClicked: {
@@ -843,7 +843,7 @@ Item {
         Rectangle {
             height: sf(1)
             width: parent.width
-            color: Singletons.Config.subtleBackground
+            color: Singletons.Colors.subtleBackground
             visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
         }
 
@@ -851,13 +851,13 @@ Item {
             height: contextMenu.menuItemHeight
             width: parent.width
             background: Rectangle {
-                color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
+                color: parent.hovered ? Singletons.Colors.subtleBackground : "#fff"
             }
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 text: contextMenu.currentInfo !== undefined ? ( contextMenu.currentInfo.isArcgisTileService ? Singletons.Strings.viewRestService : Singletons.Strings.viewOnlineService) : ""
-                color: Singletons.Config.boldUIElementFontColor
+                color: Singletons.Colors.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
             onClicked: {
@@ -883,20 +883,20 @@ Item {
         Rectangle {
             height: sf(1)
             width: parent.width
-            color: Singletons.Config.subtleBackground
+            color: Singletons.Colors.subtleBackground
         }
 
         Button {
             height: contextMenu.menuItemHeight
             width: parent.width
             background: Rectangle {
-                color: parent.hovered ? Singletons.Config.subtleBackground : "#fff"
+                color: parent.hovered ? Singletons.Colors.subtleBackground : "#fff"
             }
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
                 text: Singletons.Strings.createPItem
-                color: Singletons.Config.boldUIElementFontColor
+                color: Singletons.Colors.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
             onClicked: {

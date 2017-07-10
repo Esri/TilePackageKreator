@@ -220,7 +220,7 @@ Item {
                             id: mapInfoToolbar
                             Layout.preferredHeight: sf(50)
                             Layout.fillWidth: true
-                            color:Singletons.Config.subtleBackground
+                            color:Singletons.Colors.subtleBackground
 
                             RowLayout {
                                 anchors.fill: parent
@@ -447,7 +447,7 @@ Item {
                 Rectangle {
                     anchors.fill:parent
                     opacity: .9
-                    color: Singletons.Config.subtleBackground
+                    color: Singletons.Colors.subtleBackground
                     z: 100
                 }
 
@@ -1050,10 +1050,10 @@ Item {
 
     function _uiEntryElementStates(control) {
         if (!control.enabled) {
-            return Singletons.Config.formElementDisabledBackground;
+            return Singletons.Colors.formElementDisabledBackground;
         }
         else {
-            return Singletons.Config.formElementBackground;
+            return Singletons.Colors.formElementBackground;
         }
     }
 

@@ -36,7 +36,7 @@ QtObject {
 
     property string mainButtonBackgroundColor: "#196fa6"
     //property string mainButtonBorderColor: "#007ac2"
-    property string mainButtonPressedColor: "#166090"
+    property color mainButtonPressedColor: "#166090"
     //property string mainButtonFontColor: "#ffffff"
     //property int mainButtonBorderWidth: 1
     //property int mainButtonRadius: 0
@@ -60,14 +60,6 @@ QtObject {
     property double smallFontSizePoint: (baseFontSizePoint * 0.8 < 10 ) ? 10 : baseFontSizePoint * 0.8
     property double mediumFontSizePoint: baseFontSizePoint * 1.1
     property double largeFontSizePoint: baseFontSizePoint * 1.3
-
-//    property int qtMapSpatialReference: 4326
-//    property int webMercLatestWKID: 3857
-//    property int webMercWKID: 102100
-//    property string webMercSR: "WGS_1984_Web_Mercator_Auxiliary_Sphere"
-    //property double mapDefaultLat: 39.8665
-    //property double mapDefaultLong: -97.3105
-    //property int mapDefaultZoomLevel: 3
 
     property var thumbnails: {
         "width":200,

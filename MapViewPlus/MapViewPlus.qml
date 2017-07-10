@@ -24,6 +24,7 @@ import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
+import ArcGIS.AppFramework.Sql 1.0
 //------------------------------------------------------------------------------
 import "../Portal"
 import "../singletons" as Singletons
@@ -64,11 +65,12 @@ Item {
     property bool allowMapToPan: false
     property bool mapTileServiceUsesToken: true
     property bool historyAvailable: false
+    property SqlQueryModel userBookmarks
 
     property string geometryType: ""
-    property bool drawEnvelope: geometryType === Singletons.Constants.kPolygon ? true : false //"envelope" ? true : false
-    property bool drawPolygon: geometryType === Singletons.Constants.kPolygon ? true : false //"polygon" ? true : false
-    property bool drawMultipath: geometryType === Singletons.Constants.kMultipath ? true : false //"multipath" ? true : false
+    property bool drawEnvelope: geometryType === Singletons.Constants.kEnvelope ? true : false
+    property bool drawPolygon: geometryType === Singletons.Constants.kPolygon ? true : false
+    property bool drawMultipath: geometryType === Singletons.Constants.kMultipath ? true : false
 
     readonly property alias map: previewMap.map
     readonly property alias clearExtentButton: clearExtentBtn
@@ -79,8 +81,12 @@ Item {
     signal drawingError(string error)
     signal zoomLevelChanged(var level)
     signal positionChanged(var position)
-    signal redraw()
+    signal redraw(var data)
     signal basemapLoaded()
+
+    Component.onCompleted: {
+        userBookmarks = appDatabase.read("SELECT * FROM 'bookmarks' WHERE user IS '%1'".arg(portal.user.email));
+    }
 
     // SIGNAL IMPLEMENTATION ///////////////////////////////////////////////////
 
@@ -99,17 +105,18 @@ Item {
         }
     }
 
+    //--------------------------------------------------------------------------
+
     onRedraw: {
-        var lastDrawing = drawingHistory[drawingHistory.length-1];
         drawingStarted();
-        if (lastDrawing.type === Singletons.Constants.kMultipath) {
-            pathCoordinates = lastDrawing.geometry;
+        if (data.type === Singletons.Constants.kMultipath) {
+            pathCoordinates = data.geometry;
             userDrawnExtent = true;
             geometryType = Singletons.Constants.kMultipath;
             addMultipathToMap("final");
         }
-        if (lastDrawing.type === Singletons.Constants.kPolygon) {
-            pathCoordinates = lastDrawing.geometry;
+        if (data.type === Singletons.Constants.kPolygon) {
+            pathCoordinates = data.geometry;
             userDrawnExtent = true;
             geometryType = Singletons.Constants.kPolygon;
             addPolygonToMap("final");
@@ -201,15 +208,21 @@ Item {
                     enabled: (drawing) ? false : true
                     drawingExists: userDrawnExtent
                     historyAvailable: mapViewPlus.historyAvailable && (previewMap.map !== null ? previewMap.map.mapItems.length <= 0 : false)
+                    bookmarksAvailable: userBookmarks.count > 0
 
                     onDrawingRequest: {
                         if (g === Singletons.Constants.kRedraw){
-                            redraw();
+                            var lastDrawing = drawingHistory[drawingHistory.length-1];
+                            redraw(lastDrawing);
                         }
                         else {
                             drawingStarted();
                             geometryType = g;
                         }
+                    }
+
+                    onBookmarksRequested: {
+                        bookmarksPopup.open();
                     }
                 }
 
@@ -224,6 +237,30 @@ Item {
                        z: previewMap.z + 3
                        visible: !drawing
                 }
+            }
+        }
+
+        Popup {
+            id: bookmarksPopup
+            width: sf(250)
+            height: sf(200)
+            x: topMenu.width - width
+            y: topMenu.height
+
+            background: Rectangle {
+                color: "#fff"
+                border.color: Singletons.Colors.mediumGray
+                border.width: sf(1)
+            }
+
+            ListView {
+                anchors.fill: parent
+                id: bookmarksListView
+
+                model: userBookmarks
+                spacing: sf(2)
+                delegate: bookmarkDelegate
+                clip: true
             }
         }
     }
@@ -311,6 +348,51 @@ Item {
         }
     }
 
+    Rectangle {
+        id: drawingStatusMessage
+        width: sf(200)
+        height: sf(30)
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: sf(10)
+        z: previewMap.z + 3
+        color: !drawingMenu.drawingExists ?  "#F3EDC7" : "#DDEEDB"
+        opacity: !drawing ? 1 : .4
+
+        RowLayout{
+            anchors.fill: parent
+            anchors.margins: sf(4)
+            spacing: 0
+
+            Item{
+                Layout.fillHeight: true
+                Layout.preferredWidth: parent.height
+                Layout.rightMargin: sf(8)
+                opacity: .9
+
+                IconFont {
+                    anchors.centerIn: parent
+                    iconSizeMultiplier: 1
+                    icon: (!drawingMenu.drawing) ? ( (!drawingMenu.drawingExists) ? _icons.warning : _icons.checkmark ) : _icons.happy_face
+                }
+            }
+            Item{
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Text {
+                    id: drawingNotice
+                    anchors.fill: parent
+                    font.family: notoRegular
+                    font.pointSize: Singletons.Config.xSmallFontSizePoint
+                    verticalAlignment: Text.AlignVCenter
+                    wrapMode: Text.Wrap
+                    lineHeight: .8
+                    text: (!drawingMenu.drawing) ? ( (!drawingMenu.drawingExists) ? Singletons.Strings.drawAnExtentOrPath : Singletons.Strings.extentOrPathDrawn ) : (geometryType === Singletons.Constants.kEnvelope) ? Singletons.Strings.drawingExtent : Singletons.Strings.drawingPath
+                }
+            }
+        }
+    }
+
     DropShadow {
            anchors.fill: mapZoomTools
            horizontalOffset: 0
@@ -343,9 +425,9 @@ Item {
 
     MouseArea {
         id: multipathDrawingMouseArea
-        enabled: (drawing && drawMultipath) ? true : false
-        focus: (drawing && drawMultipath) ? true : false
-        visible: (drawing && drawMultipath) ? true : false
+        enabled: (drawing && drawMultipath || drawing && drawPolygon) ? true : false
+        focus: (drawing && drawMultipath || drawing && drawPolygon) ? true : false
+        visible: (drawing && drawMultipath || drawing && drawPolygon) ? true : false
         clip: true
         anchors.fill: parent
         z: previewMap.z + 3
@@ -404,6 +486,11 @@ Item {
                 pathCoordinates.push({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }});
                 if (pathCoordinates.length > 1) {
                     addMultipathToMap("draft");
+                }
+                if (pathCoordinates.length === 1) {
+                    if (drawPolygon){
+                        // create a close polygon mouse area here.
+                    }
                 }
             }
             else {
@@ -483,8 +570,17 @@ Item {
             mapDrawCanvas.getContext('2d').lineTo(inX,inY);
             mapDrawCanvas.getContext('2d').stroke();
         }
-
     }
+
+//    MouseArea {
+//        id: closePolygonListener
+//        enabled: drawing && drawPolygon
+//        visible: drawing && drawPolygon
+//        clip: true
+//        width: sf(20)
+//        height: sf(20)
+//        z: multipathDrawingMouseArea.z + 1
+//    }
 
     //--------------------------------------------------------------------------
 
@@ -556,7 +652,7 @@ Item {
         hoverEnabled: true
         propagateComposedEvents: true
         preventStealing: true
-        z: previewMap.z + 1
+        z: previewMap.z - 1
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onPressed: {
@@ -698,13 +794,39 @@ Item {
         visible: false
         enabled: false
 
-        sourceItem: Rectangle {
-            width: sf(62)
-            height: sf(30)
-            color: "transparent"
-            RowLayout {
+        sourceItem: Item {
+            width: sf(30)
+            height: sf(62)
+
+            ColumnLayout {
                 anchors.fill: parent
                 spacing: sf(2)
+
+                Button {
+                    id: saveBookmarkBtn
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    ToolTip.text: Singletons.Strings.saveAsBookmark
+                    ToolTip.visible: hovered
+
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: "#fff"
+                        radius: 0
+
+                        IconFont {
+                            anchors.centerIn: parent
+                            color: app.info.properties.mainButtonBorderColor
+                            icon: _icons.add_bookmark
+                        }
+                    }
+                    onClicked: {
+                        addBookmarkDialog.x = clearExtentMapItem.x
+                        addBookmarkDialog.y = clearExtentMapItem.y
+                        addBookmarkDialog.open();
+                    }
+                }
+
                 Button {
                     id: clearExtentBtn
                     Layout.fillHeight: true
@@ -730,36 +852,14 @@ Item {
                         mapViewPlus.clearMap();
                     }
                 }
-                Button {
-                    id: saveBookmarkBtn
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    ToolTip.text: qsTr("Save as bookmark")
-                    ToolTip.visible: hovered
-                    //enabled: false
-
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: "#fff"
-                        radius: 0
-
-
-                        IconFont {
-                            anchors.centerIn: parent
-                            color: app.info.properties.mainButtonBorderColor
-                            icon: _icons.bookmark
-                        }
-                    }
-                    onClicked: {
-                        addBookmarkDialog.open();
-                        //console.log(pathCoordinates);
-                        //appDatabase.write();
-                    }
-                }
             }
         }
     }
 
+//    MapQuickItem {
+//        id: closePolygon
+
+//    }
 
     //--------------------------------------------------------------------------
 
@@ -789,6 +889,8 @@ Item {
         }
     }
 
+    //--------------------------------------------------------------------------
+
     Dialog {
         id: addBookmarkDialog
         title: "Title"
@@ -810,18 +912,68 @@ Item {
                 sql += "(name, tpk_app_geometry, user) ";
                 sql += "VALUES('%1', '%2', '%3')"
                         .arg(bookmarkTitle.text)
-                        .arg(JSON.stringify(pathCoordinates))
+                        .arg(JSON.stringify(getLastDrawing()))
                         .arg(portal.user.email);
                 appDatabase.write(sql);
                 bookmarkTitle.clear();
                 addBookmarkDialog.close();
                 saveBookmarkBtn.enabled = false;
+                _loadBookmarks();
             }
         }
 
         onRejected: addBookmarkDialog.close();
 
+    }
 
+    //--------------------------------------------------------------------------
+
+    Component {
+        id: bookmarkDelegate
+
+        Item {
+            width: parent.width
+            height: sf(35)
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                Button {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                        Text {
+                            anchors.fill: parent
+                            verticalAlignment: Text.AlignVCenter
+                            text: name
+                            font.family: notoRegular
+                            font.pointSize: Singletons.Config.smallFontSizePoint
+                        }
+                        onClicked: {
+                            var inBookmark = JSON.parse(tpk_app_geometry);
+                            redraw(inBookmark);
+                            bookmarksPopup.close();
+                        }
+                }
+                Button {
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: height
+
+                    IconFont {
+                        anchors.centerIn: parent
+                        icon: _icons.trash_bin
+                        iconSizeMultiplier: .8
+                        color: app.info.properties.mainButtonBorderColor
+                    }
+
+                    onClicked: {
+                        var sql = "DELETE from 'bookmarks' WHERE OBJECTID = %1".arg(OBJECTID);
+                        appDatabase.write(sql);
+                        _loadBookmarks();
+                    }
+                }
+            }
+        }
     }
 
     // METHODS /////////////////////////////////////////////////////////////////
@@ -1015,7 +1167,7 @@ Item {
             clearDrawingCanvas();
 
             previewMap.map.addMapItem(clearExtentMapItem)
-            clearExtentMapItem.anchorPoint = Qt.point(31,15);
+            clearExtentMapItem.anchorPoint = Qt.point(clearExtentMapItem.sourceItem.width, clearExtentMapItem.sourceItem.height);
             clearExtentMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude);
             clearExtentMapItem.visible = true;
             clearExtentMapItem.enabled = true;
@@ -1191,6 +1343,10 @@ Item {
         else {
             historyAvailable = false;
         }
+    }
+
+    function _loadBookmarks(){
+        userBookmarks = appDatabase.read("SELECT * FROM 'bookmarks' WHERE user IS '%1'".arg(portal.user.email));
     }
 
     // END /////////////////////////////////////////////////////////////////////

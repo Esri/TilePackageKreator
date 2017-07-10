@@ -30,7 +30,7 @@ import "../Controls" as Controls
 import "../"
 //------------------------------------------------------------------------------
 
-Rectangle{
+Rectangle {
 
     // PROPERTIES //////////////////////////////////////////////////////////////
 
@@ -38,7 +38,7 @@ Rectangle{
 
     anchors.fill: parent
     color: "white"
-    radius: sf(5)
+    //radius: sf(5)
 
     property alias geocodeModel: geocodeModel
     readonly property bool busy: geocodeModel.status === GeocodeModel.Loading
@@ -73,31 +73,144 @@ Rectangle{
 
     // UI //////////////////////////////////////////////////////////////////////
 
-    Controls.StyledTextField {
-        id: textField
+    RowLayout {
         anchors.fill: parent
-        anchors.margins: sf(5)
-        leftPadding: searchButton.width + sf(2)
-        rightPadding: clearButton.width + sf(2)
+        spacing: 0
 
-        onTextChanged: {
-            if (text <= "") {
-                geoSearchMenu.clear();
+        Item {
+            id: searchIcon
+            Layout.fillHeight: true
+            Layout.preferredWidth: height + sf(6)
+            Canvas {
+                anchors.fill: parent
+                onPaint: {
+                    if (available) {
+                        var _width = height;
+                        var ctx = getContext("2d");
+                        ctx.fillStyle = Singletons.Colors.lightBlue;
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(_width,0);
+                        ctx.lineTo(_width + sf(6), height / 2);
+                        ctx.lineTo(_width,height);
+                        ctx.lineTo(0,height);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
             }
-            else {
-                geocodeTimer.restart();
+
+            Item {
+                id: searchButton
+                width: height
+                height: parent.height
+                anchors.left: parent.left
+
+                IconFont {
+                    id: searchAndStatus
+                    anchors.centerIn: parent
+                    icon: busy ? _icons.spinner2 : _icons.magnifying_glass
+                    iconSizeMultiplier: 1
+                    color: !busy ? app.info.properties.mainButtonBorderColor : "green"
+                }
+
+                RotationAnimation {
+                    id: rotator
+                    direction: RotationAnimation.Clockwise
+                    from: 0
+                    to: 360
+                    duration: 2000
+                    property: "rotation"
+                    target: searchAndStatus
+                    loops: Animation.Infinite
+                }
             }
         }
 
-        onEditingFinished: {
-            if (text.substr(0, 1) === '@') {
-                parseCoordinate(text.substr(1).trim());
-            }
-        }
+        Item {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
 
-        onFocusChanged: {
-            if (focus && geocodeModel.count > 0) {
-                locationPopup.open();
+            Controls.StyledTextField {
+                id: textField
+                anchors.fill: parent
+                anchors.margins: sf(5)
+                rightPadding: clearButton.width + sf(2)
+
+                onTextChanged: {
+                    if (text <= "") {
+                        geoSearchMenu.clear();
+                    }
+                    else {
+                        geocodeTimer.restart();
+                    }
+                }
+
+                onEditingFinished: {
+                    if (text.substr(0, 1) === '@') {
+                        parseCoordinate(text.substr(1).trim());
+                    }
+                }
+
+                onFocusChanged: {
+                    if (focus && geocodeModel.count > 0) {
+                        locationPopup.open();
+                    }
+                }
+            }
+
+            Item {
+                id: placeholderText
+                width: textField.width - clearButton.width
+                height: textField.height
+                anchors.left: textField.left
+                anchors.leftMargin: sf(4)
+                anchors.top: textField.top
+                visible: textField.text === ""
+
+                Text {
+                    anchors.fill: parent
+                    anchors.leftMargin: sf(2)
+                    color: "#aaa"
+                    verticalAlignment: Text.AlignVCenter
+                    text: Singletons.Strings.searchAddressOrLatLon
+                }
+            }
+
+            Item {
+                id: clearButton
+                height: textField.height
+                width: textField.height - sf(7)
+                anchors.top: textField.top
+                anchors.right: textField.right
+                visible: textField.text > ""
+
+                Button {
+                    id: clearText
+                    anchors.fill: parent
+                    enabled: textField.text > ""
+                    background: Item {
+                    }
+                    contentItem: Rectangle {
+                        anchors.centerIn: clearText
+                        width: parent.width - sf(5)
+                        height: width
+                        radius: width / 2
+                        color: clearText.enabled ? app.info.properties.mainButtonBorderColor : Singletons.Colors.lightGray
+
+                        IconFont {
+                            anchors.fill: parent
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                            font.pointSize: 9
+                            color: "#fff"
+                            icon: _icons.x_cross
+                        }
+                    }
+                    onClicked: {
+                        textField.clear();
+                    }
+                }
             }
         }
     }
@@ -106,8 +219,8 @@ Rectangle{
         id: locationPopup
         width: textField.width //parent.width
         height: sf(200)
-        x: textField.x
-        y: textField.height + sf(2)
+        x: searchIcon.width + sf(5)
+        y: textField.height + sf(5)
 
         background: Rectangle {
             color: "#fff"
@@ -123,86 +236,6 @@ Rectangle{
             spacing: 2 * AppFramework.displayScaleFactor
             delegate: locationDelegate
             clip: true
-        }
-    }
-
-    Item {
-        id: placeholderText
-        width: textField.width - searchButton.width - clearButton.width
-        height: textField.height
-        anchors.left: searchButton.right
-        anchors.top: textField.top
-        visible: textField.text === ""
-
-        Text {
-            anchors.fill: parent
-            anchors.leftMargin: sf(2)
-            color: "#aaa"
-            verticalAlignment: Text.AlignVCenter
-            text: Singletons.Strings.searchAddressOrLatLon
-        }
-    }
-
-    Item {
-        id: searchButton
-        height: textField.height
-        width: textField.height - sf(10)
-        anchors.top: textField.top
-        anchors.left: textField.left
-
-        IconFont {
-            id: searchAndStatus
-            anchors.centerIn: parent
-            icon: busy ? _icons.spinner2 : _icons.magnifying_glass
-            iconSizeMultiplier: 1
-            color: !busy ? app.info.properties.mainButtonBorderColor : "green"
-        }
-
-        RotationAnimation {
-            id: rotator
-            direction: RotationAnimation.Clockwise
-            from: 0
-            to: 360
-            duration: 2000
-            property: "rotation"
-            target: searchAndStatus
-            loops: Animation.Infinite
-        }
-    }
-
-    Item {
-        id: clearButton
-        height: textField.height
-        width: textField.height - sf(7)
-        anchors.top: textField.top
-        anchors.right: textField.right
-        visible: textField.text > ""
-
-        Button {
-            id: clearText
-            anchors.fill: parent
-            enabled: textField.text > ""
-            background: Item {
-            }
-            contentItem: Rectangle {
-                anchors.centerIn: clearText
-                width: parent.width - sf(5)
-                height: width
-                radius: width / 2
-                color: clearText.enabled ? app.info.properties.mainButtonBorderColor : Singletons.Colors.lightGray
-
-                IconFont {
-                    anchors.fill: parent
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    font.pointSize: 9
-                    color: "#fff"
-                    icon: _icons.x_cross
-                }
-            }
-            onClicked: {
-                textField.clear();
-            }
         }
     }
 

@@ -54,7 +54,7 @@ Dialog {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40 * AppFramework.displayScaleFactor
-                color: Singletons.Config.subtleBackground
+                color: Singletons.Colors.subtleBackground
 
                 Text {
                     anchors.fill: parent
@@ -63,7 +63,7 @@ Dialog {
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
                     font.pointSize: Singletons.Config.largeFontSizePoint
-                    color: Singletons.Config.formElementFontColor
+                    color: Singletons.Colors.formElementFontColor
                 }
             }
 
@@ -139,7 +139,7 @@ Dialog {
                             Rectangle {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 1 * AppFramework.displayScaleFactor
-                                color: Singletons.Config.subtleBackground
+                                color: Singletons.Colors.subtleBackground
                             }
                         }
                     }

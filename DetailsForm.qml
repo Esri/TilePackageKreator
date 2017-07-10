@@ -460,7 +460,7 @@ Rectangle {
                     anchors.fill: parent
                     font.pointSize: Singletons.Config.xSmallFontSizePoint
                     font.family: notoRegular
-                    color: Singletons.Config.formElementFontColor
+                    color: Singletons.Colors.formElementFontColor
                 }
             }
 
@@ -578,7 +578,7 @@ Rectangle {
                             fontSizeMode: Text.Fit
                             minimumPointSize: 10
                             verticalAlignment: Text.AlignVCenter
-                            color: Singletons.Config.formElementFontColor
+                            color: Singletons.Colors.formElementFontColor
 
                             Accessible.role: Accessible.StaticText
                             Accessible.name: Singletons.Strings.saveToLocationDesc
@@ -689,13 +689,13 @@ Rectangle {
                                 wrapMode: Text.Wrap
                                 placeholderText: Singletons.Strings.descriptionCopyPaste
 
-                                color: Singletons.Config.formElementFontColor
+                                color: Singletons.Colors.formElementFontColor
                                 font.family: notoRegular
                                 font.pointSize: Singletons.Config.xSmallFontSizePoint
                                 background: Rectangle {
                                     color: _uiEntryElementStates(parent)
                                     border.width: Singletons.Config.formElementBorderWidth
-                                    border.color: Singletons.Config.formElementBorderColor
+                                    border.color: Singletons.Colors.formElementBorderColor
                                     radius: Singletons.Config.formElementRadius
                                     anchors.fill: parent
                                 }
@@ -723,7 +723,7 @@ Rectangle {
                                 text: Singletons.Strings.shareThisItemWith
                                 font.pointSize: Singletons.Config.smallFontSizePoint
                                 font.family: notoRegular
-                                color: Singletons.Config.mainLabelFontColor
+                                color: Singletons.Colors.mainLabelFontColor
                                 anchors.fill: parent
                                 verticalAlignment: Text.AlignVCenter
 
@@ -896,10 +896,10 @@ Rectangle {
 
     function _uiEntryElementStates(control){
         if (!control.enabled) {
-            return Singletons.Config.formElementDisabledBackground;
+            return Singletons.Colors.formElementDisabledBackground;
         }
         else {
-            return Singletons.Config.formElementBackground;
+            return Singletons.Colors.formElementBackground;
         }
     }
 

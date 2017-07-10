@@ -124,7 +124,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 clip: true
-                color: Singletons.Config.subtleBackground
+                color: Singletons.Colors.subtleBackground
 
                 RowLayout {
                     id: tpkForm
@@ -140,7 +140,7 @@ Item {
                         color: "#fff"
 
                         Rectangle {
-                            color: Singletons.Config.boldUIElementBackground
+                            color: Singletons.Colors.boldUIElementBackground
                             anchors.top: parent.top
                             anchors.right: parent.right
                             anchors.bottom: parent.bottom
@@ -163,7 +163,7 @@ Item {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectTPK.height / 3
                                         text: Singletons.Strings.dragTPKFile
-                                        color: Singletons.Config.boldUIElementFontColor
+                                        color: Singletons.Colors.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                         font.pointSize: Singletons.Config.largeFontSizePoint
@@ -173,7 +173,7 @@ Item {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectTPK.height / 3
                                         text: Singletons.Strings.or
-                                        color: Singletons.Config.boldUIElementFontColor
+                                        color: Singletons.Colors.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                         font.family: notoRegular
@@ -247,7 +247,7 @@ Item {
                                         fontSizeMode: Text.Fit
                                         font.family: notoRegular
                                         minimumPointSize: Singletons.Config.smallFontSizePoint
-                                        color: Singletons.Config.boldUIElementFontColor
+                                        color: Singletons.Colors.boldUIElementFontColor
                                         font.pointSize: Singletons.Config.largeFontSizePoint
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
@@ -346,7 +346,7 @@ Item {
 
                 Rectangle{
                     id: tpkUploadStatusOverlay
-                    color: Singletons.Config.subtleBackground
+                    color: Singletons.Colors.subtleBackground
                     opacity: .9
                     anchors.fill: parent
                     visible: uploading ? true : false
@@ -657,7 +657,7 @@ Item {
         if (!control.enabled) {
             return "#888";
         } else {
-            return Singletons.Config.formElementBackground;
+            return Singletons.Colors.formElementBackground;
         }
     }
 

@@ -262,10 +262,10 @@ Item {
 
     function _uiEntryElementStates(control){
         if (!control.enabled) {
-            return Singletons.Config.formElementDisabledBackground;
+            return Singletons.Colors.formElementDisabledBackground;
         }
         else {
-            return Singletons.Config.formElementBackground;
+            return Singletons.Colors.formElementBackground;
         }
     }
 

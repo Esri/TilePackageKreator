@@ -51,7 +51,7 @@ Dialog {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40 * AppFramework.displayScaleFactor
-                color: Singletons.Config.subtleBackground
+                color: Singletons.Colors.subtleBackground
 
                 Text {
                     anchors.fill: parent
@@ -61,7 +61,7 @@ Dialog {
                     horizontalAlignment: Text.AlignHCenter
                     font.pointSize: Singletons.Config.largeFontSizePoint
                     font.family: notoRegular
-                    color: Singletons.Config.formElementFontColor
+                    color: Singletons.Colors.formElementFontColor
                 }
             }
 
@@ -94,11 +94,11 @@ Dialog {
                             background: Rectangle {
                                 anchors.fill: parent
                                 border.width: Singletons.Config.formElementBorderWidth
-                                border.color: Singletons.Config.formElementBorderColor
+                                border.color: Singletons.Colors.formElementBorderColor
                                 radius: Singletons.Config.formElementRadius
-                                color: Singletons.Config.formElementBackground
+                                color: Singletons.Colors.formElementBackground
                             }
-                            textColor: Singletons.Config.formElementFontColor
+                            textColor: Singletons.Colors.formElementFontColor
                             font.family: notoRegular
 
                         }
@@ -139,12 +139,12 @@ Dialog {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         style: TextAreaStyle {
-                            backgroundColor: Singletons.Config.formElementBackground
-                            textColor: Singletons.Config.formElementFontColor
+                            backgroundColor: Singletons.Colors.formElementBackground
+                            textColor: Singletons.Colors.formElementFontColor
                             font.family: notoRegular
                             frame: Rectangle {
                                 border.width: Singletons.Config.formElementBorderWidth
-                                border.color: Singletons.Config.formElementBorderColor
+                                border.color: Singletons.Colors.formElementBorderColor
                                 anchors.fill: parent
                             }
                         }

@@ -35,6 +35,7 @@ QtObject {
 
     // B -----------------------------------------------------------------------
     readonly property string back: qsTr("Back")
+    readonly property string bookmarks: qsTr("Bookmarks")
     readonly property string browse: qsTr("Browse")
     readonly property string browseForFile: qsTr("Browse for file")
     readonly property string browseOrgTilePackages: qsTr("Browse Organization Tile Packages")
@@ -161,6 +162,7 @@ QtObject {
 
 
     // S -----------------------------------------------------------------------
+    readonly property string saveAsBookmark: qsTr("Save as bookmark")
     readonly property string saveTo: qsTr("Save To")
     readonly property string saveToDesc: qsTr("This button will open a file dialog chooser that allows the user to select the folder to save the tile package to locally.")
     readonly property string saveToLocationDesc: qsTr("Selected save to location")
