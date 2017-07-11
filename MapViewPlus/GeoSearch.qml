@@ -111,7 +111,7 @@ Rectangle {
                     anchors.centerIn: parent
                     icon: busy ? _icons.spinner2 : _icons.magnifying_glass
                     iconSizeMultiplier: 1
-                    color: !busy ? app.info.properties.mainButtonBorderColor : "green"
+                    color: !busy ? Singletons.Colors.mainButtonBackgroundColor : "green"
                 }
 
                 RotationAnimation {

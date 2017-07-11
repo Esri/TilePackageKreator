@@ -423,6 +423,71 @@ Item {
 
     //--------------------------------------------------------------------------
 
+    Rectangle {
+        id: closePolygonMouseListener
+        visible: false
+        enabled: closePolygonMouseListener.visible
+        width: sf(20)
+        height: sf(20)
+        z: previewMap.z + 4
+        color: "#20FFFFFF"
+        radius: sf(10)
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+            ToolTip.text: qsTr("Close Polygon")
+            ToolTip.visible: containsMouse
+            onClicked: {
+                pathCoordinates.push(pathCoordinates[0]);
+                addPolygonToMap("final");
+            }
+        }
+
+        Connections {
+            target: closePolygonMapItem
+
+            onEnabledChanged: {
+                if (closePolygonMapItem.enabled) {
+                    closePolygonMouseListener.updateMyPosition();
+                }
+                else {
+                    closePolygonMouseListener.visible = false;
+                }
+            }
+        }
+
+        Connections {
+            target: multipathDrawingMouseArea
+            onMapPanningFinished: {
+                closePolygonMouseListener.updateMyPosition();
+            }
+
+            onMapPanningStarted: {
+                closePolygonMouseListener.visible = false;
+            }
+        }
+
+        Connections {
+            target: previewMap
+            onZoomLevelChanged: {
+                if (drawing && drawPolygon){
+                    closePolygonMouseListener.updateMyPosition();
+                }
+            }
+        }
+
+        function updateMyPosition() {
+            var xy = latLongToScreenPosition(pathCoordinates[0].coordinate);
+            closePolygonMouseListener.x = xy.x - closePolygonMouseListener.width / 2;
+            closePolygonMouseListener.y = xy.y - closePolygonMouseListener.height / 2;
+            closePolygonMouseListener.visible = true;
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
     MouseArea {
         id: multipathDrawingMouseArea
         enabled: (drawing && drawMultipath || drawing && drawPolygon) ? true : false
@@ -487,17 +552,6 @@ Item {
                 if (pathCoordinates.length > 1) {
                     addMultipathToMap("draft");
                 }
-                if (pathCoordinates.length === 1) {
-                    console.log("--------------- pathCoordinates.length === 1")
-                    if (drawPolygon){
-                        console.log("--------------- pathCoordinates.length === 1 > drawPolygon")
-                        closePolygonMapItem.anchorPoint = Qt.point(5,5)
-                        closePolygonMapItem.coordinate = QtPositioning.coordinate(coordinate.latitude, coordinate.longitude);
-                        closePolygonMapItem.visible = true;
-                        closePolygonMapItem.enabled = true;
-                        // create a close polygon mouse area here.
-                    }
-                }
             }
             else {
                 pathCoordinates.pop();
@@ -533,7 +587,9 @@ Item {
 
         onDoubleClicked: {
             mouse.accepted = false;
-            endDrawingByDoubleClick = true;
+            if (drawMultipath){
+                endDrawingByDoubleClick = true;
+            }
         }
 
         Keys.onPressed: {
@@ -571,14 +627,9 @@ Item {
             mapDrawCanvas.getContext('2d').beginPath();
             mapDrawCanvas.getContext('2d').lineWidth = "1";
             mapDrawCanvas.getContext('2d').strokeStyle = drawnExtentOutlineColor;
-            //mapDrawCanvas.getContext('2d').moveTo(lastCollectedPath['screen']['x'], lastCollectedPath['screen']['y'])
             mapDrawCanvas.getContext('2d').moveTo(lcpAsPoint.x, lcpAsPoint.y);
             mapDrawCanvas.getContext('2d').lineTo(inX,inY);
             mapDrawCanvas.getContext('2d').stroke();
-        }
-
-        function closePolygon(){
-            console.log("Close Polygon");
         }
     }
 
@@ -620,7 +671,7 @@ Item {
             mapDrawCanvas.getContext("2d").strokeStyle = drawnExtentOutlineColor;
             mapDrawCanvas.getContext("2d").rect(drawingStartCoord.x,drawingStartCoord.y,xDif, yDif);
             mapDrawCanvas.getContext("2d").stroke();
-            if(mouse !== null){
+            if (mouse !== null) {
                 var coordinate = screenPositionToLatLong(mouse);
                 mapViewPlus.positionChanged({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }})
             }
@@ -856,17 +907,23 @@ Item {
         }
     }
 
+    //--------------------------------------------------------------------------
+
     MapQuickItem {
         id: closePolygonMapItem
         visible: false
         enabled: false
-        sourceItem: Rectangle {
+        sourceItem: Item {
             width: sf(10)
             height: sf(10)
-            radius: sf(5)
-            color: "gold"
+            Rectangle {
+               anchors.fill: parent
+               radius: sf(5)
+               color: "gold"
+               border.color: "blue"
+               border.width: sf(2)
+            }
         }
-
     }
 
     //--------------------------------------------------------------------------
@@ -1127,27 +1184,6 @@ Item {
 
         pathCoordinates = path;
         addPolygonToMap("final")
-
-//        drawingHistory.push({
-//                                "type": Singletons.Constants.kPolygon,
-//                                "geometry": path
-//                            });
-//        // Clean up canvas
-//        clearDrawingCanvas();
-
-//        // Draw extent
-//        drawnExtent.topLeft = topLeft;
-//        drawnExtent.bottomRight = bottomRight;
-//        previewMap.map.addMapItem(drawnExtent);
-
-//        // Add Clear Button
-//        previewMap.map.addMapItem(clearExtentMapItem)
-//        clearExtentMapItem.anchorPoint = Qt.point(-3,-3);
-//        clearExtentMapItem.coordinate = QtPositioning.coordinate(topLeft.latitude, topLeft.longitude);
-//        clearExtentMapItem.visible = true;
-//        clearExtentMapItem.enabled = true;
-
-//        drawingFinished();
     }
 
     //--------------------------------------------------------------------------
@@ -1165,7 +1201,16 @@ Item {
 
         previewMap.map.addMapItem(drawnPolyline);
 
+        if (drawPolygon && typeOfPath === "draft") {
+            mapViewPlus.map.addMapItem(closePolygonMapItem);
+            closePolygonMapItem.anchorPoint = Qt.point(closePolygonMapItem.sourceItem.width/2,closePolygonMapItem.sourceItem.height/2)
+            closePolygonMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude);
+            closePolygonMapItem.visible = true;
+            closePolygonMapItem.enabled = true;
+        }
+
         if (typeOfPath === "final") {
+
             _updateDrawingHistory("add",
                                   {
                                       "type": Singletons.Constants.kMultipath,
@@ -1198,7 +1243,6 @@ Item {
         }
 
         drawnPolygon.path = path;
-        console.log(path)
 
         mapViewPlus.map.addMapItem(drawnPolygon);
 
@@ -1212,11 +1256,14 @@ Item {
             clearDrawingCanvas();
 
             mapViewPlus.map.addMapItem(clearExtentMapItem);
-            clearExtentMapItem.anchorPoint = Qt.point(31,15);
+            clearExtentMapItem.anchorPoint = Qt.point(clearExtentMapItem.sourceItem.width, clearExtentMapItem.sourceItem.height);
             clearExtentMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude);
             clearExtentMapItem.visible = true;
             clearExtentMapItem.enabled = true;
             saveBookmarkBtn.enabled = true;
+
+            closePolygonMapItem.visible = false;
+            closePolygonMapItem.enabled = false;
 
             drawingFinished();
         }
