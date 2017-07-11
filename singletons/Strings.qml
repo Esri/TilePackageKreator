@@ -63,6 +63,7 @@ QtObject {
 
     // D -----------------------------------------------------------------------
     readonly property string defaultTPKDesc: qsTr("Created via Tile Export. Update Description using Browse or online at link below.")
+    readonly property string deleteBookmark: qsTr("Delete Bookmark")
     readonly property string deleteExtent: qsTr("Delete Extent")
     readonly property string deleteHistory: qsTr("Delete History")
     readonly property string description: qsTr("Description")

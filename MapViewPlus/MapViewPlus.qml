@@ -17,7 +17,6 @@
 import QtQuick 2.6
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
-//import QtQuick.Dialogs 1.2
 import QtLocation 5.3
 import QtPositioning 5.3
 import QtGraphicalEffects 1.0
@@ -28,6 +27,7 @@ import ArcGIS.AppFramework.Sql 1.0
 //------------------------------------------------------------------------------
 import "../Portal"
 import "../singletons" as Singletons
+import "../Controls" as Controls
 import "../"
 //------------------------------------------------------------------------------
 
@@ -256,7 +256,6 @@ Item {
             ListView {
                 anchors.fill: parent
                 id: bookmarksListView
-
                 model: userBookmarks
                 spacing: sf(2)
                 delegate: bookmarkDelegate
@@ -364,7 +363,7 @@ Item {
             anchors.margins: sf(4)
             spacing: 0
 
-            Item{
+            Item {
                 Layout.fillHeight: true
                 Layout.preferredWidth: parent.height
                 Layout.rightMargin: sf(8)
@@ -376,7 +375,7 @@ Item {
                     icon: (!drawingMenu.drawing) ? ( (!drawingMenu.drawingExists) ? _icons.warning : _icons.checkmark ) : _icons.happy_face
                 }
             }
-            Item{
+            Item {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Text {
@@ -958,17 +957,132 @@ Item {
 
     Dialog {
         id: addBookmarkDialog
-        title: "Title"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: sf(200)
-        height: sf(200)
+        height: sf(130)
 
-        TextField {
-            id: bookmarkTitle
-            width: parent.width
-            height: sf(20)
-            placeholderText: qsTr("Enter a title")
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
+
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(30)
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: sf(8)
+                    Item {
+                        Layout.fillHeight: true
+                        Layout.preferredWidth: height
+                        IconFont {
+                            anchors.centerIn: parent
+                            icon: _icons.add_bookmark
+                            color: Singletons.Colors.mainButtonBackgroundColor
+                        }
+                    }
+                    Item {
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        Text {
+                            anchors.fill: parent
+                            text: qsTr("Enter a title")
+                            verticalAlignment: Text.AlignVCenter
+                            font.pointSize: Singletons.Config.baseFontSizePoint
+                            font.family: notoRegular
+                        }
+                    }
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(30)
+
+                Controls.StyledTextField {
+                    id: bookmarkTitle
+                    anchors.fill: parent
+                    placeholderText: qsTr("Enter a title")
+                }
+            }
+
+            Item {
+                Layout.fillHeight: true
+            }
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: sf(1)
+                Layout.bottomMargin: sf(8)
+                color: Singletons.Colors.mediumGray
+            }
+
+            Item {
+                Layout.preferredHeight: sf(30)
+                Layout.fillWidth: true
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: sf(8)
+
+                    Item {
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        Button {
+                            id: cancelBm
+                            anchors.fill: parent
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(parent, "clear")
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: "#fff"
+                            }
+
+                            Text {
+                                color: app.info.properties.mainButtonBackgroundColor
+                                anchors.centerIn: parent
+                                textFormat: Text.RichText
+                                text: Singletons.Strings.cancel
+                                font.pointSize: Singletons.Config.smallFontSizePoint
+                                font.family: notoRegular
+                            }
+
+                            onClicked: {
+                                addBookmarkDialog.reject();
+                            }
+                        }
+                    }
+                    Item {
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        Button {
+                            id: addBM
+                            anchors.fill: parent
+                            enabled: bookmarkTitle.text > ""
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(parent)
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: "#fff"
+                            }
+
+                            Text {
+                                color: app.info.properties.mainButtonFontColor
+                                anchors.centerIn: parent
+                                textFormat: Text.RichText
+                                text: Singletons.Strings.create
+                                font.pointSize: Singletons.Config.smallFontSizePoint
+                                font.family: notoRegular
+                            }
+
+                            onClicked: {
+                                addBookmarkDialog.accept();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         onAccepted: {
@@ -987,8 +1101,10 @@ Item {
             }
         }
 
-        onRejected: addBookmarkDialog.close();
-
+        onRejected: {
+            bookmarkTitle.clear();
+            addBookmarkDialog.close();
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -1007,12 +1123,17 @@ Item {
                 Button {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    background: Rectangle {
+                        color: "#fff"
+                    }
                         Text {
                             anchors.fill: parent
                             verticalAlignment: Text.AlignVCenter
                             text: name
                             font.family: notoRegular
                             font.pointSize: Singletons.Config.smallFontSizePoint
+                            elide: Text.ElideRight
+                            color: Singletons.Colors.boldUIElementFontColor
                         }
                         onClicked: {
                             var inBookmark = JSON.parse(tpk_app_geometry);
@@ -1023,12 +1144,37 @@ Item {
                 Button {
                     Layout.fillHeight: true
                     Layout.preferredWidth: height
+                    ToolTip.text: qsTr("Download as geojson")
+                    ToolTip.visible: hovered
+                    background: Rectangle {
+                        color: "#fff"
+                    }
+
+                    IconFont {
+                        anchors.centerIn: parent
+                        icon: _icons.download
+                        iconSizeMultiplier: .8
+                        color: parent.hovered ? app.info.properties.mainButtonBorderColor : app.info.properties.mainButtonBackgroundColor
+                    }
+
+                    onClicked: {
+                        geoJsonHelper.exportToGeoJSON(tpk_app_geometry, name);
+                    }
+                }
+                Button {
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: height
+                    ToolTip.text: Singletons.Strings.deleteBookmark
+                    ToolTip.visible: hovered
+                    background: Rectangle {
+                        color: "#fff"
+                    }
 
                     IconFont {
                         anchors.centerIn: parent
                         icon: _icons.trash_bin
                         iconSizeMultiplier: .8
-                        color: app.info.properties.mainButtonBorderColor
+                        color: parent.hovered ? app.info.properties.mainButtonBorderColor : app.info.properties.mainButtonBackgroundColor
                     }
 
                     onClicked: {
@@ -1050,7 +1196,6 @@ Item {
             g = getMutlipathGeometry();
         }
         else if (drawEnvelope) {
-            // g = getEnvelopeGeometry();
             g = getPolygonGeometry();
         }
         else if (drawPolygon) {
@@ -1210,7 +1355,6 @@ Item {
         }
 
         if (typeOfPath === "final") {
-
             _updateDrawingHistory("add",
                                   {
                                       "type": Singletons.Constants.kMultipath,
@@ -1399,6 +1543,8 @@ Item {
             historyAvailable = false;
         }
     }
+
+    //--------------------------------------------------------------------------
 
     function _loadBookmarks(){
         userBookmarks = appDatabase.read("SELECT * FROM 'bookmarks' WHERE user IS '%1'".arg(portal.user.email));
