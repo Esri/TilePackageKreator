@@ -361,14 +361,15 @@ Item {
                                             Layout.fillWidth: true
 
                                             Text {
+                                                id: notAvailableText
                                                 anchors.fill: parent
-                                                visible: mapViewPlus.geometryType === Singletons.Constants.kMultipath // "multipath"
+                                                visible: mapViewPlus.geometryType === Singletons.Constants.kMultipath || mapViewPlus.geometryType === Singletons.Constants.kPolygon
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
-                                                text: Singletons.Strings.notAvailableWithPaths
+                                                text: Singletons.Strings.notAvailableWithPathsOrPolygons
                                                 font.family: notoRegular
 
-                                                Accessible.ignored: mapViewPlus.geometryType !== Singletons.Constants.kMultipath // "multipath"
+                                                Accessible.ignored: mapViewPlus.geometryType !== Singletons.Constants.kMultipath && mapViewPlus.geometryType !== Singletons.Constants.kPolygon
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
                                                 Accessible.description: Singletons.Strings.estimatedOutputSizeDesc
@@ -376,15 +377,15 @@ Item {
                                             }
 
                                             Text {
-                                                id:tilePackageSizeEstimate
-                                                visible: mapViewPlus.geometryType !== Singletons.Constants.kMultipath // "multipath"
+                                                id: tilePackageSizeEstimate
+                                                visible: !notAvailableText.visible
                                                 anchors.fill: parent
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "Tiles: -- Size: --"
                                                 font.family: notoRegular
 
-                                                Accessible.ignored: mapViewPlus.geometryType === Singletons.Constants.kMultipath // "multipath"
+                                                Accessible.ignored: mapViewPlus.geometryType === Singletons.Constants.kMultipath && mapViewPlus.geometryType === Singletons.Constants.kPolygon
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
                                                 Accessible.description: Singletons.Strings.estimatedOutputSizeDesc

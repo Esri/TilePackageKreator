@@ -139,7 +139,7 @@ QtObject {
     readonly property string newTilePackage: qsTr("New Tile Package")
     readonly property string next: qsTr("Next")
     readonly property string noDesc: qsTr("No Description")
-    readonly property string notAvailableWithPaths: qsTr("Not Available with Paths")
+    readonly property string notAvailableWithPathsOrPolygons: qsTr("Not Available with Paths or Polygons")
     readonly property string noExportTileServices: qsTr("No export tile services are available.")
     readonly property string noOrgTileServices: qsTr("There are no tile packages available.")
     readonly property string noTitle: qsTr("No Title")
