@@ -16,6 +16,7 @@
 
 import QtQml 2.2
 import QtQuick 2.7
+import QtQuick.Controls 1.4 as OldControls
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
@@ -676,42 +677,54 @@ Rectangle {
 
                         Item {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: sf(60)
-                            Layout.bottomMargin: sf(10)
+                            Layout.preferredHeight: sf(70)
 
-                            TextArea {
-                                id: tpkDescriptionTextArea
-                                enabled: false
+
+                            OldControls.ScrollView {
+                                id: views
                                 anchors.fill: parent
-                                property int maximumLength: 4000
-                                readOnly: uploadToPortal ? false : true
-                                selectByMouse: true
-                                wrapMode: Text.Wrap
-                                placeholderText: Singletons.Strings.descriptionCopyPaste
+                                horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+                                verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
+                                TextArea {
+                                    id: tpkDescriptionTextArea
+                                    height: sf(200)
+                                    width: views.width - sf(15)
+                                    anchors.left: views.left
+                                    property int maximumLength: 4000
+                                    readOnly: uploadToPortal ? false : true
+                                    selectByMouse: true
+                                    wrapMode: Text.Wrap
+                                   // placeholderText: Singletons.Strings.descriptionCopyPaste
 
-                                color: Singletons.Colors.formElementFontColor
-                                font.family: notoRegular
-                                font.pointSize: Singletons.Config.xSmallFontSizePoint
-                                background: Rectangle {
-                                    color: _uiEntryElementStates(parent)
-                                    border.width: Singletons.Config.formElementBorderWidth
-                                    border.color: Singletons.Colors.formElementBorderColor
-                                    radius: Singletons.Config.formElementRadius
-                                    anchors.fill: parent
+                                    color: Singletons.Colors.formElementFontColor
+                                    font.family: notoRegular
+                                    font.pointSize: Singletons.Config.xSmallFontSizePoint
+                                    background: Rectangle {
+                                        color: _uiEntryElementStates(parent)
+                                        border.width: Singletons.Config.formElementBorderWidth
+                                        border.color: Singletons.Colors.formElementBorderColor
+                                        radius: Singletons.Config.formElementRadius
+                                        anchors.fill: parent
+                                    }
+
+                                    onTextChanged: {
+                                        tpkDescriptionCharacterCount.text = (maximumLength - text.length).toString();
+                                           if (text.length > maximumLength) {
+                                               tpkDescriptionTextArea.text = tpkDescriptionTextArea.getText(0, maximumLength);
+                                           }
+                                    }
+
+                                    Accessible.role: Accessible.EditableText
+                                    Accessible.name: Singletons.Strings.descriptionTextAreaDesc
+                                    Accessible.description: Singletons.Strings.descriptionTextAreaDesc
                                 }
-
-                                onTextChanged: {
-                                    tpkDescriptionCharacterCount.text = (maximumLength - text.length).toString();
-                                       if (text.length > maximumLength) {
-                                           tpkDescriptionTextArea.text = tpkDescriptionTextArea.getText(0, maximumLength);
-                                       }
-                                }
-
-                                Accessible.role: Accessible.EditableText
-                                Accessible.name: Singletons.Strings.descriptionTextAreaDesc
-                                Accessible.description: Singletons.Strings.descriptionTextAreaDesc
                             }
-
+                        }
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: sf(1)
+                            Layout.bottomMargin: sf(10)
+                            color: Singletons.Colors.formElementBorderColor
                         }
 
                         //------------------------------------------------------
