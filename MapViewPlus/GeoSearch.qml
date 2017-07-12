@@ -164,13 +164,12 @@ Rectangle {
                 width: textField.width - clearButton.width
                 height: textField.height
                 anchors.left: textField.left
-                anchors.leftMargin: sf(4)
+                anchors.leftMargin: textField.leftPadding
                 anchors.top: textField.top
                 visible: textField.text === ""
 
                 Text {
                     anchors.fill: parent
-                    anchors.leftMargin: sf(2)
                     color: "#aaa"
                     verticalAlignment: Text.AlignVCenter
                     text: Singletons.Strings.searchAddressOrLatLon
