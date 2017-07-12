@@ -231,9 +231,10 @@ Item{
         return geoJson;
     }
 
-    function exportToGeoJSON(geometry,name){
-        var geoJson = toGeoJSON(geometry);
-        fileDialog.geoJsonToExport = geoJson;
+    //--------------------------------------------------------------------------
+
+    function saveGeojsonToFile(geometry,name){
+        fileDialog.geoJsonToExport = geometry;
         fileDialog.geoJsonName = name.replace(/[^a-zA-Z0-9]/g,"_").toLocaleLowerCase();
         fileDialog.open();
     }
@@ -244,11 +245,14 @@ Item{
         id: geoJsonFileFolder
     }
 
+    //--------------------------------------------------------------------------
+
     FileDialog {
            id: fileDialog
-           property var geoJsonToExport
-           property string geoJsonName
+           property var geoJsonToExport: {}
+           property string geoJsonName: "data"
            selectFolder: true
+           title: Singletons.Strings.saveTo
            onAccepted: {
                geoJsonFileFolder.path = AppFramework.resolvedPath(fileDialog.fileUrl);
                geoJsonFileFolder.writeJsonFile("%1.geojson".arg(geoJsonName), geoJsonToExport);

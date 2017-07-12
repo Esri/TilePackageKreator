@@ -25,6 +25,8 @@ QtObject {
     readonly property string kMultipath: "multipath"
     readonly property string kPolygon: "polygon"
     readonly property string kRedraw: "redraw"
+    readonly property string kDrawDraft: "draft"
+    readonly property string kDrawFinal: "final"
 
     readonly property int kQtMapSpatialReference: 4326
     readonly property int kWebMercLatestWKID: 3857

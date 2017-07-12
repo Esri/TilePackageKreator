@@ -525,23 +525,17 @@ Item {
 
         onUploadComplete: {
             try {
-//                var uploadData = {
-//                    transaction_date: Date.now(),
-//                    title: tpkUploadDetails.tpkTitle,
-//                    description: tpkUploadDetails.tpkDescription,
-//                    service_url: portal.owningSystemUrl + "/home/item.html?id=" + id
-//                }
-//                history.writeHistory(history.uploadHistoryKey, uploadData);
-
                 var sql = "INSERT into 'uploads' ";
                 sql += "(title, transaction_date, description, published_service_url, user) ";
-                sql += "VALUES('%1', %2, '%3','%4', '%5')"
-                        .arg(tpkUploadDetails.tpkTitle)
-                        .arg(Date.now())
-                        .arg((tpkUploadDetails.tpkDescription !== "") ? tpkUploadDetails.tpkDescription : Singletons.Strings.defaultTPKDesc)
-                        .arg(portal.owningSystemUrl + "/home/item.html?id=" + id)
-                        .arg(portal.user.email);
-                appDatabase.write(sql);
+                sql += "VALUES(:title, :transaction_date, :description, :published_service_url, :user)"
+                var params = {
+                    "title": tpkUploadDetails.tpkTitle,
+                    "transaction_date": Date.now(),
+                    "description": ((tpkUploadDetails.tpkDescription !== "") ? tpkUploadDetails.tpkDescription : Singletons.Strings.defaultTPKDesc),
+                    "published_service_url": (portal.owningSystemUrl + "/home/item.html?id=" + id),
+                    "user": portal.user.email
+                }
+                appDatabase.write(sql,params);
             }
             catch (error) {
                 appMetrics.reportError(error);

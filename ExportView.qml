@@ -757,25 +757,35 @@ Item {
             exportDetails.currentExportRequest.filepath = file.path;
             exportDetails.currentExportRequest.filename = file.name
             try {
+
+                var _tpkGeo = JSON.stringify(mapViewPlus.getLastDrawing());
+                var _geoJSON = mapViewPlus.geoJsonHelper.toGeoJSON(_tpkGeo);
+
                 var sql = "INSERT into 'exports' ";
-                sql += "(title, description, transaction_date, tile_service_name, tile_service_url, uses_token, esri_geometry, tpk_app_geometry, buffer, levels, package_size, number_of_tiles, local_filepath, download_url, user) ";
-                sql += "VALUES('%1', '%2', %3, '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15')"
-                        .arg(exportDetails.currentExportRequest.serviceTitle)
-                        .arg(exportDetails.currentExportRequest.serviceDescription)
-                        .arg(Date.now())
-                        .arg(exportDetails.currentExportRequest.service)
-                        .arg(currentTileService.url)
-                        .arg(currentTileService.useTokenToAccess)
-                        .arg(exportDetails.currentExportRequest.extent)
-                        .arg(JSON.stringify(mapViewPlus.getLastDrawing()))
-                        .arg(exportDetails.currentExportRequest.buffer)
-                        .arg(exportDetails.currentLevels)
-                        .arg(exportDetails.currentExportRequest.package_size)
-                        .arg(exportDetails.currentExportRequest.number_of_tiles)
-                        .arg(exportDetails.currentExportRequest.filepath)
-                        .arg(exportDetails.currentExportRequest.download_url)
-                        .arg(portal.user.email);
-                appDatabase.write(sql);
+                sql += "(title, description, transaction_date, tile_service_name, tile_service_url, uses_token, esri_geometry, tpk_app_geometry, geojson, buffer, levels, package_size, number_of_tiles, local_filepath, download_url, user) ";
+                sql += "VALUES(:title, :description, :transaction_date, :tile_service_name, :tile_service_url, :uses_token, :esri_geometry, :tpk_app_geometry, :geojson, :buffer, :levels, :package_size, :number_of_tiles, :local_filepath, :download_url, :user)"
+
+                var params = {
+                    "title": exportDetails.currentExportRequest.serviceTitle,
+                    "description": exportDetails.currentExportRequest.serviceDescription,
+                    "transaction_date": Date.now(),
+                    "tile_service_name": exportDetails.currentExportRequest.service,
+                    "tile_service_url": currentTileService.url,
+                    "uses_token": currentTileService.useTokenToAccess,
+                    "esri_geometry": exportDetails.currentExportRequest.extent,
+                    "tpk_app_geometry": _tpkGeo,
+                    "geojson": JSON.stringify(_geoJSON),
+                    "buffer": exportDetails.currentExportRequest.buffer,
+                    "levels": exportDetails.currentLevels,
+                    "package_size": exportDetails.currentExportRequest.package_size,
+                    "number_of_tiles": exportDetails.currentExportRequest.number_of_tiles,
+                    "local_filepath": exportDetails.currentExportRequest.filepath,
+                    "download_url": exportDetails.currentExportRequest.download_url,
+                    "user": portal.user.email
+                }
+
+                appDatabase.write(sql, params);
+
             }
             catch(error) {
                 appMetrics.reportError(error)
@@ -829,14 +839,16 @@ Item {
             try {
                 var sql = "INSERT into 'uploads' ";
                 sql += "(title, transaction_date, description, published_service_url, user) ";
-                sql += "VALUES('%1', %2, '%3','%4', '%5')"
-                        .arg(exportDetails.tpkTitle)
-                        .arg(Date.now())
-                        .arg((exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.defaultTPKDesc)
-                        .arg(portal.owningSystemUrl + "/home/item.html?id=" + id)
-                        .arg(portal.user.email);
-                appDatabase.write(sql);
-             }
+                sql += "VALUES(:title, :transaction_date, :description, :published_service_url, :user)"
+                var params = {
+                    "title": exportDetails.tpkTitle,
+                    "transaction_date": Date.now(),
+                    "description": ((exportDetails.tpkDescription !== "") ? exportDetails.tpkDescription : Singletons.Strings.defaultTPKDesc),
+                    "published_service_url": (portal.owningSystemUrl + "/home/item.html?id=" + id),
+                    "user": portal.user.email
+                }
+                appDatabase.write(sql, params);
+            }
             catch(error) {
                 appMetrics.reportError(error);
             }

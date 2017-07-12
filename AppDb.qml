@@ -34,13 +34,13 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    function write(sql){
+    function write(sql, params){
 
         db.open();
         var query;
 
         try {
-            query = db.query(sql);
+            query = (params !== {} && params !== undefined && params !== null) ? db.query(sql,params) : db.query(sql);
             if (query.error) {
                 console.log("Command error:", query.error.toString());
             }

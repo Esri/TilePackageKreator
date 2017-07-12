@@ -32,7 +32,6 @@ Rectangle{
 
     anchors.fill: parent
     color: "white"
-    //radius: sf(5)
     opacity: (!drawing) ? 1 : .4
 
     property int buttonWidth: buttonContainer.height

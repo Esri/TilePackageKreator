@@ -12,6 +12,7 @@ CREATE TABLE exports (
     uses_token INTEGER,
     esri_geometry TEXT,
     tpk_app_geometry TEXT,
+    geojson TEXT,
     buffer INTEGER,
     levels TEXT,
     package_size TEXT,
@@ -46,6 +47,7 @@ CREATE TABLE bookmarks (
     OBJECTID INTEGER primary key autoincrement not null,
     name TEXT,
     tpk_app_geometry TEXT,
+    geojson TEXT,
     user TEXT
     );
 
@@ -57,7 +59,9 @@ DROP TABLE IF EXISTS other_tile_services;
 
 CREATE TABLE other_tile_services (
     OBJECTID INTEGER primary key autoincrement not null,
+    special_id TEXT,
     url TEXT,
+    service_info TEXT,
     user TEXT
     );
 

@@ -907,6 +907,45 @@ Item {
             Accessible.description: Singletons.Strings.createPItemDesc
         }
 
+//        Rectangle {
+//            height: sf(1)
+//            width: parent.width
+//            color: Singletons.Colors.subtleBackground
+//            visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.userAdded !== undefined ? (contextMenu.currentInfo.userAdded === true ? true : false) : false : false
+//        }
+
+//        Button {
+//            height: contextMenu.menuItemHeight
+//            visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.userAdded !== undefined ? (contextMenu.currentInfo.userAdded === true ? true : false) : false : false
+//            enabled: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.userAdded !== undefined ? (contextMenu.currentInfo.userAdded === true ? true : false) : false : false
+//            width: parent.width
+//            background: Rectangle {
+//                color: parent.hovered ? Singletons.Colors.subtleBackground : "#fff"
+//            }
+//            contentItem: Text {
+//                anchors.fill: parent
+//                anchors.leftMargin: sf(10)
+//                text: qsTr("Delete tile service")
+//                color: Singletons.Colors.boldUIElementFontColor
+//                verticalAlignment: Text.AlignVCenter
+//            }
+//            onClicked: {
+//                try {
+//                    var sql = "DELETE from 'other_tile_services' WHERE special_id = '%1'".arg(contextMenu.currentInfo.tpkId);
+//                    appDatabase.write(sql);
+//                }
+//                catch(e){
+//                    console.log(e);
+//                }
+//                finally {
+//                    //asm.servicesListModel.remove(servicesGridView.currentIndex);
+//                }
+//            }
+//            Accessible.role: Accessible.MenuItem
+//            Accessible.name: text
+//            Accessible.description: Singletons.Strings.createPItemDesc
+//        }
+
         Accessible.role: Accessible.PopupMenu
         Accessible.name: Singletons.Strings.contextMenuDesc
     }

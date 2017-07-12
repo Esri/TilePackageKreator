@@ -74,6 +74,7 @@ Item {
 
     readonly property alias map: previewMap.map
     readonly property alias clearExtentButton: clearExtentBtn
+    property alias geoJsonHelper: geoJsonHelper
 
     signal drawingStarted()
     signal drawingFinished()
@@ -113,13 +114,13 @@ Item {
             pathCoordinates = data.geometry;
             userDrawnExtent = true;
             geometryType = Singletons.Constants.kMultipath;
-            addMultipathToMap("final");
+            addMultipathToMap(Singletons.Constants.kDrawFinal);
         }
         if (data.type === Singletons.Constants.kPolygon) {
             pathCoordinates = data.geometry;
             userDrawnExtent = true;
             geometryType = Singletons.Constants.kPolygon;
-            addPolygonToMap("final");
+            addPolygonToMap(Singletons.Constants.kDrawFinal);
         }
 
         mapViewPlus.map.fitViewportToMapItems();
@@ -426,11 +427,11 @@ Item {
         id: closePolygonMouseListener
         visible: false
         enabled: closePolygonMouseListener.visible
-        width: sf(20)
-        height: sf(20)
+        width: sf(16)
+        height: sf(16)
         z: previewMap.z + 4
         color: "#20FFFFFF"
-        radius: sf(10)
+        radius: sf(8)
 
         MouseArea {
             anchors.fill: parent
@@ -440,7 +441,7 @@ Item {
             ToolTip.visible: containsMouse
             onClicked: {
                 pathCoordinates.push(pathCoordinates[0]);
-                addPolygonToMap("final");
+                addPolygonToMap(Singletons.Constants.kDrawFinal);
             }
         }
 
@@ -479,8 +480,8 @@ Item {
 
         function updateMyPosition() {
             var xy = latLongToScreenPosition(pathCoordinates[0].coordinate);
-            closePolygonMouseListener.x = xy.x - closePolygonMouseListener.width / 2;
-            closePolygonMouseListener.y = xy.y - closePolygonMouseListener.height / 2;
+            closePolygonMouseListener.x = (xy.x - closePolygonMouseListener.width / 2);
+            closePolygonMouseListener.y = (xy.y - closePolygonMouseListener.height / 2);
             closePolygonMouseListener.visible = true;
         }
     }
@@ -514,7 +515,7 @@ Item {
             /*
             if(mouse.button === Qt.RightButton){
                 if(pathCoordinates.length > 1){
-                    addMultipathToMap("final");
+                    addMultipathToMap(Singletons.Constants.kDrawFinal);
                 }
             }
             */
@@ -549,7 +550,7 @@ Item {
                 var coordinate = screenPositionToLatLong(mouse);
                 pathCoordinates.push({"screen": {"x": mouse.x, "y": mouse.y}, "coordinate": {"longitude": coordinate.longitude, "latitude": coordinate.latitude }});
                 if (pathCoordinates.length > 1) {
-                    addMultipathToMap("draft");
+                    addMultipathToMap(Singletons.Constants.kDrawDraft);
                 }
             }
             else {
@@ -560,14 +561,14 @@ Item {
                     drawingFinished();
                 }
                 else {
-                    addMultipathToMap("final");
+                    addMultipathToMap(Singletons.Constants.kDrawFinal);
                 }
                 endDrawingByDoubleClick = false;
             }
         }
 
         onPositionChanged: { 
-            var lastKnownPosition; //= {"x": mouse.x, "y": mouse.y, "lat": z, "long": z};
+            var lastKnownPosition;
 
             if (!mapWasPanned) {
                 if (pathCoordinates.length > 0) {
@@ -593,7 +594,7 @@ Item {
 
         Keys.onPressed: {
             if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                addMultipathToMap("final");
+                addMultipathToMap(Singletons.Constants.kDrawFinal);
             }
             if (event.key === Qt.Key_Delete || event.key === Qt.Key_Backspace) {
                 mapViewPlus.pathCoordinates.pop();
@@ -602,7 +603,7 @@ Item {
                     previewMap.map.clearMapItems();
                 }
                 else {
-                    addMultipathToMap("draft");
+                    addMultipathToMap(Singletons.Constants.kDrawDraft);
                     if(lastKnownPosition !== null){
                         drawHelperLine(lastKnownPosition.screen.x, lastKnownPosition.screen.y);
                     }
@@ -772,7 +773,6 @@ Item {
 
         onMapLoadedChanged: {
             if (mapLoaded){
-                console.log("Loaded: ", mapService)
                 if (previewMap.lastKnownCenter !== null){
                     previewMap.map.center = previewMap.lastKnownCenter;
                 }
@@ -936,12 +936,12 @@ Item {
             if (geometry.type !== "") {
                 if (geometry.type === "esriGeometryPolygon") {
                     geometryType = Singletons.Constants.kPolygon;
-                    addPolygonToMap("final");
+                    addPolygonToMap(Singletons.Constants.kDrawFinal);
                 }
 
                 if (geometry.type === "esriGeometryPolyline") {
                     geometryType = Singletons.Constants.kMultipath;
-                    addMultipathToMap("final");
+                    addMultipathToMap(Singletons.Constants.kDrawFinal);
                 }
             }
 
@@ -1086,14 +1086,21 @@ Item {
         }
 
         onAccepted: {
-            if(bookmarkTitle.text > ""){
+            if (bookmarkTitle.text > "") {
+                var _tpkGeo = JSON.stringify(getLastDrawing());
+                var _geoJSON = JSON.stringify(geoJsonHelper.toGeoJSON(_tpkGeo));
+
                 var sql = "INSERT into 'bookmarks' ";
-                sql += "(name, tpk_app_geometry, user) ";
-                sql += "VALUES('%1', '%2', '%3')"
-                        .arg(bookmarkTitle.text)
-                        .arg(JSON.stringify(getLastDrawing()))
-                        .arg(portal.user.email);
-                appDatabase.write(sql);
+                sql += "(name, tpk_app_geometry, geojson, user) ";
+                sql += "VALUES(:title, :tpkGeo, :geoJson, :user)";
+
+                var params = {
+                    "title": bookmarkTitle.text,
+                    "tpkGeo": _tpkGeo,
+                    "geoJson": _geoJSON,
+                    "user": portal.user.email
+                }
+                appDatabase.write(sql, params);
                 bookmarkTitle.clear();
                 addBookmarkDialog.close();
                 saveBookmarkBtn.enabled = false;
@@ -1158,7 +1165,7 @@ Item {
                     }
 
                     onClicked: {
-                        geoJsonHelper.exportToGeoJSON(tpk_app_geometry, name);
+                        geoJsonHelper.saveGeojsonToFile(JSON.parse(geojson), name);
                     }
                 }
                 Button {
@@ -1328,7 +1335,7 @@ Item {
         path.push({"coordinate": {"longitude": topLeft.longitude, "latitude": topLeft.latitude}});
 
         pathCoordinates = path;
-        addPolygonToMap("final")
+        addPolygonToMap(Singletons.Constants.kDrawFinal)
     }
 
     //--------------------------------------------------------------------------
@@ -1346,7 +1353,7 @@ Item {
 
         previewMap.map.addMapItem(drawnPolyline);
 
-        if (drawPolygon && typeOfPath === "draft") {
+        if (drawPolygon && typeOfPath === Singletons.Constants.kDrawDraft) {
             mapViewPlus.map.addMapItem(closePolygonMapItem);
             closePolygonMapItem.anchorPoint = Qt.point(closePolygonMapItem.sourceItem.width/2,closePolygonMapItem.sourceItem.height/2)
             closePolygonMapItem.coordinate = QtPositioning.coordinate(path[0].latitude, path[0].longitude);
@@ -1354,7 +1361,7 @@ Item {
             closePolygonMapItem.enabled = true;
         }
 
-        if (typeOfPath === "final") {
+        if (typeOfPath === Singletons.Constants.kDrawFinal) {
             _updateDrawingHistory("add",
                                   {
                                       "type": Singletons.Constants.kMultipath,
@@ -1390,7 +1397,7 @@ Item {
 
         mapViewPlus.map.addMapItem(drawnPolygon);
 
-        if (typeOfPath === "final") {
+        if (typeOfPath === Singletons.Constants.kDrawFinal) {
             _updateDrawingHistory("add",
                                   {
                                       "type": Singletons.Constants.kPolygon,
