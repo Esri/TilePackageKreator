@@ -192,6 +192,16 @@ Item {
                                     var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
                                     tpkEstimateSize.calculateForRange(tlAsXY, brAsXY, exportDetails.tpkBottomZoomLevel.value, exportDetails.tpkTopZoomLevel.value);
                                 }
+                                if (mapViewPlus.geometryType === Singletons.Constants.kPolygon){
+                                    var coords = [];
+                                    for(var x = 0; x < mapViewPlus.pathCoordinates.length; x++){
+                                        coords.push([pathCoordinates[x].coordinate.longitude, pathCoordinates[x].coordinate.latitude]);
+                                    }
+                                    var extent = geomUtilities.getExtent(coords);
+                                    var newMax = coordConverter.lngLatToXY([extent.xmax,extent.ymax]);
+                                    var newMin = coordConverter.lngLatToXY([extent.xmin,extent.ymin]);
+                                    tpkEstimateSize.calculateForRange(newMin, newMax, exportDetails.tpkBottomZoomLevel.value, exportDetails.tpkTopZoomLevel.value);
+                                }
                             }
 
                             onDrawingError: {
@@ -363,13 +373,13 @@ Item {
                                             Text {
                                                 id: notAvailableText
                                                 anchors.fill: parent
-                                                visible: mapViewPlus.geometryType === Singletons.Constants.kMultipath || mapViewPlus.geometryType === Singletons.Constants.kPolygon
+                                                visible: mapViewPlus.geometryType === Singletons.Constants.kMultipath
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: Singletons.Strings.notAvailableWithPathsOrPolygons
                                                 font.family: notoRegular
 
-                                                Accessible.ignored: mapViewPlus.geometryType !== Singletons.Constants.kMultipath && mapViewPlus.geometryType !== Singletons.Constants.kPolygon
+                                                Accessible.ignored: mapViewPlus.geometryType !== Singletons.Constants.kMultipath
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
                                                 Accessible.description: Singletons.Strings.estimatedOutputSizeDesc
@@ -385,7 +395,7 @@ Item {
                                                 text: "Tiles: -- Size: --"
                                                 font.family: notoRegular
 
-                                                Accessible.ignored: mapViewPlus.geometryType === Singletons.Constants.kMultipath && mapViewPlus.geometryType === Singletons.Constants.kPolygon
+                                                Accessible.ignored: mapViewPlus.geometryType === Singletons.Constants.kMultipath
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
                                                 Accessible.description: Singletons.Strings.estimatedOutputSizeDesc
@@ -431,6 +441,16 @@ Item {
                                 var tlAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.topLeft));
                                 var brAsXY = coordConverter.lngLatToXY(positionToArray(mapViewPlus.bottomRight));
                                 tpkEstimateSize.calculateForRange(tlAsXY, brAsXY, exportDetails.tpkBottomZoomLevel.value, exportDetails.tpkTopZoomLevel.value);
+                            }
+                            if (mapViewPlus.geometryType === Singletons.Constants.kPolygon){
+                                var coords = [];
+                                for(var x = 0; x < mapViewPlus.pathCoordinates.length; x++){
+                                    coords.push([mapViewPlus.pathCoordinates[x].coordinate.longitude, mapViewPlus.pathCoordinates[x].coordinate.latitude]);
+                                }
+                                var extent = geomUtilities.getExtent(coords);
+                                var newMax = coordConverter.lngLatToXY([extent.xmax,extent.ymax]);
+                                var newMin = coordConverter.lngLatToXY([extent.xmin,extent.ymin]);
+                                tpkEstimateSize.calculateForRange(newMin, newMax, exportDetails.tpkBottomZoomLevel.value, exportDetails.tpkTopZoomLevel.value);
                             }
                         }
                     }
@@ -984,6 +1004,9 @@ Item {
 
     CoordinateConverter {
         id: coordConverter
+    }
+    GeometryUtilities{
+        id: geomUtilities
     }
 
     //--------------------------------------------------------------------------
