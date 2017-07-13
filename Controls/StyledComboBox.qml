@@ -19,7 +19,7 @@ ComboBox {
     delegate: ItemDelegate {
         width: control.width
         contentItem: Text {
-            text: model[control.textRole]
+            text: model !== null ? model[control.textRole] : ""
             color: Singletons.Colors.darkGray
             font: control.font
             elide: Text.ElideRight
@@ -57,7 +57,7 @@ ComboBox {
         leftPadding: 0
         rightPadding: control.indicator.width + control.spacing
 
-        text: control.model.get(control.currentIndex)[control.textRole]
+        text: control.model !== null ? control.model.get(control.currentIndex)[control.textRole] : ""
         font.family: notoRegular
         font.pointSize: Singletons.Config.smallFontSizePoint
         color: Singletons.Colors.darkGray

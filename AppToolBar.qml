@@ -339,7 +339,7 @@ Item {
 
                 Accessible.role: Accessible.Button
                 Accessible.name: Singletons.Strings.signOut
-                Accessible.description: Singletons.Strings.signOutDesci
+                Accessible.description: Singletons.Strings.signOutDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();

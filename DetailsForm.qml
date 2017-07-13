@@ -689,12 +689,10 @@ Rectangle {
                                     id: tpkDescriptionTextArea
                                     height: sf(200)
                                     width: views.width - sf(15)
-                                    anchors.left: views.left
                                     property int maximumLength: 4000
                                     readOnly: uploadToPortal ? false : true
                                     selectByMouse: true
                                     wrapMode: Text.Wrap
-                                   // placeholderText: Singletons.Strings.descriptionCopyPaste
 
                                     color: Singletons.Colors.formElementFontColor
                                     font.family: notoRegular
