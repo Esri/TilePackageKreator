@@ -21,7 +21,6 @@ import QtQuick.Layouts 1.1
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
 import "Portal"
-import "HistoryManager"
 import "AppMetrics"
 import "DeepLinkingRequest"
 import "singletons" as Singletons

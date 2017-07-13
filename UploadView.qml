@@ -25,7 +25,6 @@ import ArcGIS.AppFramework 1.0
 import "Portal"
 import "TilePackage"
 import "ProgressIndicator"
-import "HistoryManager"
 import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
@@ -632,12 +631,6 @@ Item {
             uploadView.uploadComplete();
         }
     }
-
-    //--------------------------------------------------------------------------
-
-//    HistoryManager{
-//        id: history
-//    }
 
     // METHODS /////////////////////////////////////////////////////////////////
 

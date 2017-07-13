@@ -22,7 +22,6 @@ import QtGraphicalEffects 1.0
 import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
-import "HistoryManager"
 import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
