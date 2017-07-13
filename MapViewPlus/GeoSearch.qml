@@ -58,6 +58,7 @@ Rectangle {
     signal locationDoubleClicked(Location location)
     signal locationPressAndHold(Location location)
     signal inputCoordinate(var coordinate)
+    signal popupListClosed()
 
     //--------------------------------------------------------------------------
 
@@ -235,6 +236,10 @@ Rectangle {
             spacing: 2 * AppFramework.displayScaleFactor
             delegate: locationDelegate
             clip: true
+        }
+
+        onClosed: {
+            popupListClosed();
         }
     }
 

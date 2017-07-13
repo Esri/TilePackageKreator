@@ -171,7 +171,12 @@ Item {
 
                     //referenceCoordinate: mapViewPlus.map.center
 
+                    onPopupListClosed: {
+                        mapViewPlus.map.forceActiveFocus();
+                    }
+
                     onLocationClicked: {
+                        mapViewPlus.map.forceActiveFocus();
                         mapViewPlus.map.center = location.coordinate;
                         if (mapViewPlus.map.zoomLevel < 13){
                             mapViewPlus.map.zoomLevel = 13;
@@ -179,6 +184,7 @@ Item {
                     }
 
                     onInputCoordinate: {
+                        mapViewPlus.map.forceActiveFocus();
                         mapViewPlus.map.center = coordinate;
                         if (mapViewPlus.map.zoomLevel < 13){
                             mapViewPlus.map.zoomLevel = 13;

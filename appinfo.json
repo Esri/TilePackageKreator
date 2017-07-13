@@ -84,7 +84,7 @@
     "urlScheme": "arcgis-tilepackage",
     "version": {
         "major": 1,
-        "micro": 18,
+        "micro": 19,
         "minor": 2
     }
 }
