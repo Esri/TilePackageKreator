@@ -73,30 +73,28 @@ QtObject {
 
     function calculateForRange(topLeft /* [x,y] as webmercator */, bottomRight /* [x,y] as webmercator */, bottomLevel /* int */, topLevel /* int */){
 
-        var _topLevel = parseInt(topLevel,10);
-        var _bottomLevel = parseInt(bottomLevel,10);
+        var _topLevel = Math.round(topLevel);
+        var _bottomLevel = Math.round(bottomLevel);
+
+        if (_topLevel === metersPerPixel.length + 1){
+            _topLevel = metersPerPixel.length;
+        }
+
+        if (_bottomLevel < 0){
+            _bottomLevel = 0;
+        }
 
         var xMeters = Math.abs(Math.floor(bottomRight[0] - topLeft[0]));
         var yMeters = Math.abs(Math.floor(bottomRight[1] - topLeft[1]));
 
         var totalTiles = 1;
 
-//        console.log("------------------------------- topLevel: ", _topLevel);
-//        console.log("------------------------------- bottomLevel: ", _bottomLevel);
-//        console.log("------------------------------- topLeft: ", topLeft);
-//        console.log("------------------------------- bottomRight: ", bottomRight);
-//        console.log("------------------------------- xMeters: ", xMeters);
-//        console.log("------------------------------- yMeters: ", yMeters);
-
         if (_topLevel > 0) {
 
             for (var a = _bottomLevel; a < _topLevel + 1; a++) {
-//                console.log("------------------------------- a: ", a);
 
                 var xPixels = xMeters / metersPerPixel[a];
                 var yPixels = yMeters / metersPerPixel[a];
-
-//                console.log("metersPerPixel at %1 = %2".arg(a).arg(metersPerPixel[a]));
 
                 var xTiles = Math.ceil(xPixels / tileSize);
                 var yTiles = Math.ceil(yPixels / tileSize);
@@ -104,11 +102,10 @@ QtObject {
                 var levelTiles = xTiles * yTiles;
 
                 totalTiles += levelTiles;
-//                console.log("totalTiles:",totalTiles);
             }
         }
 
-        var compressionLevel = topLevel !== bottomLevel ? topLevel-bottomLevel : 0;
+        var compressionLevel = _topLevel !== _bottomLevel ? _topLevel - _bottomLevel : 0;
 
         var sizeInBytes = (totalTiles * averageBytesPerTile) * averageCompressionPercent[compressionLevel];
 

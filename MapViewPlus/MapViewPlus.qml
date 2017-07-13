@@ -1120,33 +1120,62 @@ Item {
         id: bookmarkDelegate
 
         Item {
+            id: innerDelegate
             width: parent.width
             height: sf(35)
 
+            property var geoInfo: JSON.parse(tpk_app_geometry)
+
             RowLayout {
                 anchors.fill: parent
-                spacing: 0
+                anchors.bottomMargin: sf(5)
+                spacing: sf(3)
 
                 Button {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    ToolTip.text: Singletons.Strings.addBookmarkToMap
+                    ToolTip.visible: hovered
                     background: Rectangle {
-                        color: "#fff"
+                        anchors.fill: parent
+                        color: Singletons.Config.buttonStates(parent)
+                        radius: sf(4)
+                        border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                        border.color: app.info.properties.mainButtonBorderColor
                     }
-                        Text {
-                            anchors.fill: parent
-                            verticalAlignment: Text.AlignVCenter
-                            text: name
-                            font.family: notoRegular
-                            font.pointSize: Singletons.Config.smallFontSizePoint
-                            elide: Text.ElideRight
-                            color: Singletons.Colors.boldUIElementFontColor
+                    RowLayout {
+                        anchors.fill: parent
+                        spacing: 0
+                        Item {
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: height
+                            IconFont {
+                                anchors.centerIn: parent
+                                icon: innerDelegate.geoInfo.type === Singletons.Constants.kMultipath ? _icons.draw_path : _icons.draw_polygon
+                                iconSizeMultiplier: .8
+                                color: app.info.properties.mainButtonFontColor
+                            }
                         }
-                        onClicked: {
-                            var inBookmark = JSON.parse(tpk_app_geometry);
-                            redraw(inBookmark);
-                            bookmarksPopup.close();
+                        Item {
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            Text {
+                                anchors.fill: parent
+                                verticalAlignment: Text.AlignVCenter
+                                text: name
+                                font.family: notoRegular
+                                font.pointSize: Singletons.Config.smallFontSizePoint
+                                elide: Text.ElideRight
+                                color: app.info.properties.mainButtonFontColor
+                            }
                         }
+                    }
+
+                    onClicked: {
+                        //var inBookmark = JSON.parse(tpk_app_geometry);
+                        redraw(innerDelegate.geoInfo);
+                        bookmarksPopup.close();
+                    }
                 }
                 Button {
                     Layout.fillHeight: true
@@ -1154,8 +1183,12 @@ Item {
                     ToolTip.text: qsTr("Download as geojson")
                     ToolTip.visible: hovered
                     background: Rectangle {
-                        color: "#fff"
-                    }
+                        anchors.fill: parent
+                        color: Singletons.Config.buttonStates(parent, "clear")
+                        radius: sf(4)
+                        border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                        border.color: app.info.properties.mainButtonBorderColor
+                        }
 
                     IconFont {
                         anchors.centerIn: parent
@@ -1174,8 +1207,12 @@ Item {
                     ToolTip.text: Singletons.Strings.deleteBookmark
                     ToolTip.visible: hovered
                     background: Rectangle {
-                        color: "#fff"
-                    }
+                        anchors.fill: parent
+                        color: Singletons.Config.buttonStates(parent, "clear")
+                        radius: sf(4)
+                        border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                        border.color: app.info.properties.mainButtonBorderColor
+                        }
 
                     IconFont {
                         anchors.centerIn: parent

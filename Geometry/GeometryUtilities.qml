@@ -55,7 +55,6 @@ QtObject {
         // y, latitude ---------------------------------------------------------
 
         coordinates.sort(function(a, b) {
-                        console.log(a);
                         return a[1] - b[1];
                     });
 

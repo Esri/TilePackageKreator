@@ -376,7 +376,7 @@ Item {
                                                 visible: mapViewPlus.geometryType === Singletons.Constants.kMultipath
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
-                                                text: Singletons.Strings.notAvailableWithPathsOrPolygons
+                                                text: Singletons.Strings.notAvailableWithPaths
                                                 font.family: notoRegular
 
                                                 Accessible.ignored: mapViewPlus.geometryType !== Singletons.Constants.kMultipath
