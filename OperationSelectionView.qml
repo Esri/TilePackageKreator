@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,15 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
+import "singletons" as Singletons
 
 Item {
-
-    // PROPERTIES //////////////////////////////////////////////////////////////
-
-    property Config config
 
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
@@ -37,19 +33,12 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Stack.onStatusChanged: {
-
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
-
-        if(Stack.status === Stack.Activating){
-            mainView.appToolBar.enabled = true;
-            mainView.appToolBar.backButtonEnabled = false;
-            mainView.appToolBar.backButtonVisible = false;
-            mainView.appToolBar.historyButtonEnabled = true;
-            mainView.appToolBar.toolBarTitleLabel = qsTr("Select an Operation")
-        }
+    StackView.onActivating: {
+        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.selectAnOperation;
+        mainView.appToolBar.enabled = true;
+        mainView.appToolBar.backButtonEnabled = false;
+        mainView.appToolBar.backButtonVisible = false;
+        mainView.appToolBar.historyButtonEnabled = true;
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -62,49 +51,45 @@ Item {
         Rectangle {
             id: buttonContainer
             anchors.centerIn: parent
-            width: 710 * AppFramework.displayScaleFactor
-            height: 230 * AppFramework.displayScaleFactor
-            color:  "white"
+            width: sf(710)
+            height: sf(230)
+            color: "white"
 
             RowLayout {
                 anchors.fill: parent
-                spacing: 10 * AppFramework.displayScaleFactor
+                spacing: sf(10)
 
                 // Button 1 ----------------------------------------------------
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 230 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(230)
                     color: app.info.properties.mainButtonBackgroundColor
 
                     Button {
                         id: uploadLocalTPKBtn
                         anchors.fill: parent
 
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.buttonStates(control, "major")
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                border.color: app.info.properties.mainButtonBorderColor
-                                radius: app.info.properties.mainButtonRadius
-                                Accessible.ignored: true
-                            }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: Singletons.Config.buttonStates(parent, "major")
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: app.info.properties.mainButtonBorderColor
+                            radius: app.info.properties.mainButtonRadius
+                            Accessible.ignored: true
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
                             Accessible.ignored: true
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                color: "transparent"
 
                                 Image {
                                     id: uploadTPKIcon
@@ -114,41 +99,39 @@ Item {
                                     fillMode: Image.PreserveAspectFit
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 25 * AppFramework.displayScaleFactor
-                                Layout.topMargin: 15  * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(25)
+                                Layout.topMargin: sf(15)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("UPLOAD")
-                                    font.pointSize: config.largeFontSizePoint * .8
-                                    font.family: notoRegular.name
+                                    text: Singletons.Strings.upload
+                                    font.pointSize: Singletons.Config.largeFontSizePoint * .8
+                                    font.family: notoRegular
+                                    font.capitalization: Font.AllUppercase
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignTop
                                     color:app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("Local Tile Package")
-                                    font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
+                                    text: Singletons.Strings.localTilePackage
+                                    font.pointSize: Singletons.Config.baseFontSizePoint
+                                    font.family: notoRegular
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
                         }
 
@@ -157,7 +140,7 @@ Item {
                         }
 
                         Accessible.role: Accessible.Button
-                        Accessible.name: qsTr("Upload a local tile package")
+                        Accessible.name: Singletons.Strings.uploadTilePackage
                         Accessible.onPressAction: {
                             if(enabled && visible){
                                 clicked();
@@ -170,37 +153,33 @@ Item {
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 230 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(230)
                     color: app.info.properties.mainButtonBackgroundColor
 
                     Button {
                         id: createNewTPKBtn
                         anchors.fill: parent
 
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.buttonStates(control, "major")
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                border.color: app.info.properties.mainButtonBorderColor
-                                radius: app.info.properties.mainButtonRadius
-                                Accessible.ignored: true
-                            }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: Singletons.Config.buttonStates(parent, "major")
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: app.info.properties.mainButtonBorderColor
+                            radius: app.info.properties.mainButtonRadius
+                            Accessible.ignored: true
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
                             Accessible.ignored: true
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                color: "transparent"
 
                                 Image {
                                     id: createNewTPKIcon
@@ -210,41 +189,39 @@ Item {
                                     fillMode: Image.PreserveAspectFit
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 25 * AppFramework.displayScaleFactor
-                                Layout.topMargin: 15  * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(25)
+                                Layout.topMargin: sf(15)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("CREATE")
-                                    font.pointSize: config.largeFontSizePoint * .8
-                                    font.family: notoRegular.name
+                                    text: Singletons.Strings.create
+                                    font.pointSize: Singletons.Config.largeFontSizePoint * .8
+                                    font.family: notoRegular
+                                    font.capitalization: Font.AllUppercase
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignTop
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("New Tile Package")
-                                    font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
+                                    text: Singletons.Strings.newTilePackage
+                                    font.pointSize: Singletons.Config.baseFontSizePoint
+                                    font.family: notoRegular
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
                         }
 
@@ -253,7 +230,7 @@ Item {
                         }
 
                         Accessible.role: Accessible.Button
-                        Accessible.name: qsTr("Create a new tile package")
+                        Accessible.name: Singletons.Strings.createNewTilePackage
                         Accessible.onPressAction: {
                             if(enabled && visible){
                                 clicked();
@@ -266,37 +243,33 @@ Item {
 
                 Rectangle {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 230 * AppFramework.displayScaleFactor
+                    Layout.preferredWidth: sf(230)
                     color: app.info.properties.mainButtonBackgroundColor
 
                     Button {
                         id: browseOrgTpkBtn
                         anchors.fill: parent
 
-                        style: ButtonStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: config.buttonStates(control, "major")
-                                border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                border.color: app.info.properties.mainButtonBorderColor
-                                radius: app.info.properties.mainButtonRadius
-                                Accessible.ignored: true
-                            }
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: Singletons.Config.buttonStates(parent, "major")
+                            border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                            border.color: app.info.properties.mainButtonBorderColor
+                            radius: app.info.properties.mainButtonRadius
+                            Accessible.ignored: true
                         }
 
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: 0
                             Accessible.ignored: true
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                color: "transparent"
 
                                 Image {
                                     id: browseOrgTpkIcon
@@ -305,42 +278,40 @@ Item {
                                     height: parent.height
                                     fillMode: Image.PreserveAspectFit
                                 }
-                             }
-                            Rectangle {
+                            }
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 25 * AppFramework.displayScaleFactor
-                                Layout.topMargin: 15 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(25)
+                                Layout.topMargin: sf(15)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("BROWSE")
-                                    font.pointSize: config.largeFontSizePoint * .8
-                                    font.family: notoRegular.name
+                                    text: Singletons.Strings.browse
+                                    font.pointSize: Singletons.Config.largeFontSizePoint * .8
+                                    font.family: notoRegular
+                                    font.capitalization: Font.AllUppercase
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                                 Text {
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignTop
                                     color: app.info.properties.mainButtonBorderColor
                                     textFormat: Text.RichText
-                                    text: qsTr("Organization Tile Packages")
-                                    font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
+                                    text: Singletons.Strings.organizationTilePackages
+                                    font.pointSize: Singletons.Config.baseFontSizePoint
+                                    font.family: notoRegular
                                 }
                             }
-                            Rectangle {
+                            Item {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 20 * AppFramework.displayScaleFactor
-                                color: "transparent"
+                                Layout.preferredHeight: sf(20)
                             }
                         }
 
@@ -349,7 +320,7 @@ Item {
                         }
 
                         Accessible.role: Accessible.Button
-                        Accessible.name: qsTr("Browse organization tile packages")
+                        Accessible.name: Singletons.Strings.browseOrgTilePackages
                         Accessible.onPressAction: {
                             if(enabled && visible){
                                 clicked();

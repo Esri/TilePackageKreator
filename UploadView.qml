@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,18 @@
  *
  */
 
-import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick 2.7
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 import QtQuick.Dialogs 1.2
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "Portal"
 import "TilePackage"
 import "ProgressIndicator"
-import "HistoryManager"
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Item {
@@ -37,7 +35,6 @@ Item {
     id: uploadView
 
     property Portal portal
-    property Config config
     property var currentTPKUrl: null
 
     property bool fileAcceptedForUpload: false
@@ -49,13 +46,13 @@ Item {
     // SIGNAL IMPLEMENTATION ///////////////////////////////////////////////////
 
     Component.onCompleted: {
-        if(calledFromAnotherApp){
-            if(dlr.filePath !== null){
+        if (calledFromAnotherApp) {
+            if (dlr.filePath !== null) {
                 fileInfo.filePath = dlr.filePath
-                if(fileInfo.exists){
+                if (fileInfo.exists) {
                     fileAccepted(dlr.filePath);
                 }
-                else{
+                else {
                     uploadStatusIndicator.messageType = uploadStatusIndicator.error;
                     uploadStatusIndicator.message =  "The .tpk file does not exist. <a href='%1'>Return to %2</a>".arg(dlr.successCallback).arg(dlr.callingApplication);
                     uploadStatusIndicator.show();
@@ -66,25 +63,20 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Stack.onStatusChanged: {
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
-        if(Stack.status === Stack.Activating){
-            mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false
-            mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false
-            mainView.appToolBar.historyButtonEnabled = true;
-            mainView.appToolBar.toolBarTitleLabel = qsTr("Upload Local Tile Package")
-        }
+    StackView.onActivating: {
+        mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false
+        mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false
+        mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.uploadTilePackage
     }
 
     //--------------------------------------------------------------------------
 
     onFileAcceptedForUploadChanged: {
-        if(fileAcceptedForUpload){
+        if (fileAcceptedForUpload) {
             uploadStatusIndicator.hide();
         }
-        else{
+        else {
             resetProperties();
         }
     }
@@ -109,7 +101,7 @@ Item {
         fileAcceptedForUpload = false;
         statusWebMercCheck.progressIcon = "";
         statusWebMercCheck.progressText = "";
-        selectedTPKFileName.text = "no file chosen";
+        selectedTPKFileName.text = Singletons.Strings.noFileChosen;
         tpkUploadDetails.reset();
         resetProperties();
     }
@@ -123,7 +115,7 @@ Item {
         ColumnLayout {
             id: uploadTPKViewColumnLayout
             anchors.fill: parent
-            spacing: 1 * AppFramework.displayScaleFactor
+            spacing: sf(1)
 
             // MAIN SECTION ////////////////////////////////////////////////////
 
@@ -131,12 +123,12 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 clip: true
-                color: config.subtleBackground
+                color: Singletons.Colors.subtleBackground
 
                 RowLayout {
                     id: tpkForm
                     anchors.fill: parent
-                    spacing: 1
+                    spacing: sf(1)
                     enabled: uploading ? false : true
 
                     // DRAG AND DROP AREA //////////////////////////////////////
@@ -147,19 +139,18 @@ Item {
                         color: "#fff"
 
                         Rectangle {
-                            color: config.boldUIElementBackground
+                            color: Singletons.Colors.boldUIElementBackground
                             anchors.top: parent.top
                             anchors.right: parent.right
                             anchors.bottom: parent.bottom
                             anchors.left: parent.left
-                            anchors.margins: 12 * AppFramework.displayScaleFactor
+                            anchors.margins: sf(12)
 
-                            Rectangle {
+                            Item {
                                 id: selectTPK
-                                width: 200 * AppFramework.displayScaleFactor
-                                height: 200 * AppFramework.displayScaleFactor
+                                width: sf(200)
+                                height: sf(200)
                                 anchors.centerIn: parent
-                                color: "transparent"
                                 enabled: fileAcceptedForUpload ? false : true
                                 visible: fileAcceptedForUpload ? false : true
 
@@ -170,21 +161,21 @@ Item {
                                     Text {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectTPK.height / 3
-                                        text: "Drag .tpk file here"
-                                        color: config.boldUIElementFontColor
+                                        text: Singletons.Strings.dragTPKFile
+                                        color: Singletons.Colors.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
-                                        font.pointSize: config.largeFontSizePoint
-                                        font.family: notoRegular.name
+                                        font.pointSize: Singletons.Config.largeFontSizePoint
+                                        font.family: notoRegular
                                     }
                                     Text {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectTPK.height / 3
-                                        text: "or"
-                                        color: config.boldUIElementFontColor
+                                        text: Singletons.Strings.or
+                                        color: Singletons.Colors.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
-                                        font.family: notoRegular.name
+                                        font.family: notoRegular
                                     }
                                     Rectangle {
                                         Layout.fillWidth: true
@@ -194,26 +185,24 @@ Item {
                                         Button {
                                             id: openFileChooserBtn
                                             anchors.fill: parent
-                                            anchors.margins: 10 * AppFramework.displayScaleFactor
+                                            anchors.margins: sf(10)
                                             enabled: uploading ? false : true
 
-                                            style: ButtonStyle {
-                                                background: Rectangle {
-                                                    anchors.fill: parent
-                                                    color:config.buttonStates(control)
-                                                    radius: app.info.properties.mainButtonRadius
-                                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                                    border.color: app.info.properties.mainButtonBorderColor
-                                                }
+                                            background: Rectangle {
+                                                anchors.fill: parent
+                                                color:Singletons.Config.buttonStates(this.parent)
+                                                radius: app.info.properties.mainButtonRadius
+                                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                                border.color: app.info.properties.mainButtonBorderColor
                                             }
 
                                             Text {
                                                 color: app.info.properties.mainButtonFontColor
                                                 anchors.centerIn: parent
                                                 textFormat: Text.RichText
-                                                text: "Browse for file"
-                                                font.pointSize: config.baseFontSizePoint
-                                                font.family: notoRegular.name
+                                                text: Singletons.Strings.browseForFile
+                                                font.pointSize: Singletons.Config.baseFontSizePoint
+                                                font.family: notoRegular
                                             }
                                             onClicked: {
                                                 resetProperties();
@@ -224,12 +213,11 @@ Item {
                                 }
                             }
 
-                            Rectangle {
+                            Item {
                                 id: selectedTPK
-                                width: 200 * AppFramework.displayScaleFactor
-                                height: 200 * AppFramework.displayScaleFactor
+                                width: sf(200)
+                                height: sf(200)
                                 anchors.centerIn: parent
-                                color: "transparent"
                                 visible: fileAcceptedForUpload ? true : false
                                 enabled: fileAcceptedForUpload ? true : false
 
@@ -256,10 +244,10 @@ Item {
                                         Layout.preferredHeight: selectedTPK.height / 4
                                         text: "filename.tpk"
                                         fontSizeMode: Text.Fit
-                                        font.family: notoRegular.name
-                                        minimumPointSize: config.smallFontSizePoint
-                                        color: config.boldUIElementFontColor
-                                        font.pointSize: config.largeFontSizePoint
+                                        font.family: notoRegular
+                                        minimumPointSize: Singletons.Config.smallFontSizePoint
+                                        color: Singletons.Colors.boldUIElementFontColor
+                                        font.pointSize: Singletons.Config.largeFontSizePoint
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                     }
@@ -268,8 +256,8 @@ Item {
                                         id: statusWebMercCheck
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: selectedTPK.height / 4 - 10
-                                        statusTextLeftMargin:10 * AppFramework.displayScaleFactor
-                                        iconContainerLeftMargin: 5 * AppFramework.displayScaleFactor
+                                        statusTextLeftMargin: sf(10)
+                                        iconContainerLeftMargin: sf(5)
                                         iconContainerHeight: this.containerHeight - 5
                                         containerHeight: selectedTPK.height / 4 - 10
                                         statusText.horizontalAlignment: Text.AlignHCenter
@@ -283,25 +271,23 @@ Item {
                                         Button {
                                             id: changeTPKFileBtn
                                             anchors.fill: parent
-                                            anchors.margins: 10 * AppFramework.displayScaleFactor
+                                            anchors.margins: sf(10)
 
-                                            style: ButtonStyle {
-                                                background: Rectangle {
-                                                    anchors.fill: parent
-                                                    color: "transparent"
-                                                    radius: app.info.properties.mainButtonRadius
-                                                    border.width: 0
-                                                    border.color: app.info.properties.mainButtonBorderColor
-                                                }
+                                            background: Rectangle {
+                                                anchors.fill: parent
+                                                color: "transparent"
+                                                radius: app.info.properties.mainButtonRadius
+                                                border.width: 0
+                                                border.color: app.info.properties.mainButtonBorderColor
                                             }
 
                                             Text {
                                                 color: app.info.properties.mainButtonBackgroundColor
                                                 anchors.centerIn: parent
                                                 textFormat: Text.RichText
-                                                text: "Use a different file"
-                                                font.pointSize: config.baseFontSizePoint
-                                                font.family: notoRegular.name
+                                                text: Singletons.Strings.useDifferentFile
+                                                font.pointSize: Singletons.Config.baseFontSizePoint
+                                                font.family: notoRegular
                                             }
                                             onClicked: {
                                                 fileAcceptedForUpload = false;
@@ -328,7 +314,7 @@ Item {
                                         fileAccepted(AppFramework.resolvedUrl(drop.urls[0]));
                                     } else {
                                         tpkIcon.source = "images/sad_face.png";
-                                        selectedTPKFileName.text = ".tpk files only please";
+                                        selectedTPKFileName.text = Singletons.Strings.tpkFilesOnly;
                                         tpkUploadDetails.tpkTitle = "";
                                     }
                                 }
@@ -340,14 +326,14 @@ Item {
 
                     Rectangle {
                         Layout.fillHeight: true
-                        Layout.preferredWidth: 350 * AppFramework.displayScaleFactor
+                        Layout.preferredWidth: sf(350)
                         color: "#fff"
 
                         DetailsForm {
                             id: tpkUploadDetails
                             anchors.fill: parent
                             enabled: uploading ? false : true
-                            config: uploadView.config
+                            uploadOnly: true
 
                             exportAndUpload: false
                             exportPathBuffering: false
@@ -359,7 +345,7 @@ Item {
 
                 Rectangle{
                     id: tpkUploadStatusOverlay
-                    color:config.subtleBackground
+                    color: Singletons.Colors.subtleBackground
                     opacity: .9
                     anchors.fill: parent
                     visible: uploading ? true : false
@@ -370,7 +356,7 @@ Item {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 60 * AppFramework.displayScaleFactor
+                Layout.preferredHeight: sf(60)
                 color: "#fff"
 
                 RowLayout {
@@ -385,7 +371,7 @@ Item {
                         Rectangle{
                             id: uploadStatusContainer
                             anchors.fill: parent
-                            anchors.margins: 10 * AppFramework.displayScaleFactor
+                            anchors.margins: sf(10)
 
                             StatusIndicator{
                                 id: uploadStatusIndicator
@@ -399,22 +385,20 @@ Item {
 
                     Rectangle {
                         Layout.fillHeight: true
-                        Layout.preferredWidth: 140 * AppFramework.displayScaleFactor
+                        Layout.preferredWidth: sf(140)
                         color: "#fff"
 
                         Button {
                             id: uploadTPKBtn
                             enabled: (!fileAcceptedForUpload || uploading) ? false : true
                             anchors.fill: parent
-                            anchors.margins: 10 * AppFramework.displayScaleFactor
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: config.buttonStates(control)
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                    border.color: app.info.properties.mainButtonBorderColor
-                                }
+                            anchors.margins: sf(10)
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(this.parent)
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: app.info.properties.mainButtonBorderColor
                             }
                             RowLayout{
                                 spacing:0
@@ -428,9 +412,9 @@ Item {
                                     verticalAlignment: Text.AlignVCenter
                                     horizontalAlignment: Text.AlignHCenter
                                     textFormat: Text.RichText
-                                    text: uploading ? ( tpkPackage.aborted ? qsTr("Cancelling") : qsTr("Uploading") ): qsTr("Upload")
-                                    font.pointSize: config.baseFontSizePoint
-                                    font.family: notoRegular.name
+                                    text: uploading ? ( tpkPackage.aborted ?  Singletons.Strings.cancelling : Singletons.Strings.uploading ): Singletons.Strings.upload
+                                    font.pointSize: Singletons.Config.baseFontSizePoint
+                                    font.family: notoRegular
                                 }
 
                                 ProgressIndicator{
@@ -457,32 +441,30 @@ Item {
 
                     Rectangle {
                         Layout.fillHeight: true
-                        Layout.preferredWidth: 140 * AppFramework.displayScaleFactor
+                        Layout.preferredWidth: sf(140)
                         color: "#fff"
                         visible: uploading
                         Button {
                             id: uploadCancelBtn
                             anchors.fill: parent
-                            anchors.margins: 10
+                            anchors.margins: sf(10)
                             enabled: uploading ? (tpkPackage.aborted ? false : true) : false
 
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: config.buttonStates(control, "clear")
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: (control.enabled) ? app.info.properties.mainButtonBorderWidth : 0
-                                    border.color: "#fff"
-                                }
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(this.parent, "clear")
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: "#fff"
                             }
 
                             Text {
                                 color: (!tpkPackage.aborted) ? app.info.properties.mainButtonBackgroundColor : "#aaa"
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
-                                text: "Cancel"
-                                font.pointSize: config.baseFontSizePoint
-                                font.family: notoRegular.name
+                                text: Singletons.Strings.cancel
+                                font.pointSize: Singletons.Config.baseFontSizePoint
+                                font.family: notoRegular
                             }
 
                             onClicked: {
@@ -530,10 +512,10 @@ Item {
         onSrCheckComplete: {
             if (tpkPackage.isWebMercator) {
                 statusWebMercCheck.progressIcon = statusWebMercCheck.success;
-                statusWebMercCheck.progressText = "Web Mercator";
+                statusWebMercCheck.progressText = Singletons.Strings.webMercator;
             } else {
                 statusWebMercCheck.progressIcon = statusWebMercCheck.failed;
-                statusWebMercCheck.progressText = "NOT WEB MERCATOR";
+                statusWebMercCheck.progressText = Singletons.Strings.notWebMercator;
             }
         }
 
@@ -542,20 +524,26 @@ Item {
 
         onUploadComplete: {
             try {
-                var uploadData = {
-                    transaction_date: Date.now(),
-                    title: tpkUploadDetails.tpkTitle,
-                    description: tpkUploadDetails.tpkDescription,
-                    service_url: portal.owningSystemUrl + "/home/item.html?id=" + id
+                var sql = "INSERT into 'uploads' ";
+                sql += "(title, transaction_date, description, published_service_url, user) ";
+                sql += "VALUES(:title, :transaction_date, :description, :published_service_url, :user)"
+                var params = {
+                    "title": tpkUploadDetails.tpkTitle,
+                    "transaction_date": Date.now(),
+                    "description": ((tpkUploadDetails.tpkDescription !== "") ? tpkUploadDetails.tpkDescription : Singletons.Strings.defaultTPKDesc),
+                    "published_service_url": (portal.owningSystemUrl + "/home/item.html?id=" + id),
+                    "user": portal.user.email
                 }
-                history.writeHistory(history.uploadHistoryKey, uploadData);
-            } catch (error) {
+                appDatabase.write(sql,params);
+            }
+            catch (error) {
                 appMetrics.reportError(error);
-            } finally {
+            }
+            finally {
                 if (tpkUploadDetails.currentSharing !== "") {
                     uploadTPKUpdate.share(id, tpkUploadDetails.currentSharing);
                 }
-                else{
+                else {
                     uploadStatusIndicator.messageType = uploadStatusIndicator.success;
                     if(calledFromAnotherApp && dlr.successCallback !== ""){
                         uploadStatusIndicator.message = "Upload Complete. <a href='%1?isShared=%2&isOnline=%3&itemId=%4'>Return to %5</a>".arg(dlr.successCallback).arg("false").arg("true").arg(id).arg(dlr.callingApplication);
@@ -572,7 +560,7 @@ Item {
 
         onUploadCancelled: {
             uploadStatusIndicator.messageType = uploadStatusIndicator.info;
-            uploadStatusIndicator.message =  "Upload Cancelled";
+            uploadStatusIndicator.message = Singletons.Strings.uploadCancelled;
             uploadStatusIndicator.show();
             uploadView.uploadComplete();
         }
@@ -584,7 +572,7 @@ Item {
             uploadStatusIndicator.messageType = uploadStatusIndicator.error;
 
             if(error.message.indexOf("already exists") > -1){
-                error.message = "A tpk file with that name already exists.";
+                error.message = Singletons.Strings.tpkWithThatNameAlreadyExistsError;
             }
 
             try{
@@ -594,14 +582,14 @@ Item {
                 appMetrics.reportError(e)
             }
 
-            uploadStatusIndicator.message =  "Upload Failed. " + error.message;
+            uploadStatusIndicator.message =  Singletons.Strings.uploadFailedError + ": " + error.message;
             uploadStatusIndicator.show();
             uploadView.uploadComplete();
         }
 
         onUploadError: {
             uploadStatusIndicator.messageType = uploadStatusIndicator.error;
-            uploadStatusIndicator.message =  "Upload Failed. Error: " + error;
+            uploadStatusIndicator.message =  Singletons.Strings.uploadFailedError + " Error: " + error;
             uploadStatusIndicator.show();
             uploadView.uploadComplete();
 
@@ -644,12 +632,6 @@ Item {
         }
     }
 
-    //--------------------------------------------------------------------------
-
-    HistoryManager{
-        id: history
-    }
-
     // METHODS /////////////////////////////////////////////////////////////////
 
     function resetProperties() {
@@ -662,7 +644,7 @@ Item {
         if (!control.enabled) {
             return "#888";
         } else {
-            return config.formElementBackground;
+            return Singletons.Colors.formElementBackground;
         }
     }
 
@@ -708,7 +690,7 @@ Item {
         selectedTPKFileName.text = extractTPKFileName(fileUrl.toString());
         tpkUploadDetails.tpkTitle = extractDefaultTPKTitle(selectedTPKFileName.text);
         statusWebMercCheck.progressIcon = statusWebMercCheck.working;
-        statusWebMercCheck.progressText = "Checking Spatial Reference";
+        statusWebMercCheck.progressText = Singletons.Strings.checkingSpatialReference;
         statusWebMercCheck.visible = true;
         tpkPackage.getTPKSpatialReference(currentTPKUrl);
     }

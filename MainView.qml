@@ -14,17 +14,16 @@
  *
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 1.4
+import QtQuick 2.7
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "Portal"
-import "HistoryManager"
 import "AppMetrics"
 import "DeepLinkingRequest"
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Item {
@@ -34,7 +33,6 @@ Item {
     id: mainView
 
     property Portal portal
-    property Config config: Config{}
     property TilePackageDeepLinkRequest dlr: TilePackageDeepLinkRequest{}
     property App parentApp
 
@@ -43,9 +41,9 @@ Item {
         parentApp: mainView.parentApp
         debug: true
         onAvailableUpdatesChanged: {
-            if(availableUpdates.length > 0){
-                for(var i = 0; i < availableUpdates.length; i++){
-                    if(!availableUpdates[i].restricted_to_tags){
+            if (availableUpdates.length > 0) {
+                for (var i = 0; i < availableUpdates.length; i++) {
+                    if (!availableUpdates[i].restricted_to_tags) {
                         uD.updates.append(availableUpdates[i]);
                     }
                 }
@@ -60,22 +58,22 @@ Item {
 
     // UI //////////////////////////////////////////////////////////////////////
 
-    ColumnLayout{
+    ColumnLayout {
         anchors.fill: parent
         spacing: 1
 
-        AppToolBar{
+        AppToolBar {
             id: mainToolBar
             enabled: false
             stackView: mainStackView
             portal: mainView.portal
             updates: uD
             Layout.fillWidth: true
-            Layout.preferredHeight: 50 * AppFramework.displayScaleFactor
+            Layout.preferredHeight: sf(50)
             toolBarBackground: app.info.properties.toolBarBackgroundColor
             toolBarBorderColor: app.info.properties.toolBarBorderColor
             toolBarFontColor: app.info.properties.toolBarFontColor
-            toolBarFontPointSize: config.baseFontSizePoint
+            toolBarFontPointSize: Singletons.Config.baseFontSizePoint
             toolBarButtonHoverColor: app.info.properties.mainButtonPressedColor
             toolBarButtonPressedColor: app.info.properties.mainButtonBackgroundColor
             backButtonEnabled: false
@@ -100,7 +98,7 @@ Item {
 
         id: startView
 
-        SignInView{
+        SignInView {
 
             portal: mainView.portal
 
@@ -109,10 +107,10 @@ Item {
                 appMetrics.userEmail = portal.user.email;
                 appMetrics.checkForUpdates();
 
-                if(!calledFromAnotherApp){
-                    mainStackView.push({item:osv, immediate: true});
+                if (!calledFromAnotherApp) {
+                    mainStackView.push(osv, {}, StackView.Immediate);
                 }
-                else{
+                else {
                     getViewForAction();
                 }
             }
@@ -124,20 +122,18 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: osv
-        OperationSelectionView{
-            config: mainView.config
+        OperationSelectionView {
         }
     }
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: utpkv
         UploadView {
             portal: mainView.portal
-            config: mainView.config
         }
     }
 
@@ -147,49 +143,45 @@ Item {
         id: asv
         AvailableServicesView {
             portal: mainView.portal
-            config: mainView.config
         }
     }
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: etv
         ExportView {
             portal: mainView.portal
-            config: mainView.config
         }
     }
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: btpkv
-        BrowseOrgView{
+        BrowseOrgView {
             portal: mainView.portal
-            config: mainView.config
         }
     }
 
     //--------------------------------------------------------------------------
 
-    Component{
+    Component {
         id: hv
-        HistoryView{
-            config: mainView.config
+        HistoryView {
         }
     }
 
     //--------------------------------------------------------------------------
 
-    UpdatesDialog{
+    UpdatesDialog {
         id: uD
         metrics: appMetrics
     }
 
     //--------------------------------------------------------------------------
 
-    Connections{
+    Connections {
         target: app
 
         onIncomingUrlChanged: {
@@ -202,7 +194,7 @@ Item {
 
     function getViewForAction(){
         // TODO: Make the switch variable more agnostic maybe?
-        switch(dlr.mainAction.toLowerCase()){
+        switch (dlr.mainAction.toLowerCase()) {
             case "create":
                 mainStackView.push(asv);
                 break;
@@ -219,23 +211,23 @@ Item {
 
     function parseIncomingUrl(){
 
-        if(calledFromAnotherApp){
+        if (calledFromAnotherApp) {
 
-            if(incomingUrl.toString() !== ""){
+            if (incomingUrl.toString() !== "") {
 
-                if(dlr.parseUrl(incomingUrl)){
-                    try{
+                if (dlr.parseUrl(incomingUrl)) {
+                    try {
                         appMetrics.trackEvent("Called from another application: %1".arg(dlr.callingApplication));
                     }
-                    catch(e){
+                    catch(e) {
                     }
-                    finally{
+                    finally {
 
-                        if(dlr.parameters !== null){
+                        if (dlr.parameters !== null) {
 
                             dlr.parseParameters();
 
-                            if(dlr.refreshToken !== null && dlr.handoffClientId !== null){
+                            if (dlr.refreshToken !== null && dlr.handoffClientId !== null) {
                                 portal.refreshToken = dlr.refreshToken;
                                 portal.clientId = dlr.handoffClientId;
                                 portal.renew();
@@ -251,18 +243,29 @@ Item {
                             }*/
 
                         }
-                        else{
+                        else {
                             // do nothing as user will need to actually log in and then
                             // PortalSignInView will send them to getViewForAction()
                         }
                     }
                 }
-                else{
+                else {
                     // the url parsed as bad so do nothing cause the user needs to sign in.
                 }
             }
         }
 
+    }
+
+    //--------------------------------------------------------------------------
+
+    function _uiEntryElementStates(control){
+        if (!control.enabled) {
+            return Singletons.Colors.formElementDisabledBackground;
+        }
+        else {
+            return Singletons.Colors.formElementBackground;
+        }
     }
 
     // END /////////////////////////////////////////////////////////////////////

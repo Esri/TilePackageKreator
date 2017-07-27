@@ -24,6 +24,8 @@ import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0
 
 import "../Controls"
+import "../singletons" as Singletons
+
 
 //------------------------------------------------------------------------------
 
@@ -53,7 +55,7 @@ Rectangle {
 
     property int buttonHeight: 35 * AppFramework.displayScaleFactor
 
-    property string fontFamily: notoRegular.name
+    property string fontFamily: notoRegular
 
     signal accepted()
     signal rejected()
@@ -208,7 +210,7 @@ Rectangle {
                                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
                                 font {
-                                    pointSize: 22
+                                    pointSize: Singletons.Config.largeFontSizePoint
                                     bold: true
                                     family: fontFamily
                                 }

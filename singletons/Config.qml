@@ -14,7 +14,8 @@
  *
  */
 
-import QtQuick 2.0
+pragma Singleton
+import QtQuick 2.7
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
@@ -23,7 +24,7 @@ QtObject {
 
     id: appConfig
 
-    property string nextButton: qsTr("Next") +  " &#187;"
+    readonly property string browseOrgViewSearchQuery: '(type:("Tile Package") AND group:(access:org OR access:private))'
 
     property var availableServicesView: {
         "gridMargin": 8,
@@ -32,27 +33,25 @@ QtObject {
         "tileItemBorderColor": "#eeeeee"
     }
 
-    property string appBrandColor: "#d94f27"
-
-    //property string toolBarBackgroundColor: "#323232"
-    //property string toolBarBorderColor: "#aaaaaa"
-    //property string toolBarFontColor: "#ffffff"
 
     property string mainButtonBackgroundColor: "#196fa6"
     //property string mainButtonBorderColor: "#007ac2"
-    property string mainButtonPressedColor: "#166090"
+    property color mainButtonPressedColor: "#166090"
     //property string mainButtonFontColor: "#ffffff"
     //property int mainButtonBorderWidth: 1
     //property int mainButtonRadius: 0
 
     property string mainLabelFontColor: "#595959"
     property string subtleBackground: "#efefef"
+
     property string boldUIElementBackground: "#ddeedb"
     property string boldUIElementFontColor: "#323232"
+
     property string formElementBackground: "#fff"
     property string formElementBorderColor: "#ddd"
     property string formElementFontColor: "#323232"
     property string formElementDisabledBackground: "#888"
+
     property int formElementBorderWidth: 1
     property int formElementRadius: 0
 
@@ -62,14 +61,6 @@ QtObject {
     property double mediumFontSizePoint: baseFontSizePoint * 1.1
     property double largeFontSizePoint: baseFontSizePoint * 1.3
 
-    property int qtMapSpatialReference: 4326
-    property int webMercLatestWKID: 3857
-    property int webMercWKID: 102100
-    property string webMercSR: "WGS_1984_Web_Mercator_Auxiliary_Sphere"
-    //property double mapDefaultLat: 39.8665
-    //property double mapDefaultLong: -97.3105
-    //property int mapDefaultZoomLevel: 3
-
     property var thumbnails: {
         "width":200,
         "height": 133
@@ -77,7 +68,7 @@ QtObject {
 
     //--------------------------------------------------------------------------
     function _setBaseFontSize(){
-        if(AppFramework.osName.toString() === "OS X"){
+        if(Qt.platform.os === "osx"){
             return 16;
         }else{
             return 12;

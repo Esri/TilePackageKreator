@@ -22,7 +22,7 @@
 
 */
 
-import QtQuick 2.0
+import QtQuick 2.5
 
 QtObject {
 
@@ -53,6 +53,7 @@ QtObject {
                 var xPixels = xMeters  / metersPerPixel[a];
                 var yPixels = yMeters / metersPerPixel[a];
 
+
                 var xTiles = Math.ceil(xPixels / tileSize);
                 var yTiles = Math.ceil(yPixels / tileSize);
 
@@ -64,6 +65,49 @@ QtObject {
         }
 
         var sizeInBytes = (totalTiles * averageBytesPerTile) * averageCompressionPercent[level];
+
+        calculationComplete({"tiles": totalTiles, "bytes": sizeInBytes});
+    }
+
+    // -------------------------------------------------------------------------
+
+    function calculateForRange(topLeft /* [x,y] as webmercator */, bottomRight /* [x,y] as webmercator */, bottomLevel /* int */, topLevel /* int */){
+
+        var _topLevel = Math.round(topLevel);
+        var _bottomLevel = Math.round(bottomLevel);
+
+        if (_topLevel === metersPerPixel.length + 1){
+            _topLevel = metersPerPixel.length;
+        }
+
+        if (_bottomLevel < 0){
+            _bottomLevel = 0;
+        }
+
+        var xMeters = Math.abs(Math.floor(bottomRight[0] - topLeft[0]));
+        var yMeters = Math.abs(Math.floor(bottomRight[1] - topLeft[1]));
+
+        var totalTiles = 1;
+
+        if (_topLevel > 0) {
+
+            for (var a = _bottomLevel; a < _topLevel + 1; a++) {
+
+                var xPixels = xMeters / metersPerPixel[a];
+                var yPixels = yMeters / metersPerPixel[a];
+
+                var xTiles = Math.ceil(xPixels / tileSize);
+                var yTiles = Math.ceil(yPixels / tileSize);
+
+                var levelTiles = xTiles * yTiles;
+
+                totalTiles += levelTiles;
+            }
+        }
+
+        var compressionLevel = _topLevel !== _bottomLevel ? _topLevel - _bottomLevel : 0;
+
+        var sizeInBytes = (totalTiles * averageBytesPerTile) * averageCompressionPercent[compressionLevel];
 
         calculationComplete({"tiles": totalTiles, "bytes": sizeInBytes});
     }

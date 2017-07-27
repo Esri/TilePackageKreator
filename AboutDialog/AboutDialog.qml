@@ -54,7 +54,7 @@ Dialog {
 
                 text: qsTr("About %1").arg(app.info.title)
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                font.family: notoRegular.name
+                font.family: notoRegular
                 font {
                     pointSize: 22
                     bold: true

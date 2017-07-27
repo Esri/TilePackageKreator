@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.0
+import QtQuick 2.5
 
 QtObject {
 
@@ -55,14 +55,13 @@ QtObject {
         // y, latitude ---------------------------------------------------------
 
         coordinates.sort(function(a, b) {
-                        console.log(a);
                         return a[1] - b[1];
                     });
 
         var ymin = coordinates[0][1];
         var ymax = coordinates[coordinates.length - 1][1];
 
-        if(ymin < 0 && ymax < 0){
+        if (ymin < 0 && ymax < 0) {
             ymin = coordinates[coordinates.length - 1][1];
             ymax = coordinates[0][1];
         }

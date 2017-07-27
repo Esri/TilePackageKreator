@@ -14,18 +14,18 @@
  *
  */
 
-import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick 2.7
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "Portal"
 import "AboutDialog"
 import "AppMetrics"
+import "singletons" as Singletons
+
 //------------------------------------------------------------------------------
 
 Item {
@@ -40,16 +40,16 @@ Item {
 
     property string toolBarBackground: "#222"
     property string toolBarFontColor: "#fff"
-    property double toolBarFontPointSize: 15 * AppFramework.displayScaleFactor
+    property double toolBarFontPointSize: sf(15)
     property string toolBarBorderColor: "#fff"
     property string toolBarButtonColor: "#fff"
     property string toolBarButtonBackgroundColor: "transparent"
     property string toolBarButtonHoverColor: "gold"
     property string toolBarButtonPressedColor: "orange"
     property string toolBarButtonDisabledColor: "#aaa"
-    property int toolBarHeight: 50 * AppFramework.displayScaleFactor
+    property int toolBarHeight: sf(50)
     property int toolBarWidth
-    property int iconHeight: toolBarHeight - (25 * AppFramework.displayScaleFactor)
+    property int iconHeight: toolBarHeight - sf(25)
     property int updateCount: 0
 
     // -------------------------------------------------------------------------
@@ -79,7 +79,7 @@ Item {
 
         RowLayout {
             anchors.fill: parent
-            spacing: 1 * AppFramework.displayScaleFactor
+            spacing: sf(1)
 
             //------------------------------------------------------------------
 
@@ -87,21 +87,20 @@ Item {
                 id:backButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("Back")
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                ToolTip.visible: hovered
+                ToolTip.text: Singletons.Strings.back
+
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint
+                    icon: _icons.chevron_left
+                    iconSizeMultiplier: 1
                     color: _returnButtonColor(backButton)
-                    font.family: icons.name
-                    text: icons.chevron_left
                     Accessible.ignored: true
                 }
 
@@ -110,8 +109,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("Go Back to previous view")
-                Accessible.description: qsTr("This button will take you back to the previous view. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.goBackToPreviousView
+                Accessible.description: Singletons.Strings.goBackToPreviousViewDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -128,15 +127,15 @@ Item {
                 Accessible.role: Accessible.Pane
 
                 Text {
-                    id:toolbarTitle
+                    id: toolbarTitle
                     anchors.centerIn: parent
                     verticalAlignment: Text.AlignVCenter
-                    leftPadding: 20 * AppFramework.displayScaleFactor
+                    leftPadding: sf(20)
+                    font.family: notoRegular
                     font.pointSize: toolBarFontPointSize
                     color: toolBarFontColor
                     textFormat: Text.RichText
                     text: ""
-                    font.family: notoRegular.name
                     Accessible.role: Accessible.Heading
                     Accessible.name: text
                 }
@@ -148,23 +147,21 @@ Item {
                 id: updatesButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("Updates Available")
+                ToolTip.visible: hovered
+                ToolTip.text: Singletons.Strings.updatesAvailable
                 enabled: false
                 visible: false
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    icon: _icons.download_circle
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(updatesButton)
-                    font.family: icons.name
-                    text: icons.download_circle
                     Accessible.ignored: true
                 }
 
@@ -193,8 +190,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("%1 Updates are available".arg(numberOfUpdatesIndicatorCount.text))
-                Accessible.description: qsTr("This button is enabled when there are updates available to the application. The current number of updates available is %1. The action on this button will only work when the button is enabled via the application.".arg(numberOfUpdatesIndicatorCount.text))
+                Accessible.name: Singletons.Strings.xUpdatesAvaliable.arg(numberOfUpdatesIndicatorCount.text)
+                Accessible.description: Singletons.Strings.xUpdatesAvaliableDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -208,22 +205,21 @@ Item {
                 id: feedbackButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("Feedback")
+                ToolTip.visible: hovered
+                ToolTip.text: Singletons.Strings.feedback
                 enabled: true
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    icon: _icons.chat_bubble
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(feedbackButton)
-                    font.family: icons.name
-                    text: icons.chat_bubble
+                    Accessible.ignored: true
                 }
 
                 onClicked: {
@@ -231,8 +227,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("Feedback")
-                Accessible.description: qsTr("This button opens up a dialog that allows a user to submit feedback on the application. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.feedback
+                Accessible.description: Singletons.Strings.feedbackDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -242,25 +238,24 @@ Item {
 
             //------------------------------------------------------------------
 
-            Button{
+            Button {
                 id: aboutButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("About and Help")
+                ToolTip.visible: hovered
+                ToolTip.text: Singletons.Strings.aboutAndHelp
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    icon: _icons.info
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(aboutButton)
-                    font.family: icons.name
-                    text: icons.info
+                    Accessible.ignored: true
                 }
 
                 onClicked: {
@@ -268,8 +263,8 @@ Item {
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("About the app")
-                Accessible.description: qsTr("This button opens up a dialog that provides information about this application. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.aboutTheApp
+                Accessible.description: Singletons.Strings.aboutTheAppDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -283,30 +278,29 @@ Item {
                 id: historyButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: qsTr("History")
+                ToolTip.visible: hovered
+                ToolTip.text: Singletons.Strings.history
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    icon: _icons.history
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(historyButton)
-                    font.family: icons.name
-                    text: icons.history
+                    Accessible.ignored: true
                 }
 
                 onClicked: {
-                    stackView.push({item: hv});
+                    stackView.push(hv);
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("Export and Upload History")
-                Accessible.description: qsTr("This button will open the export and upload history view. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.exportAndUploadHistory
+                Accessible.description: Singletons.Strings.exportAndUploadHistoryDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();
@@ -320,32 +314,32 @@ Item {
                 id: userButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
-                tooltip: (portal.user !== null && portal.user !== "" && portal.user !== undefined) ? qsTr("Sign out") + ": " + portal.user.fullName : "User Unknown"
+                ToolTip.visible: hovered
+                ToolTip.text: (portal.user !== null && portal.user !== "" && portal.user !== undefined) ? Singletons.Strings.signOut + ": " + portal.user.fullName : "User Unknown"
                 enabled: true
 
-                style: ButtonStyle{
-                    background: Rectangle{
-                        color: toolBarBackground
-                        anchors.fill: parent
-                    }
+                background: Rectangle{
+                    color: toolBarBackground
+                    anchors.fill: parent
                 }
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: config.largeFontSizePoint * 1.1
+                    icon: _icons.sign_out
+                    iconSizeMultiplier: 1.1
                     color: _returnButtonColor(userButton)
-                    font.family: icons.name
-                    text: icons.sign_out
+                    Accessible.ignored: true
                 }
 
                 onClicked: {
                     portal.signOut();
-                    stackView.push({item: startView, replace: true});
+                    stackView.replace(null,startView);
+                    //stackView.push({item: startView, replace: true});
                 }
 
                 Accessible.role: Accessible.Button
-                Accessible.name: qsTr("Sign out")
-                Accessible.description: qsTr("This button will sign the user out of the application and return to the sign in screen. The action on this button will only work when the button is enabled via the application.")
+                Accessible.name: Singletons.Strings.signOut
+                Accessible.description: Singletons.Strings.signOutDesc
                 Accessible.onPressAction: {
                     if(enabled && visible){
                         clicked();

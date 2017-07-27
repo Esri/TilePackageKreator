@@ -1,4 +1,5 @@
 {
+    "arcgisRuntime": 0,
     "capabilities": {
         "audio": false,
         "bluetooth": false,
@@ -12,6 +13,8 @@
         "android": {
             "packageName": ""
         },
+        "arcgisRuntimeExtensionsLicense": "",
+        "arcgisRuntimeLicense": "",
         "clientId": "qX6liWtssLPP0sif",
         "ios": {
             "bundleId": "",
@@ -31,6 +34,7 @@
             "minimumHeight": 0,
             "minimumWidth": 0
         },
+        "enableHighDpi": true,
         "phone": {
             "landscape": true,
             "portrait": true,
@@ -44,6 +48,16 @@
     },
     "environment": {
     },
+    "launchUrlSchemes": [
+        "arcgis-collector",
+        "arcgis-explorer",
+        "arcgis-navigator",
+        "arcgis-survey123",
+        "arcgis-trek2there",
+        "arcgis-workforce",
+        "arcgis-appstudio-player",
+        "arcgis-survey123connect"
+    ],
     "mainFile": "TilePackageKreator.qml",
     "projectFile": "TilePackageKreator.qmlproject",
     "properties": {
@@ -70,7 +84,7 @@
     "urlScheme": "arcgis-tilepackage",
     "version": {
         "major": 1,
-        "micro": 1,
-        "minor": 1
+        "micro": 20,
+        "minor": 2
     }
 }

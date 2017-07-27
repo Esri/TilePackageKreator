@@ -41,7 +41,7 @@ Rectangle {
 
     property bool showAuthentication: false
 
-    property string fontFamily: notoRegular.name
+    property string fontFamily: notoRegular
 
     color: "white"
 

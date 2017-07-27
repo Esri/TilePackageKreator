@@ -23,13 +23,13 @@ import QtQuick.Dialogs 1.2
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
 import "../"
+import "../singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Dialog {
 
     id: updatesDialog
 
-    property Config config: Config {}
     property AppMetrics metrics
     property ListModel updates: ListModel {}
 
@@ -54,7 +54,7 @@ Dialog {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40 * AppFramework.displayScaleFactor
-                color: config.subtleBackground
+                color: Singletons.Colors.subtleBackground
 
                 Text {
                     anchors.fill: parent
@@ -62,8 +62,8 @@ Dialog {
                     text: updatesDialog.title
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
-                    font.pointSize: config.largeFontSizePoint
-                    color: config.formElementFontColor
+                    font.pointSize: Singletons.Config.largeFontSizePoint
+                    color: Singletons.Colors.formElementFontColor
                 }
             }
 
@@ -100,7 +100,7 @@ Dialog {
                                             anchors.fill: parent
                                             text: "%1 %2".arg(qsTr("Version")).arg(version)
                                             verticalAlignment: Text.AlignVCenter
-                                            font.pointSize: config.baseFontSizePoint
+                                            font.pointSize: Singletons.Config.baseFontSizePoint
                                         }
                                     }
                                     //------------------------------------------
@@ -113,7 +113,7 @@ Dialog {
                                             style: ButtonStyle {
                                                 background: Rectangle {
                                                     anchors.fill: parent
-                                                    color: config.buttonStates(control, "major")
+                                                    color: Singletons.Config.buttonStates(control, "major")
                                                     radius: app.info.properties.mainButtonRadius
                                                     border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                                     border.color: app.info.properties.mainButtonBorderColor
@@ -125,7 +125,7 @@ Dialog {
                                                 anchors.centerIn: parent
                                                 textFormat: Text.RichText
                                                 text: qsTr("Download")
-                                                font.pointSize: config.baseFontSizePoint
+                                                font.pointSize: Singletons.Config.baseFontSizePoint
                                             }
 
                                             onClicked: {
@@ -139,7 +139,7 @@ Dialog {
                             Rectangle {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 1 * AppFramework.displayScaleFactor
-                                color: config.subtleBackground
+                                color: Singletons.Colors.subtleBackground
                             }
                         }
                     }
@@ -174,7 +174,7 @@ Dialog {
                             style: ButtonStyle {
                                 background: Rectangle {
                                     anchors.fill: parent
-                                    color: config.buttonStates(control)
+                                    color: Singletons.Config.buttonStates(control)
                                     radius: app.info.properties.mainButtonRadius
                                     border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                     border.color: app.info.properties.mainButtonBorderColor
@@ -186,7 +186,7 @@ Dialog {
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
                                 text: qsTr("Close")
-                                font.pointSize: config.baseFontSizePoint
+                                font.pointSize: Singletons.Config.baseFontSizePoint
                             }
 
                             onClicked: {

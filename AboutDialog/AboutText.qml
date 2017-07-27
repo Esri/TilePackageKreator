@@ -25,7 +25,7 @@ Text {
     font {
         pointSize: 14
     }
-    font.family: notoRegular.name
+    font.family: notoRegular
 
     onLinkActivated: {
         Qt.openUrlExternally(link);

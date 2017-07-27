@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 Rectangle {
@@ -28,6 +28,7 @@ Rectangle {
 
     property bool hideAutomatically: false
     property bool showDismissButton: false
+    property bool narrowLineHeight: false
     property int hideAfter: 30000
     property int containerHeight: 50
     property int statusTextFontSize: 14
@@ -71,58 +72,52 @@ Rectangle {
 
     //--------------------------------------------------------------------------
 
-    RowLayout{
+    RowLayout {
         anchors.fill: parent
         spacing: 0
 
-        Text{
+        Text {
             id: statusText
             Layout.fillHeight: true
             Layout.fillWidth: true
-            //anchors.top: parent.top
-            //anchors.right: parent.right
-            //anchors.bottom: parent.bottom
-            //anchors.left: parent.left
             color: statusTextFontColor
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             textFormat: Text.RichText
             text: ""
             font.pointSize: statusTextFontSize
-            font.family: notoRegular.name
+            font.family: notoRegular
             wrapMode: Text.WordWrap
+            lineHeight: narrowLineHeight ? .7 : 1
             onLinkActivated: {
                 linkClicked(link.toString());
                 Qt.openUrlExternally(link);
             }
         }
 
-        Button{
+        Button {
             visible: showDismissButton
             enabled: showDismissButton
             Layout.fillHeight: true
             Layout.preferredWidth: parent.height
 
-            style: ButtonStyle {
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: messageType.backgroundColor
-                    border.width: 1
-                    border.color: messageType.borderColor
-                }
+            background: Rectangle {
+                anchors.fill: parent
+                color: messageType.backgroundColor
+                border.width: 1
+                border.color: messageType.borderColor
             }
 
             Rectangle {
                 anchors.fill: parent
                 color: "transparent"
-                anchors.margins: 8 * AppFramework.displayScaleFactor
+                anchors.margins: sf(8)
 
-                Text{
+                IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: config.mediumFontSizePoint
+                    font.pointSize: Singletons.Config.mediumFontSizePoint
                     color: messageType.borderColor
-                    font.family: icons.name
-                    text: icons.x_cross
+                    icon: _icons.x_cross
                 }
             }
 
@@ -137,7 +132,7 @@ Rectangle {
     onShow: {
        esriStatusIndicator.opacity = 1;
        esriStatusIndicator.visible = true;
-        if(hideAutomatically===true){
+        if (hideAutomatically) {
             hideStatusMessage.start();
         }
     }
@@ -160,8 +155,8 @@ Rectangle {
 
     //--------------------------------------------------------------------------
 
-    PropertyAnimation{
-        id:fader
+    PropertyAnimation {
+        id: fader
         from: 1
         to: 0
         duration: 1000
@@ -172,7 +167,7 @@ Rectangle {
 
         onStopped: {
             esriStatusIndicator.visible = false;
-            if(hideStatusMessage.running===true){
+            if (hideStatusMessage.running) {
                 hideStatusMessage.stop();
             }
         }

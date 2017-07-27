@@ -14,9 +14,11 @@
  *
  */
 
-import QtQuick 2.0
+import QtQuick 2.5
 import ArcGIS.AppFramework 1.0
+import QtQuick.Dialogs 1.2
 import '../Geometry'
+import '../singletons' as Singletons
 
 Item{
 
@@ -188,11 +190,75 @@ Item{
         return qmlGeometry;
     }
 
+    //--------------------------------------------------------------------------
+
+    function toGeoJSON(geometry){
+        var g = JSON.parse(geometry);
+        var gType;
+        var gCoords;
+
+        if (g.hasOwnProperty("type")) {
+
+            if(g.type === Singletons.Constants.kMultipath) {
+                gType = "LineString";
+                gCoords = [];
+                for(var x = 0; x < g.geometry.length; x++){
+                    gCoords.push([g.geometry[x].coordinate.longitude, g.geometry[x].coordinate.latitude]);
+                }
+            }
+
+            if(g.type === Singletons.Constants.kPolygon){
+                gType = "Polygon";
+                gCoords = [[]];
+                for(var y = 0; y < g.geometry.length; y++){
+                    gCoords[0].push([g.geometry[y].coordinate.longitude, g.geometry[y].coordinate.latitude]);
+                }
+            }
+        }
+
+        var geoJson = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": gType,
+                    "coordinates": gCoords
+                }
+            }]
+        };
+
+        return geoJson;
+    }
+
+    //--------------------------------------------------------------------------
+
+    function saveGeojsonToFile(geometry,name){
+        fileDialog.geoJsonToExport = geometry;
+        fileDialog.geoJsonName = name.replace(/[^a-zA-Z0-9]/g,"_").toLocaleLowerCase();
+        fileDialog.open();
+    }
+
     // COMPONENTS //////////////////////////////////////////////////////////////
 
     FileFolder {
         id: geoJsonFileFolder
     }
+
+    //--------------------------------------------------------------------------
+
+    FileDialog {
+           id: fileDialog
+           property var geoJsonToExport: {}
+           property string geoJsonName: "data"
+           selectFolder: true
+           title: Singletons.Strings.saveTo
+           onAccepted: {
+               geoJsonFileFolder.path = AppFramework.resolvedPath(fileDialog.fileUrl);
+               geoJsonFileFolder.writeJsonFile("%1.geojson".arg(geoJsonName), geoJsonToExport);
+               fileDialog.close();
+           }
+        }
 
     //--------------------------------------------------------------------------
 

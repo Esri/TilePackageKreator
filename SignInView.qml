@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  *
  */
 
-import QtQuick 2.6
-import QtQuick.Controls 1.4
+import QtQuick 2.7
+import QtQuick.Controls 2.1
 //------------------------------------------------------------------------------
 import "Portal"
 //------------------------------------------------------------------------------
@@ -25,17 +25,12 @@ PortalSignInView {
     signal loginSuccess()
     signal loginFailed()
 
-    Stack.onStatusChanged: {
-        if(Stack.status === Stack.Deactivating){
-            mainView.appToolBar.toolBarTitleLabel = "";
-        }
-        if(Stack.status === Stack.Activating){
-            console.log("activationg")
-            mainView.appToolBar.backButtonEnabled = false
-            mainView.appToolBar.backButtonVisible = false
-            mainView.appToolBar.enabled = false
-            mainView.appToolBar.toolBarTitleLabel = "<strong style='font-size:large'>%1</strong> <span style='font-size:small;'>v%2.%3.%4</span>".arg(app.info.title).arg(app.info.value("version").major).arg(app.info.value("version").minor).arg(app.info.value("version").micro)
-        }
+    StackView.onActivating: {
+        console.log("activationg")
+        mainView.appToolBar.backButtonEnabled = false
+        mainView.appToolBar.backButtonVisible = false
+        mainView.appToolBar.enabled = false
+        mainView.appToolBar.toolBarTitleLabel = "<strong style='font-size:large'>%1</strong> <span style='font-size:small;'>v%2.%3.%4</span>".arg(app.info.title).arg(app.info.value("version").major).arg(app.info.value("version").minor).arg(app.info.value("version").micro)
     }
 
     portal: portal

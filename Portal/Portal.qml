@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.4
+import QtQuick 2.5
 
 import ArcGIS.AppFramework 1.0
 
@@ -62,7 +62,8 @@ Item {
     property string redirectUri: "urn:ietf:wg:oauth:2.0:oob"
     property string authorizationCode: ""
     readonly property string authorizationEndpoint: portalUrl + "/sharing/rest/oauth2/authorize/"
-    readonly property string authorizationUrl: authorizationEndpoint + "?client_id=" + clientId + "&grant_type=code&response_type=code&expiration=-1&redirect_uri=" + redirectUri + "&locale=" + Qt.locale().uiLanguages[0]
+    property LocaleInfo localeInfo: AppFramework.localeInfo(Qt.locale().uiLanguages[0])
+    readonly property string authorizationUrl: authorizationEndpoint + "?client_id=" + clientId + "&grant_type=code&response_type=code&expiration=-1&redirect_uri=" + redirectUri + "&locale=" + localeInfo.esriName
     property string clientId: ""
     property string refreshToken: ""
     property date lastLogin

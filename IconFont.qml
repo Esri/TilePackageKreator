@@ -15,24 +15,20 @@
  */
 
 import QtQuick 2.7
-import QtQuick.Controls 2.1
-import "../singletons" as Singletons
+import "singletons" as Singletons
 
-TextField {
-    id: control
-    selectByMouse: true
+Text {
+    id: _iconFont
 
-    background: Rectangle {
-        anchors.fill: parent
-        border.width: Singletons.Config.formElementBorderWidth
-        border.color: Singletons.Colors.mediumGray
-        radius: Singletons.Config.formElementRadius
-        color: parent.enabled ? "#fff" : Singletons.Colors.lightGray
+    property double iconSizeMultiplier: 1.0
+    property alias icon: _iconFont.text
+
+    Accessible.role: Accessible.Graphic
+
+    font {
+        pointSize: Singletons.Config.largeFontSizePoint * iconSizeMultiplier
+        family: icons
     }
-    color: Singletons.Colors.darkGray
-    font.family: notoRegular
-    font.pointSize: Singletons.Config.smallFontSizePoint
 
-    Accessible.role: Accessible.EditableText
-    Accessible.focusable: true
+    // END /////////////////////////////////////////////////////////////////////
 }

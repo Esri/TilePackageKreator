@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.0
+import QtQuick 2.5
 import ArcGIS.AppFramework 1.0
 import "../Portal"
 //------------------------------------------------------------------------------

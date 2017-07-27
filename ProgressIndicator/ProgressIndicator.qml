@@ -15,12 +15,13 @@
  */
 
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
+import "../singletons" as Singletons
+import "../"
 //------------------------------------------------------------------------------
 
 Rectangle {
@@ -28,12 +29,12 @@ Rectangle {
 
     readonly property string componentPath: app.folder.path + "/ProgressIndicator"
 
-    property int containerHeight: 50 * AppFramework.displayScaleFactor
+    property int containerHeight: sf(50)
     property string progressIndicatorBackground: "#fff"
 
     property int statusTextFontSize: 14
     property int statusTextMinimumFontSize: 9
-    property int statusTextLeftMargin: 20 * AppFramework.displayScaleFactor
+    property int statusTextLeftMargin: sf(20)
 
     property string iconContainerBackground: progressIndicatorBackground
     property string successBackground: "green"
@@ -47,9 +48,9 @@ Rectangle {
     property alias progressText: statusText.text
     property alias statusText: statusText
 
-    readonly property string success: icons.checkmark
-    readonly property string failed: icons.x_cross
-    readonly property string working: icons.spinner2
+    readonly property string success: _icons.checkmark
+    readonly property string failed: _icons.x_cross
+    readonly property string working: _icons.spinner2
 
     signal show()
     signal hide()
@@ -60,7 +61,7 @@ Rectangle {
 
     //--------------------------------------------------------------------------
 
-    Rectangle{
+    Rectangle {
         id: statusIconContainer
         anchors.left: parent.left
         anchors.leftMargin: iconContainerLeftMargin
@@ -70,32 +71,29 @@ Rectangle {
         radius: iconContainerHeight / 2
         color: iconContainerBackground
 
-        Text{
-            id:statusIcon
+        IconFont {
+            id: statusIcon
             anchors.centerIn: parent
-            font.pointSize: config.largeFontSizePoint
+            icon: ""
             color: "#fff"
-            font.family: icons.name
-            text: ""
             fontSizeMode: Text.Fit
-            minimumPointSize: config.smallFontSizePoint
-
+            minimumPointSize: Singletons.Config.smallFontSizePoint
             onTextChanged: {
-                if(text === working){
+                if (text === working) {
                     rotator.start();
                 }
-                else{
+                else {
                     rotator.stop();
                     statusIcon.rotation = 0;
                 }
-                if(iconContainerBackground !== "transparent") {
-                    if( text === working ){
+                if (iconContainerBackground !== "transparent") {
+                    if ( text === working ) {
                         statusIconContainer.color = workingBackground;
                     }
-                    if( text === success ){
+                    if ( text === success ) {
                         statusIconContainer.color = successBackground;
                     }
-                    if( text === failed ){
+                    if ( text === failed ) {
                         statusIconContainer.color = failedBackground;
                     }
                 }
@@ -103,8 +101,8 @@ Rectangle {
         }
     }
 
-    Text{
-        id:statusText
+    Text {
+        id: statusText
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -116,7 +114,7 @@ Rectangle {
         minimumPointSize: statusTextMinimumFontSize
         text: ""
         font.pointSize: statusTextFontSize
-        font.family: notoRegular.name
+        font.family: notoRegular
         onLinkActivated: {
             Qt.openUrlExternally(link);
         }
@@ -134,7 +132,7 @@ Rectangle {
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 
-    RotationAnimation{
+    RotationAnimation {
         id:rotator
         direction: RotationAnimation.Clockwise
         from: 0

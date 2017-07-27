@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.4
+import QtQuick 2.5
 import ArcGIS.AppFramework 1.0
 
 QtObject {
@@ -43,7 +43,7 @@ QtObject {
     // SIGNALS /////////////////////////////////////////////////////////////////
 
     onActionsChanged: {
-        if(actions !== null){
+        if (actions !== null) {
             mainAction = actions[0];
             secondaryAction = (actions.length > 1) ? actions[1] : "";
         }
@@ -61,21 +61,21 @@ QtObject {
         actions = (url.path !== "") ? resolveActionsFromPath(url.path) : null;
 
         // this url follows the x-callback specification
-        if(specification === xCallbackIdentifier /* && actions !== null */){
+        if (specification === xCallbackIdentifier /* && actions !== null */) {
 
-            if(parameters.hasOwnProperty("x-source")){
+            if (parameters.hasOwnProperty("x-source")) {
                 callingApplication = parameters["x-source"];
             }
 
-            if(parameters.hasOwnProperty("x-success")){
+            if (parameters.hasOwnProperty("x-success")) {
                 successCallback = parameters["x-success"];
             }
 
-            if(parameters.hasOwnProperty("x-error")){
+            if (parameters.hasOwnProperty("x-error")) {
                 errorCallback = parameters["x-error"];
             }
 
-            if(parameters.hasOwnProperty("x-cancel")){
+            if (parameters.hasOwnProperty("x-cancel")) {
                 cancelCallback = parameters["x-cancel"];
             }
 
@@ -84,7 +84,7 @@ QtObject {
         }
 
         // this does not follow the x-callback-url schema and will be ignored
-        else{
+        else {
             goodUrl = false;
         }
 
@@ -100,10 +100,10 @@ QtObject {
 
         splitPath.shift(); // get rid of empty element before first /
 
-        if(splitPath.length > 0){
+        if (splitPath.length > 0) {
             return splitPath;
         }
-        else{
+        else {
             return null;
         }
 
