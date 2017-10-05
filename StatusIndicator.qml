@@ -115,7 +115,7 @@ Rectangle {
 
                 IconFont {
                     anchors.centerIn: parent
-                    font.pointSize: Singletons.Config.mediumFontSizePoint
+                    iconFont.font.pointSize: Singletons.Config.mediumFontSizePoint
                     color: messageType.borderColor
                     icon: _icons.x_cross
                 }

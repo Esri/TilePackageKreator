@@ -307,7 +307,7 @@ Item {
                     color: "transparent"
                     IconFont {
                         anchors.centerIn: parent
-                        font.pointSize: Singletons.Config.smallFontSizePoint
+                        iconFont.font.pointSize: Singletons.Config.smallFontSizePoint
                         color: app.info.properties.mainButtonBorderColor
                         icon: _icons.plus_sign
                     }
@@ -340,7 +340,7 @@ Item {
 
                     IconFont {
                         anchors.centerIn: parent
-                        font.pointSize: Singletons.Config.smallFontSizePoint
+                        iconFont.font.pointSize: Singletons.Config.smallFontSizePoint
                         color: app.info.properties.mainButtonBorderColor
                         icon: _icons.minus_sign
                     }

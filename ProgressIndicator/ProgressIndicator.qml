@@ -44,7 +44,7 @@ Rectangle {
     property int iconContainerLeftMargin: 0
     property int iconHeight: iconContainerHeight - 20
 
-    property alias progressIcon: statusIcon.text
+    property alias progressIcon: statusIcon.icon
     property alias progressText: statusText.text
     property alias statusText: statusText
 
@@ -76,10 +76,10 @@ Rectangle {
             anchors.centerIn: parent
             icon: ""
             color: "#fff"
-            fontSizeMode: Text.Fit
-            minimumPointSize: Singletons.Config.smallFontSizePoint
-            onTextChanged: {
-                if (text === working) {
+            iconFont.fontSizeMode: Text.Fit
+            iconFont.minimumPointSize: Singletons.Config.smallFontSizePoint
+            onIconChanged: {
+                if (icon === working) {
                     rotator.start();
                 }
                 else {
@@ -87,13 +87,13 @@ Rectangle {
                     statusIcon.rotation = 0;
                 }
                 if (iconContainerBackground !== "transparent") {
-                    if ( text === working ) {
+                    if ( icon === working ) {
                         statusIconContainer.color = workingBackground;
                     }
-                    if ( text === success ) {
+                    if ( icon === success ) {
                         statusIconContainer.color = successBackground;
                     }
-                    if ( text === failed ) {
+                    if ( icon === failed ) {
                         statusIconContainer.color = failedBackground;
                     }
                 }

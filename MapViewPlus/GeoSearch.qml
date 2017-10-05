@@ -200,9 +200,9 @@ Rectangle {
 
                         IconFont {
                             anchors.fill: parent
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            font.pointSize: 9
+                            iconFont.verticalAlignment: Text.AlignVCenter
+                            iconFont.horizontalAlignment: Text.AlignHCenter
+                            iconFont.font.pointSize: 9
                             color: "#fff"
                             icon: _icons.x_cross
                         }
