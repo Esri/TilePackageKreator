@@ -24,7 +24,7 @@ Item {
 
     objectName: "appStudioIcon"
 
-    property bool useIconFont: useIconFont
+    property bool useIconFont: app.useIconFont
     property color color
     property double iconSizeMultiplier: 1.0
     property int iconImageSize: 22
