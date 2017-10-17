@@ -146,7 +146,7 @@ Item {
     function _export(){
         tpkExportPortalRequest.url = currentItemServiceUrl + "/" + exportTilesUrl;
 
-        console.log(tpkExportPortalRequest.url);
+        console.log("-------------------------- url: ", tpkExportPortalRequest.url);
 
         var requestInfo = _createRequestInfo(currentItemLevels, currentItemGeometry);
 
@@ -210,12 +210,42 @@ Item {
 
     function _createRequestInfo(levels, geometry) {
 
+        // http://tiledbasemaps.arcgis.com/arcgis/sdk/rest/index.html#/Export_Tiles/02ss000000p8000000/
+
         var requestInfo = {};
+
         requestInfo["f"] = "json";
-        requestInfo["tilePackage"] = true;
-        requestInfo["exportBy"] = "LevelID";
-        requestInfo["levels"] = levels;
         requestInfo["useToken"] = currentItemUsesToken;
+
+        // tilepackage:
+        // Description: Allows exporting either a tile package or a cache raster data set.
+        // If the value is true output will be in tile package format and if the value is false
+        // Cache Raster data set is returned. The default value is false
+        requestInfo["tilePackage"] = true;
+
+        // exportBy: LevelID | Resolution | Scale
+        // The extent (bounding box) of the tile package or the cache dataset to be exported.
+        // If extent does not include a spatial reference, the extent values are assumed to be
+        // in the spatial reference of the map. The default value is full extent of the tiled map service.
+        requestInfo["exportBy"] = "LevelID";
+
+        // levels:
+        // Specify the tiled service levels to export.
+        // The values should correspond to Level IDs, cache scales or the Resolution as specified in exportBy parameter.
+        // The values can be comma separated values or a range.
+        requestInfo["levels"] = levels;
+
+        // optimizeTilesForSize:  true || false
+        // (Optional) Use this parameter to enable compression of JPEG tiles and reduce the size of
+        // the downloaded tile package or the cache raster data set.
+        // Compressing tiles slightly compromises on the quality of tiles but helps reduce the size of the download.
+        // Try out sample compressions to determine the optimal compression before using this feature.
+        /* requestInfo["optimizeTilesForSize"] = true; */
+
+        // compressionQuality: 0 to 100
+        // When optimizeTilesForSize=true you can specify a compression factor.
+        // The value must be between 0 and 100.
+        /* requestInfo["compressionQuality"] = 90 */
 
         switch(currentItemGeometryType){
             case "esriGeometryEnvelope":
@@ -235,6 +265,7 @@ Item {
         }
 
         console.log("Request: ",JSON.stringify(requestInfo));
+
         return requestInfo;
     }
 

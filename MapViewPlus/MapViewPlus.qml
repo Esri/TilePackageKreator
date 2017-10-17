@@ -420,10 +420,76 @@ Item {
             // drag.urls
         }
         onDropped: {
+
+            var notJSON = false;
+
             if (isJson(drop.urls.toString())) {
                 var path = AppFramework.resolvedPath(AppFramework.resolvedUrl(drop.urls[0]));
                 geoJsonHelper.parseGeometryFromFile(path);
             }
+
+            else {
+
+                var projectionFilePath = "";
+                var coordinateSystem = "";
+                var shapeFilePath = "";
+
+                for (var x = 0; x < drop.urls.length; x++) {
+
+                    var url = drop.urls[x].toString();
+                    var fileType = url.substr(url.length-4, 4);
+
+                    if (fileType === ".prj") {
+                        projectionFilePath = url;
+                    }
+                    if (fileType === ".shp") {
+                        shapeFilePath = url;
+                    }
+                }
+
+                if (shapeFilePath === "" && projectionFilePath === "") {
+                    drawingError(qsTr("Suitable files: .json, .geojson OR .shp and .prj"));
+                    return;
+                }
+
+                if (projectionFilePath === "") {
+                    // projection needed. ask user to verify the shape files coordinate system.
+                    drawingError(qsTr("No .prj (projection) file detected in dropped files. .prj file required."));
+                    return;
+                }
+                else {
+                    fileComponent.path = AppFramework.urlInfo(projectionFilePath).localFile;
+                    fileComponent.open(File.OpenModeReadOnly);
+                    if (fileComponent.isReadable){
+                        var projectionInformation = fileComponent.readLine();
+                        fileComponent.close();
+                        var latLon = "GCS_WGS_1984"
+                        var webMerc = "WGS_1984_Web_Mercator_Auxiliary_Sphere"
+
+                        if (projectionInformation.search(/GCS_WGS_1984/i) > -1){
+                            coordinateSystem = "4326";
+                        }
+                        if (projectionInformation.search(/WGS_1984_Web_Mercator_Auxiliary_Sphere/i) > -1){
+                            coordinateSystem = "3857";
+                        }
+
+                        if (coordinateSystem === ""){
+                            // alert user that this isn't 4326 or 3587. They can proceed but may not be accurate
+                            drawingError("Shapefile projection must be GCS_WGS_1984 (4326) or WGS_1984_Web_Mercator_Auxiliary_Sphere (3857)");
+                            coordinateSystem = "";
+                            return;
+                        }
+
+                        console.log(coordinateSystem);
+                    }
+                }
+
+                if (shapeFilePath !== "") {
+
+                    workerScript.sendMessage({"path": shapeFilePath, "coordinate_system": coordinateSystem});
+                }
+            }
+            //--
         }
     }
 
@@ -1122,6 +1188,12 @@ Item {
 
     //--------------------------------------------------------------------------
 
+    File {
+        id: fileComponent
+    }
+
+    //--------------------------------------------------------------------------
+
     Component {
         id: bookmarkDelegate
 
@@ -1233,6 +1305,24 @@ Item {
                         _loadBookmarks();
                     }
                 }
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
+    WorkerScript {
+        id: workerScript
+        source: "shapeFileToGeoJSON.js"
+
+        onMessage: {
+            if (messageObject.hasOwnProperty("geojson")){
+                geoJsonHelper.parseGeometry(messageObject.geojson);
+                // messageObject.geojson;
+            }
+            if (messageObject.hasOwnProperty("error")){
+                drawingError("Error: %1".arg(messageObject.error.message));
+                // messageObject.error.message
             }
         }
     }
