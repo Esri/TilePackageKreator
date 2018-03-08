@@ -462,7 +462,7 @@ Rectangle {
 
                                         console.log("self:", JSON.stringify(response, undefined, 2));
 
-                                        if (response.isPortal && !(response.supportsHostedServices && response.supportsSceneServices)) {
+                                        if (response.isPortal && !response.supportsHostedServices) {
                                             addPortalError.text = qsTr("Tile Package Kreator requires that Portal for ArcGIS 10.3.1 or later and is configured with a Hosted Server and ArcGIS Data Store");
                                         } else {
                                             portalVersionRequest.send();
