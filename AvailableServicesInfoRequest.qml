@@ -22,9 +22,7 @@ import ArcGIS.AppFramework.Controls 1.0
 import "Portal"
 //------------------------------------------------------------------------------
 
-NetworkRequest {
-
-    // PROPERTIES //////////////////////////////////////////////////////////////
+Item {
 
     id: availableServiceInfoRequest
 
@@ -35,82 +33,97 @@ NetworkRequest {
 
     signal complete(var data)
 
-    responseType: "json"
+    // COMPONENTS //////////////////////////////////////////////////////////////
 
-    method: "GET"
+    NetworkRequest {
 
-    url: serviceUrl + "?f=json" + (portal.signedIn ? "&token=" + portal.token : "")
+        id: serviceRequest
 
-    headers{
-        userAgent: portal.userAgent
-    }
+        responseType: "json"
 
-    // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
+        method: "GET"
 
-    onReadyStateChanged: {
+        url: serviceUrl + "?f=json" + (portal.signedIn ? "&token=" + portal.token : "")
 
-        //console.log("url: ", url);
-        //console.log(readyState);
+        headers {
+            userAgent: portal.userAgent
+        }
 
-        if (readyState === NetworkRequest.ReadyStateComplete) {
+        // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////
+
+        onReadyStateChanged: {
 
             //console.log("url: ", url);
-            //console.log(responseText);
+            //console.log(readyState);
 
-            if(status === 200){
-                try{
+            if (readyState === NetworkRequest.ReadyStateComplete) {
 
-                    var serviceJson = JSON.parse(responseText);
+                //console.log("url: ", url);
+                //console.log(responseText);
 
-                    if(serviceJson.hasOwnProperty("error")){
-                        if(serviceJson.error.hasOwnProperty("message")){
-                            if(serviceJson.error.message === "Invalid Token"){
-                                /*
-                                If token is invalid, the service may be unsecured so try again without token.
+                if (status === 200) {
+                    try {
 
-                                If a token is required for a service, the message would be "Token Required"
-                                Therefore to switch to a unsecured check first paradigm, just swap the message check in
-                                this if clause to "Token Required" and then add the token to the url in this
-                                if clause and remove token from the object url parameter ~ line 26,
-                                set useToken to be false ~ line 18, and set useToken = true in this if clause.
-                                */
-                                availableServiceInfoRequest.useToken = false;
-                                availableServiceInfoRequest.url = serviceUrl + "?f=json";
-                                availableServiceInfoRequest.send();
+                        var serviceJson = JSON.parse(responseText);
 
+                        if (serviceJson.hasOwnProperty("error")) {
+                            if (serviceJson.error.hasOwnProperty("message")) {
+                                if (serviceJson.error.message === "Invalid Token") {
+                                    /*
+                                    If token is invalid, the service may be unsecured so try again without token.
+
+                                    If a token is required for a service, the message would be "Token Required"
+                                    Therefore to switch to a unsecured check first paradigm, just swap the message check in
+                                    this if clause to "Token Required" and then add the token to the url in this
+                                    if clause and remove token from the object url parameter ~ line 26,
+                                    set useToken to be false ~ line 18, and set useToken = true in this if clause.
+                                    */
+                                    availableServiceInfoRequest.useToken = false;
+                                    serviceRequest.url = serviceUrl + "?f=json";
+                                    availableServiceInfoRequest.sendRequest(); //.send();
+
+                                }
+                                else {
+                                    // BAD: 200 Status, Good Json, But Json has error property
+                                    availableServiceInfoRequest.complete({
+                                                    "tileIndex": tileIndex,
+                                                    "keep": false,
+                                                    "serviceInfo": null
+                                                    });
+                                }
                             }
-                            else{
-                                // BAD: 200 Status, Good Json, But Json has error property
+                        }
+                        else {
+                            if (_exportTilesAllowed(serviceJson)) {
+                                // GOOD: 200 Status, Good Json and I allow exporting tiles.
+                                availableServiceInfoRequest.complete({
+                                                "tileIndex": tileIndex,
+                                                "keep": true,
+                                                "serviceInfo": responseText,
+                                                "useToken": useToken
+                                            });
+                            }
+                            else {
+                                // BAD: 200 Status, Good Json EXPORTING NOT ALLOWED.
                                 availableServiceInfoRequest.complete({
                                                 "tileIndex": tileIndex,
                                                 "keep": false,
                                                 "serviceInfo": null
-                                                });
+                                            });
                             }
                         }
                     }
-                    else{
-                        if(_exportTilesAllowed(serviceJson)){
-                            // GOOD: 200 Status, Good Json and I allow exporting tiles.
-                            availableServiceInfoRequest.complete({
-                                            "tileIndex": tileIndex,
-                                            "keep": true,
-                                            "serviceInfo": responseText,
-                                            "useToken": useToken
-                                        });
-                        }
-                        else{
-                            // BAD: 200 Status, Good Json EXPORTING NOT ALLOWED.
-                            availableServiceInfoRequest.complete({
-                                            "tileIndex": tileIndex,
-                                            "keep": false,
-                                            "serviceInfo": null
-                                        });
-                        }
+                    catch(e) {
+                        // BAD: 200 Status, Bad Json or didn't return Json
+                        availableServiceInfoRequest.complete({
+                                        "tileIndex": tileIndex,
+                                        "keep": false,
+                                        "serviceInfo": null
+                                    });
                     }
                 }
-                catch(e){
-                    // BAD: 200 Status, Bad Json or didn't return Json
+                else {
+                    // BAD: Status other than 200 so totally bad.
                     availableServiceInfoRequest.complete({
                                     "tileIndex": tileIndex,
                                     "keep": false,
@@ -118,28 +131,42 @@ NetworkRequest {
                                 });
                 }
             }
-            else{
-                // BAD: Status other than 200 so totally bad.
-                availableServiceInfoRequest.complete({
-                                "tileIndex": tileIndex,
-                                "keep": false,
-                                "serviceInfo": null
-                            });
-            }
+        }
+    }
+
+    Timer {
+        id: timeoutTimer
+        interval: 10000
+        running: false
+        repeat: false
+        onTriggered: {
+            availableServiceInfoRequest.complete({
+                            "tileIndex": tileIndex,
+                            "keep": false,
+                            "serviceInfo": null
+                        });
+            serviceRequest.abort();
         }
     }
 
     // METHODS /////////////////////////////////////////////////////////////////
+
+    function sendRequest(){
+        serviceRequest.send();
+        timeoutTimer.start();
+    }
 
     function _exportTilesAllowed(serviceInfo) {
 
         if (serviceInfo.hasOwnProperty("exportTilesAllowed")) {
             if (serviceInfo.exportTilesAllowed === false) {
                 return false;
-            } else {
+            }
+            else {
                 return true;
             }
-        } else {
+        }
+        else {
             return false;
         }
 
