@@ -79,7 +79,7 @@ Item {
 
                 //console.log(JSON.stringify(result));
 
-                try{
+                try {
                     if (!result.description) {
                         result.description = "";
                     }
@@ -98,19 +98,19 @@ Item {
                         var thisRequest = component.createObject(parent, { portal:availableServicesModel.portal, tileIndex: tileServiceCount, serviceUrl: result.url } );
                         thisRequest.complete.connect(function(serviceData){
 
-                            if(serviceData.keep === true){
+                            if (serviceData.keep === true) {
                                 servicesListModel.get(serviceData.tileIndex).serviceInfo = JSON.parse(serviceData.serviceInfo);
-                                if(!serviceData.useToken){
+                                if (!serviceData.useToken) {
                                     servicesListModel.get(serviceData.tileIndex).useTokenToAccess = false;
                                 }
                             }
-                            else{
+                            else {
                                 servicesListModel.tilesToRemove.push(serviceData.tileIndex);
                             }
 
                             availableServicesModel.tileServiceSum -= serviceData.tileIndex;
 
-                            if(tileServiceSum === 0){
+                            if (tileServiceSum === 0) {
                                 servicesListModel.removeBadTiles();
                             }
 
@@ -126,12 +126,12 @@ Item {
 
                     servicesListModel.append(result);
                 }
-                catch(error){
+                catch(error) {
                     console.log(error);
                     appMetrics.reportError(error)
                 }
 
-            })
+            });
 
             if (response.nextStart > 0) {
                 search(response.nextStart);
@@ -140,12 +140,12 @@ Item {
 
                 availableServicesModel.servicesCountReady(servicesListModel.count);
 
-                if(servicesListModel.count > 0){
-                    for(var i = 0; i < servicesListModel.count; i++){
-                        requests[i].send();
+                if (servicesListModel.count > 0) {
+                    for (var i = 0; i < servicesListModel.count; i++) {
+                        requests[i].sendRequest();
                     }
                 }
-                else{
+                else {
                     _getUserSavedTileServices();
                     //modelComplete();
                 }
