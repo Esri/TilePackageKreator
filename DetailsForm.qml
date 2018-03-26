@@ -36,7 +36,7 @@ Rectangle {
 
     id: tpkDetailsForm
 
-    property int maxLevels: 19
+    property int maxLevels: 21
     property string currentSharing: ""
     property string currentExportTitle: ""
     property var currentTileService: null

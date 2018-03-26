@@ -58,6 +58,7 @@ Item {
     StackView.onActivating: {
         mainView.appToolBar.enabled = true;
         mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = true;
         mainView.appToolBar.backButtonEnabled = true;
         mainView.appToolBar.backButtonVisible = true;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.browseOrgTilePackages

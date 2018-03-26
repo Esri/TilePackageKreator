@@ -19,6 +19,7 @@ import QtQuick 2.7
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
 import "Portal"
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 App {
@@ -40,6 +41,11 @@ App {
     property string notoItalic: _notoItalic.status == FontLoader.Ready ? _notoItalic.name : "Noto Sans"
     property string notoBoldItalic: _notoBoldItalic.status == FontLoader.Ready ? _notoBoldItalic.name : "Noto Sans"
 
+    property bool allowAllLevels: app.settings.boolValue(Singletons.Constants.kAllowAllZoomLevels, false)
+    property bool allowNonWebMercatorServices: app.settings.boolValue(Singletons.Constants.kAllowNonWebMercatorServices, false)
+    property bool timeoutNonResponsiveServices: app.settings.boolValue(Singletons.Constants.kTimeOutUnresponsiveServices, true)
+    property int timeoutValue: app.settings.numberValue(Singletons.Constants.kTimeOutValue, 7)
+
     Component.onCompleted: {
         if (!appDatabase.exists()) {
             appDatabase.createDatabase();
@@ -53,6 +59,22 @@ App {
             calledFromAnotherApp = true;
             incomingUrl = url;
         }
+    }
+
+    onAllowAllLevelsChanged: {
+        app.settings.setValue(Singletons.Constants.kAllowAllZoomLevels, allowAllLevels);
+    }
+
+    onAllowNonWebMercatorServicesChanged: {
+        app.settings.setValue(Singletons.Constants.kAllowNonWebMercatorServices, allowNonWebMercatorServices);
+    }
+
+    onTimeoutNonResponsiveServicesChanged: {
+        app.settings.setValue(Singletons.Constants.kTimeOutUnresponsiveServices, timeoutNonResponsiveServices);
+    }
+
+    onTimeoutValueChanged: {
+        app.settings.setValue(Singletons.Constants.kTimeOutValue, timeoutValue);
     }
 
     // COMPONENTS //////////////////////////////////////////////////////////////
@@ -121,6 +143,7 @@ App {
         property string question: useIconFont ? "u" : "images/question.svg"
         property string redraw_last_path: useIconFont ? "d" : "images/redraw-last.svg"
         property string sad_face: useIconFont ? "w" : "images/sad.svg"
+        property string settings: useIconFont ? "G" : "images/settings.svg"
         property string sign_out: useIconFont ? "c" : "images/sign-out.svg"
 //        property string spinner: "\ue982"
         property string spinner2: useIconFont ? "i" : "images/spinner2.svg"

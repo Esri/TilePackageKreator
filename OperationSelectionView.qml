@@ -39,6 +39,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = false;
         mainView.appToolBar.backButtonVisible = false;
         mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = true;
     }
 
     // UI //////////////////////////////////////////////////////////////////////

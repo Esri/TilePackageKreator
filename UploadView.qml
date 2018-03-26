@@ -67,6 +67,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false
         mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false
         mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = true;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.uploadTilePackage
     }
 

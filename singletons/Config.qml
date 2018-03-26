@@ -33,6 +33,7 @@ QtObject {
         "tileItemBorderColor": "#eeeeee"
     }
 
+    property bool rtl: false
 
     property string mainButtonBackgroundColor: "#196fa6"
     //property string mainButtonBorderColor: "#007ac2"

@@ -63,7 +63,9 @@ Item {
 
         Map {
             id: baseMap
+
             plugin: Plugin {
+                id: mapPlugin
                 preferred: ["AppStudio"]
 
                 PluginParameter {
@@ -79,6 +81,12 @@ Item {
                 PluginParameter {
                     name: "ArcGIS.mapping.mapTypes.mapSources"
                     value: internal.mapSources
+                }
+
+                PluginParameter {
+                    id: pluginMaxZoomLevel
+                    name: "ArcGIS.mapping.maximumZoomLevel"
+                    value: exportDetails.maxLevels
                 }
             }
 

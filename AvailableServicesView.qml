@@ -105,6 +105,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false;
         mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false;
         mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = true;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage
     }
 
@@ -618,7 +619,7 @@ Item {
                                             horizontalAlignment: Text.AlignHCenter
                                             font.pointSize: Singletons.Config.xSmallFontSizePoint
                                             font.family: notoRegular
-                                            text: spatialReference
+                                            text: spatialReference || "N/A"
                                             color: isWebMercator ? "#007ac2" : "red"
                                             elide: Text.ElideRight
 
@@ -763,6 +764,11 @@ Item {
 
         property int menuItemHeight: sf(35)
         property var currentInfo: asm.servicesListModel.get(servicesGridView.currentIndex)
+        property bool userAddedService: (contextMenu.currentInfo !== undefined && contextMenu.currentInfo !== null)
+                                        ? contextMenu.currentInfo.userAdded !== undefined
+                                          ? (contextMenu.currentInfo.userAdded === true ? true : false)
+                                          : false
+                                        : false
 
         background: Rectangle {
             color: "#fff"
@@ -819,8 +825,12 @@ Item {
         Button {
             height: visible ? contextMenu.menuItemHeight : 0
             width: parent.width
-            visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
-            enabled: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
+            visible: (contextMenu.currentInfo !== undefined && contextMenu.currentInfo !== null)
+                     ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal
+                     : false
+            enabled: (contextMenu.currentInfo !== undefined && contextMenu.currentInfo !== null)
+                     ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal
+                     : false
             background: Rectangle {
                 color: parent.hovered ? Singletons.Colors.subtleBackground : "#fff"
             }
@@ -844,7 +854,9 @@ Item {
             height: sf(1)
             width: parent.width
             color: Singletons.Colors.subtleBackground
-            visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal : false
+            visible: (contextMenu.currentInfo !== undefined && contextMenu.currentInfo !== null)
+                     ? contextMenu.currentInfo.isArcgisTileService || portal.isPortal
+                     : false
         }
 
         Button {
@@ -856,7 +868,9 @@ Item {
             contentItem: Text {
                 anchors.fill: parent
                 anchors.leftMargin: sf(10)
-                text: contextMenu.currentInfo !== undefined ? ( contextMenu.currentInfo.isArcgisTileService ? Singletons.Strings.viewRestService : Singletons.Strings.viewOnlineService) : ""
+                text: (contextMenu.currentInfo !== undefined && contextMenu.currentInfo !== null)
+                      ? ( contextMenu.currentInfo.isArcgisTileService ? Singletons.Strings.viewRestService : Singletons.Strings.viewOnlineService)
+                      : ""
                 color: Singletons.Colors.boldUIElementFontColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -907,44 +921,44 @@ Item {
             Accessible.description: Singletons.Strings.createPItemDesc
         }
 
-//        Rectangle {
-//            height: sf(1)
-//            width: parent.width
-//            color: Singletons.Colors.subtleBackground
-//            visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.userAdded !== undefined ? (contextMenu.currentInfo.userAdded === true ? true : false) : false : false
-//        }
+        Rectangle {
+            height: sf(1)
+            width: parent.width
+            color: Singletons.Colors.subtleBackground
+            visible: contextMenu.userAddedService
+        }
 
-//        Button {
-//            height: contextMenu.menuItemHeight
-//            visible: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.userAdded !== undefined ? (contextMenu.currentInfo.userAdded === true ? true : false) : false : false
-//            enabled: contextMenu.currentInfo !== undefined ? contextMenu.currentInfo.userAdded !== undefined ? (contextMenu.currentInfo.userAdded === true ? true : false) : false : false
-//            width: parent.width
-//            background: Rectangle {
-//                color: parent.hovered ? Singletons.Colors.subtleBackground : "#fff"
-//            }
-//            contentItem: Text {
-//                anchors.fill: parent
-//                anchors.leftMargin: sf(10)
-//                text: qsTr("Delete tile service")
-//                color: Singletons.Colors.boldUIElementFontColor
-//                verticalAlignment: Text.AlignVCenter
-//            }
-//            onClicked: {
-//                try {
-//                    var sql = "DELETE from 'other_tile_services' WHERE special_id = '%1'".arg(contextMenu.currentInfo.tpkId);
-//                    appDatabase.write(sql);
-//                }
-//                catch(e){
-//                    console.log(e);
-//                }
-//                finally {
-//                    //asm.servicesListModel.remove(servicesGridView.currentIndex);
-//                }
-//            }
-//            Accessible.role: Accessible.MenuItem
-//            Accessible.name: text
-//            Accessible.description: Singletons.Strings.createPItemDesc
-//        }
+        Button {
+            height: contextMenu.userAddedService ? contextMenu.menuItemHeight : 0
+            visible: contextMenu.userAddedService
+            enabled: contextMenu.userAddedService
+            width: parent.width
+            background: Rectangle {
+                color: parent.hovered ? Singletons.Colors.subtleBackground : "#fff"
+            }
+            contentItem: Text {
+                anchors.fill: parent
+                anchors.leftMargin: sf(10)
+                text: Singletons.Strings.deleteTileService
+                color: Singletons.Colors.boldUIElementFontColor
+                verticalAlignment: Text.AlignVCenter
+            }
+            onClicked: {
+                try {
+                    var sql = "DELETE from 'other_tile_services' WHERE special_id = '%1'".arg(contextMenu.currentInfo.tpkId);
+                    appDatabase.write(sql);
+                    asm.servicesListModel.remove(servicesGridView.currentIndex);
+                    servicesGridView.currentIndex = -1;
+                    contextMenu.close();
+                }
+                catch(e){
+                    console.log(e);
+                }
+            }
+            Accessible.role: Accessible.MenuItem
+            Accessible.name: text
+            Accessible.description: Singletons.Strings.deleteTileService
+        }
 
         Accessible.role: Accessible.PopupMenu
         Accessible.name: Singletons.Strings.contextMenuDesc

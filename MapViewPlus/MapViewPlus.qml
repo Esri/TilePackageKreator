@@ -314,6 +314,7 @@ Item {
                 }
 
                 onClicked: {
+                    console.log(map.maximumZoomLevel)
                     if(map.zoomLevel < map.maximumZoomLevel){
                         map.zoomLevel = Math.floor(map.zoomLevel) + 1;
                     }

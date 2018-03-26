@@ -60,7 +60,9 @@ Item {
             if (serviceInfo.hasOwnProperty("tileInfo")) {
                 if (serviceInfo.tileInfo.hasOwnProperty("lods")) {
                     var availableLevels = (parseInt(serviceInfo.tileInfo.lods.length,10) - 1);
-                    exportDetails.maxLevels = availableLevels > 19 ? 19 : availableLevels;
+                    exportDetails.maxLevels = app.allowAllLevels
+                            ? availableLevels
+                            : availableLevels > 21 ? 21 : availableLevels;
                     mapViewPlus.map.maximumZoomLevel = exportDetails.maxLevels;
                 }
             }
@@ -82,6 +84,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = true;
         mainView.appToolBar.backButtonVisible = true;
         mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = true;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage
     }
 
@@ -215,7 +218,9 @@ Item {
                                     if (serviceInfo.hasOwnProperty("tileInfo")) {
                                         if (serviceInfo.tileInfo.hasOwnProperty("lods")) {
                                             var availableLevels = (parseInt(serviceInfo.tileInfo.lods.length,10) - 1);
-                                            exportDetails.maxLevels = availableLevels > 19 ? 19 : availableLevels;
+                                            exportDetails.maxLevels = app.allowAllLevels
+                                                    ? availableLevels
+                                                    : availableLevels > 21 ? 21 : availableLevels;
                                             mapViewPlus.map.maximumZoomLevel = exportDetails.maxLevels;
                                         }
                                     }
