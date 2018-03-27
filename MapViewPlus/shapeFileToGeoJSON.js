@@ -27,6 +27,9 @@ WorkerScript.onMessage = function(shapeFile) {
 
 }
 
+var partsArray = [];
+var pointsArray = [];
+
 var shapeTypes = [];
 shapeTypes[0] = {"esri": "Null Shape", "geojson": null};
 shapeTypes[1] = {"esri": "Point", "geojson": "Point"};
@@ -124,6 +127,8 @@ function getShapeType(val){
 
 function resetFeatures(){
     geoJson.features = [];
+    partsArray = [];
+    pointsArray = [];
 }
 
 function shapefileByteArrayToGeoJson(byteArray) {
@@ -176,9 +181,9 @@ function shapefileByteArrayToGeoJson(byteArray) {
             "coordinates": []
         }
 
-        if (shapeValue === 5){
-            geoJsonFeature["geometry"]["coordinates"][0] = [];
-        }
+//        if (shapeValue === 5){
+//            geoJsonFeature["geometry"]["coordinates"][0] = [];
+//        }
 
         var boundingBoxXMin = shpDataArray.getFloat64(shpHeader.xmin.position, shpHeader.xmin.bigEndian);
         geoJsonFeature["bbox"][0] = boundingBoxXMin;
@@ -202,13 +207,15 @@ function shapefileByteArrayToGeoJson(byteArray) {
         geoJsonFeature["shapefile_related"]["box"] = [shpDataArray.getFloat64(112, true), shpDataArray.getFloat64(120, true), shpDataArray.getFloat64(128, true), shpDataArray.getFloat64(136, true)];
         geoJsonFeature["shapefile_related"]["numParts"] = shpDataArray.getInt32(144, true);
         geoJsonFeature["shapefile_related"]["numPoints"] = shpDataArray.getInt32(148, true);
-        geoJsonFeature["shapefile_related"]["Parts"] = shpDataArray.getInt32(152, true);
-        geoJsonFeature["shapefile_related"]["X"] = (152 + 4 * geoJsonFeature["numParts"]);
+//        geoJsonFeature["shapefile_related"]["Parts"] = shpDataArray.getInt32(152, true);
+//        geoJsonFeature["shapefile_related"]["X"] = (152 + 4 * geoJsonFeature["shapefile_related"]["numParts"]);
 
-        // can only handle one feature currenly --------------------------------
-        if (geoJsonFeature["shapefile_related"]["numParts"] > 1) {
+        console.log(JSON.stringify(geoJsonFeature));
+
+        // over 100 parts? then not gonna process currently -----------------
+        if (geoJsonFeature["shapefile_related"]["numParts"] > 100) {
             try {
-                throw new Error("This tool currently only supports one polygon, line, or multipath feature per shapefile.");
+                throw new Error("This tool only supports shapefiles with less than 100 parts.");
             }
             catch(e) {
                 WorkerScript.sendMessage({"error": e});
@@ -218,46 +225,81 @@ function shapefileByteArrayToGeoJson(byteArray) {
             }
         }
 
-        // over 10000 points? then not gonna process currently -----------------
-        if (geoJsonFeature["shapefile_related"]["numParts"] > 10000) {
+        if (geoJsonFeature["shapefile_related"]["numParts"] > 0) {
+
             try {
-                throw new Error("This tool only supports features with 10000 points on less.");
+
+                var cursor = 152, x = 0;
+
+                for (x = 0; x < geoJsonFeature["shapefile_related"]["numParts"]; x++) {
+                    var pointLocation = shpDataArray.getInt32(cursor, true);
+                    partsArray.push(pointLocation);
+                    cursor += 4;
+                }
+
+                console.log("partsArray.length: ", partsArray.length);
+
+                var nP = geoJsonFeature["shapefile_related"]["numPoints"] * 2;
+
+                for (x = 0; x < nP; x++) {
+                    var point = shpDataArray.getFloat64(cursor, true);
+                    pointsArray.push(point);
+                    cursor += 8;
+                }
+
+                console.log("pointsArray.length: ", pointsArray.length);
+
+                for (x = 0; x < partsArray.length; x++) {
+
+                    if (shapeValue === 5) {
+                       geoJsonFeature["geometry"].coordinates[x] = [];
+                    }
+
+                    var pointStart = partsArray[x] * 2; // e.g. [0,320,333]
+
+                    console.log("--------------------- x: ", x)
+                    console.log("pointStart: ", pointStart);
+
+                    var lastPoint = (x === partsArray.length - 1) ? pointsArray.length : partsArray[x+1] * 2;
+                    console.log("lastPoint: ", lastPoint)
+
+                    var numberOfPoints = lastPoint - pointStart;
+                    console.log("numberOfPoints: ", numberOfPoints)
+
+                    var coordinate = [];
+
+                    for (var pointCounter = pointStart; pointCounter < lastPoint; pointCounter++) {
+                        // 0 : 0 --> pointsArray[0] to pointsArray[319]
+                        // 1 : pointsArray[320] ->
+                        console.log("step: %1, pointCounter: %2, coord:%3, cLength:%4".arg(x).arg(pointCounter).arg(pointsArray[pointCounter]).arg(geoJsonFeature["geometry"].coordinates[x].length));
+
+                        coordinate.push(pointsArray[pointCounter]);
+
+                        if (coordinate.length === 2) {
+
+                            if (shapeValue === 5) {
+                                geoJsonFeature["geometry"].coordinates[x].push(coordinate);
+                            }
+                            else if (shapeValue === 3) {
+                                geoJsonFeature["geometry"].coordinates.push(coordinate);
+                            }
+                            else {
+
+                            }
+                            coordinate = [];
+                        }
+                    }
+                }
             }
             catch(e) {
                 WorkerScript.sendMessage({"error": e});
             }
-            finally {
-                return;
-            }
         }
-
-        // You've passed all the checks, now cursor through the data -----------
-        var pointShapeType = shpDataArray.getFloat64(156, true);
-        console.log(pointShapeType);
-
-        var cursor = 156;
-        var points = geoJsonFeature["shapefile_related"]["numPoints"];
-
-        for (var i = 0; i < points; i++) {
-            var pointX = shpDataArray.getFloat64(cursor, true);
-            cursor += 8;
-            var pointY = shpDataArray.getFloat64(cursor, true);
-            if(shapeValue === 5){
-                geoJsonFeature["geometry"].coordinates[0].push([pointX,pointY]);
-            }
-            else if(shapeValue === 3){
-                geoJsonFeature["geometry"].coordinates.push([pointX,pointY]);
-            }
-            else{
-
-            }
-
-            cursor +=8;
-        }
-
     }
 
     geoJson.features.push(geoJsonFeature);
+
+    console.log(JSON.stringify(geoJson));
 
     WorkerScript.sendMessage({"geojson": geoJson});
 
