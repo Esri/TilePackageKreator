@@ -35,50 +35,77 @@ Item{
     property int inSR
     property int outSR
 
+    property var geojson: null
+
+    property int currentFeature: 0
+    property int numberOfFeatures: 0
+
     signal success(var geometry)
     signal error(string message)
 
     // METHODS /////////////////////////////////////////////////////////////////
 
+    function setGeoJson(json) {
+        geojson = json;
+        numberOfFeatures = geojson.features.length;
+    }
+
     function parseGeometryFromFile(filepath){
 
-        if(geoJsonFileFolder.fileExists(filepath)){
-            try{
+        if (geoJsonFileFolder.fileExists(filepath)) {
+            try {
                 var json = geoJsonFileFolder.readJsonFile(filepath)
-                _normalize(json);
+                setGeoJson(json);
+                getFeature(0);
             }
-            catch(error){
+            catch(error) {
                 error("There was an error reading the JSON file.");
             }
         }
-        else{
+        else {
             error("JSON file doesn't exist");
         }
     }
 
     //--------------------------------------------------------------------------
 
-    function parseGeometry(json){
-        _normalize(json);
+    function getFeature(feature) {
+        if (geojson === null) {
+            error("No geojson data.");
+            return;
+        }
+
+        if (feature === undefined || feature < 0 || feature > geojson.features.length){
+            feature = 0;
+        }
+        _normalize(feature);
     }
 
     //--------------------------------------------------------------------------
+    function _normalize(feature){
 
-    function _normalize(json){
+        if (geojson === null) {
+            error("No geojson data.");
+            return;
+        }
+
+        currentFeature = feature;
 
         var features;
         var isWebMercator = false;
 
-        if(json.hasOwnProperty("features")){
+        if (geojson.hasOwnProperty("features")) {
 
-            if(json.features.length > 0){
-                features = json.features[0];
+            if (feature === undefined || feature < 0 || feature > geojson.features.length){
+                feature = 0;
             }
+
+            features = geojson.features[feature];
 
             // Esri geojson has crs property -----------------------------------
 
-            if(json.hasOwnProperty("crs")){
-                var sr = json.crs.properties.name;
+            if(geojson.hasOwnProperty("crs")){
+                var sr = geojson.crs.properties.name;
                 if(sr.indexOf("3857") > -1 || sr.indexOf("102100") > -1){
                     isWebMercator = true;
                     //returnGeometry.spatialReference = 3857;
@@ -94,8 +121,8 @@ Item{
 
             // Esri json has spatialReference property -------------------------
 
-            if(json.hasOwnProperty("spatialReference")){
-                if(json.spatialReference.wkid === 102100 || json.spatialReference.wkid === 3857 || json.spatialReference.latestWkid === 3857){
+            if(geojson.hasOwnProperty("spatialReference")){
+                if(geojson.spatialReference.wkid === 102100 || geojson.spatialReference.wkid === 3857 || geojson.spatialReference.latestWkid === 3857){
                     //returnGeometry.spatialReference = 3857;
                     isWebMercator = true;
                 }
@@ -112,7 +139,7 @@ Item{
                 }
             }
 
-            if(json.hasOwnProperty("geometryType")){
+            if(geojson.hasOwnProperty("geometryType")){
                 returnGeometry.type = json.geometryType;
             }
 
@@ -160,7 +187,6 @@ Item{
         else{
             error("JSON is missing 'features' attribute");
         }
-
     }
 
     //--------------------------------------------------------------------------
@@ -233,7 +259,7 @@ Item{
 
     //--------------------------------------------------------------------------
 
-    function saveGeojsonToFile(geometry,name){
+    function saveGeoJsonToFile(geometry,name){
         fileDialog.geoJsonToExport = geometry;
         fileDialog.geoJsonName = name.replace(/[^a-zA-Z0-9]/g,"_").toLocaleLowerCase();
         fileDialog.open();

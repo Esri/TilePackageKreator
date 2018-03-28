@@ -1,4 +1,4 @@
-/* Copyright 2017 Esri
+/* Copyright 2018 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,6 +133,7 @@ App {
         property string draw_path: useIconFont ? "y" : "images/draw-path.svg"
         property string draw_polygon: useIconFont ? "D" : "images/draw-polygon.svg"
         property string draw_tool: useIconFont ? "F" : "images/draw-tool.svg"
+        property string geojson: useIconFont ? "H" : "images/geojson.svg"
         property string happy_face: useIconFont ? "x" : "images/happy.svg"
         property string history: useIconFont ? "f" : "images/history.svg"
         property string info: useIconFont ? "r" : "images/info.svg"

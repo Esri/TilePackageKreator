@@ -28,6 +28,7 @@ import ArcGIS.AppFramework.Sql 1.0
 import "../Portal"
 import "../singletons" as Singletons
 import "../Controls" as Controls
+import "../ProgressIndicator"
 import "../"
 //------------------------------------------------------------------------------
 
@@ -145,6 +146,33 @@ Item {
 
     // UI //////////////////////////////////////////////////////////////////////
 
+    Rectangle {
+        id: busyIndicator
+        color:"transparent"
+        anchors.fill: parent
+        visible: false
+        z: 10000000
+
+        Rectangle {
+            anchors.fill:parent
+            opacity: .9
+            color: Singletons.Colors.subtleBackground
+        }
+
+        ProgressIndicator {
+            id: workerScriptProgressIndicator
+            statusTextFontSize: Singletons.Config.smallFontSizePoint
+            statusTextMinimumFontSize: 6
+            statusTextLeftMargin: sf(10)
+            iconContainerLeftMargin: sf(5)
+            iconContainerHeight: this.containerHeight - sf(5)
+            width: parent.width * .8
+            anchors.centerIn: parent
+        }
+    }
+
+    // -------------------------------------------------------------------------
+
     Item {
         id: topMenu
         width: ( parent.width < sf(1000) ) ? parent.width - sf(20) : sf(980)
@@ -206,8 +234,8 @@ Item {
             }
 
             Item {
-                Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.preferredWidth: parent.width * .56
 
                 MapDrawingMenu {
                     id: drawingMenu
@@ -216,6 +244,7 @@ Item {
                     drawingExists: userDrawnExtent
                     historyAvailable: mapViewPlus.historyAvailable && (previewMap.map !== null ? previewMap.map.mapItems.length <= 0 : false)
                     bookmarksAvailable: userBookmarks.count > 0
+                    geoJsonInMemory: geoJsonHelper.geojson !== null
 
                     onDrawingRequest: {
                         if (g === Singletons.Constants.kRedraw){
@@ -230,6 +259,9 @@ Item {
 
                     onBookmarksRequested: {
                         bookmarksPopup.open();
+                    }
+                    onGeoJsonFeatureRequested: {
+                        geoJsonPopup.open();
                     }
                 }
 
@@ -267,6 +299,113 @@ Item {
                 spacing: sf(2)
                 delegate: bookmarkDelegate
                 clip: true
+            }
+        }
+
+        Popup {
+            id: geoJsonPopup
+            width: sf(250)
+            height: sf(200)
+            x: topMenu.width - width - topMenu.height
+            y: topMenu.height
+
+            background: Rectangle {
+                color: "#fff"
+                border.color: Singletons.Colors.mediumGray
+                border.width: sf(1)
+            }
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: sf(5)
+
+                Text {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: sf(40)
+                    text: qsTr("Currently viewing feature %1 of %2".arg(geoJsonHelper.currentFeature).arg(geoJsonHelper.geojson.features.length))
+                }
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: sf(50)
+                    RowLayout {
+                        anchors.fill: parent
+                        spacing: sf(5)
+                        Button {
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: height
+                            text: "<"
+                            onClicked: {
+
+                                var featureToGet = geoJsonHelper.currentFeature === 0
+                                        ? geoJsonHelper.numberOfFeatures - 1
+                                        : geoJsonHelper.currentFeature - 1;
+                                console.log(featureToGet)
+                                geoJsonHelper.getFeature(featureToGet)
+                            }
+                        }
+                        Text {
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            anchors.centerIn: parent
+                            text: geoJsonHelper.currentFeature
+                        }
+                        Button {
+                            Layout.fillHeight: true
+                            Layout.preferredWidth: height
+                            text: ">"
+                            onClicked: {
+                                var featureToGet = geoJsonHelper.currentFeature === geoJsonHelper.numberOfFeatures - 1
+                                        ? 0
+                                        : geoJsonHelper.currentFeature + 1;
+                                console.log(featureToGet)
+                                geoJsonHelper.getFeature(featureToGet)
+                            }
+                        }
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: sf(30)
+                    TextField {
+                        id: featureToUse
+                        placeholderText: "Enter a specific feature to use"
+                        anchors.fill: parnet
+                        onAccepted: {
+                            geoJsonHelper.getFeature(parseInt(text, 10));
+                        }
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: sf(30)
+                    Button {
+                        anchors.fill: parent
+                        text: "Save geojson"
+                        onClicked: {
+                            geoJsonHelper.saveGeoJsonToFile(geoJsonHelper.geojson, "geojson%1".arg(Date.now()))
+                            //geoJsonHelper.saveGeojsonToFile()
+                        }
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: sf(30)
+                    Button {
+                        anchors.fill: parent
+                        text: "Clear geojson"
+                        onClicked: {
+                            geoJsonHelper.geojson = null;
+                            geoJsonPopup.close();
+                        }
+                    }
+
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                }
             }
         }
     }
@@ -411,6 +550,8 @@ Item {
            z: previewMap.z + 3
     }
 
+
+
     //--------------------------------------------------------------------------
 
     DropArea {
@@ -486,7 +627,10 @@ Item {
                 }
 
                 if (shapeFilePath !== "") {
-
+                    busyIndicator.visible = true;
+                    workerScriptProgressIndicator.show();
+                    workerScriptProgressIndicator.progressIcon = workerScriptProgressIndicator.working;
+                    workerScriptProgressIndicator.progressText = qsTr("Reading shapefile..");
                     workerScript.sendMessage({"path": shapeFilePath, "coordinate_system": coordinateSystem});
                 }
             }
@@ -874,7 +1018,9 @@ Item {
                 if (AppFramework.clipboard.dataAvailable) {
                     try {
                         var json = JSON.parse(AppFramework.clipboard.text)
-                        geoJsonHelper.parseGeometry(json);
+                        //geoJsonHelper.parseGeometry(json);
+                        geoJsonHelper.setGeoJson(json);
+                        geoJsonHelper.getFeature(0);
                     }
                     catch(e) {
                         console.log("not json")
@@ -1277,7 +1423,7 @@ Item {
                     }
 
                     onClicked: {
-                        geoJsonHelper.saveGeojsonToFile(JSON.parse(geojson), name);
+                        geoJsonHelper.saveGeoJsonToFile(JSON.parse(geojson), name);
                     }
                 }
                 Button {
@@ -1318,12 +1464,18 @@ Item {
 
         onMessage: {
             if (messageObject.hasOwnProperty("geojson")){
-                geoJsonHelper.parseGeometry(messageObject.geojson);
-                // messageObject.geojson;
+                workerScriptProgressIndicator.progressIcon = workerScriptProgressIndicator.success
+                workerScriptProgressIndicator.progressText = qsTr("Shapefile successfully read and converted to geojson.")
+                geoJsonHelper.setGeoJson(messageObject.geojson);
+                busyIndicator.visible = false;
+                geoJsonHelper.getFeature(0);
             }
             if (messageObject.hasOwnProperty("error")){
                 drawingError("Error: %1".arg(messageObject.error.message));
                 // messageObject.error.message
+            }
+            if (messageObject.hasOwnProperty("status")){
+                workerScriptProgressIndicator.progressText = messageObject.status;
             }
         }
     }

@@ -41,9 +41,11 @@ Rectangle{
     property string activeGeometryType: ""
     property bool historyAvailable: false
     property bool bookmarksAvailable: false
+    property bool geoJsonInMemory: false
 
     signal drawingRequest(string g)
     signal bookmarksRequested()
+    signal geoJsonFeatureRequested()
 
     // UI //////////////////////////////////////////////////////////////////////
 
@@ -99,6 +101,39 @@ Rectangle{
                 spacing: sf(2)
                 layoutDirection: Qt.LeftToRight
                 orientation: ListView.Horizontal
+            }
+        }
+
+        Rectangle {
+            Layout.fillHeight: true
+            Layout.preferredWidth: height
+            Layout.margins: sf(5)
+            color: "#fff"
+            Button {
+                anchors.fill: parent
+                enabled: geoJsonInMemory
+                visible: geoJsonInMemory
+                ToolTip.text: qsTr("Shapefile or geojson")
+                ToolTip.visible: hovered
+
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : "#fff"
+                    border.width: app.info.properties.mainButtonBorderWidth
+                    border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    radius: sf(3)
+                }
+
+                IconFont {
+                    anchors.centerIn: parent
+                    iconSizeMultiplier: 1.5
+                    color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    icon: _icons.geojson
+                }
+
+                onClicked: {
+                    geoJsonFeatureRequested();
+                }
             }
         }
 
