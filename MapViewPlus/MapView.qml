@@ -83,11 +83,11 @@ Item {
                     value: internal.mapSources
                 }
 
-                PluginParameter {
-                    id: pluginMaxZoomLevel
-                    name: "ArcGIS.mapping.maximumZoomLevel"
-                    value: exportDetails.maxLevels
-                }
+//                PluginParameter {
+//                    id: pluginMaxZoomLevel
+//                    name: "ArcGIS.mapping.maximumZoomLevel"
+//                    value: exportDetails.maxLevels
+//                }
             }
 
             center: QtPositioning.coordinate(defaultCenter.lat,defaultCenter.long)
