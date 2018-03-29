@@ -78,6 +78,9 @@ Item{
         if (feature === undefined || feature < 0 || feature > geojson.features.length){
             feature = 0;
         }
+
+        currentFeature = feature;
+
         _normalize(feature);
     }
 
@@ -88,8 +91,6 @@ Item{
             error("No geojson data.");
             return;
         }
-
-        currentFeature = feature;
 
         var features;
         var isWebMercator = false;
