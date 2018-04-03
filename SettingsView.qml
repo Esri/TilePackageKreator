@@ -138,6 +138,123 @@ Item {
             color: Singletons.Colors.darkGray
         }
 
+        Item {
+            Layout.preferredWidth: parent.width
+            Layout.preferredHeight: sf(110)
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: sf(8)
+                Text {
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: contentWidth
+                    text: qsTr("Search Query for Tile Services (see <a href='https://developers.arcgis.com/rest/users-groups-and-items/search.htm'>Search API</a> for more details)")
+                    verticalAlignment: Text.AlignVCenter
+                    wrapMode: Text.Wrap
+                    color: Singletons.Colors.formElementFontColor
+                    textFormat: Text.RichText
+                    font {
+                        family: notoRegular
+                        pointSize: Singletons.Config.baseFontSizePoint
+                    }
+                    onLinkActivated: {
+                        Qt.openUrlExternally(link);
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: sf(40)
+                    Controls.StyledTextField {
+                        id: searchQueryTextField
+                        anchors.fill: parent
+                        text: app.settings.value(Singletons.Constants.kSearchQueryString)
+                        Component.onCompleted: {
+                            cursorPosition = 0;
+                        }
+                    }
+                }
+
+                RowLayout {
+                    spacing: sf(5)
+                    Layout.preferredHeight: sf(40)
+                    Layout.fillWidth: true
+
+                    Item {
+                        Layout.preferredWidth: sf(140)
+                        Layout.fillHeight: true
+                        Button {
+                            anchors.fill: parent
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(parent, "clear")
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: 0
+                                border.color: app.info.properties.mainButtonBorderColor
+                            }
+                            Text {
+                                color: app.info.properties.mainButtonBorderColor
+                                anchors.centerIn: parent
+                                textFormat: Text.RichText
+                                text: qsTr("Reset to default")
+                                font.pointSize: Singletons.Config.baseFontSizePoint
+                                font.family: notoRegular
+                            }
+                            onClicked: {
+                                searchQueryTextField.text = app.defaultSearchQuery;
+                                updateButton.clicked();
+                            }
+                        }
+                    }
+                    Item {
+                        Layout.fillWidth: true
+                    }
+
+                    Item {
+                        Layout.preferredWidth: sf(100)
+                        Layout.fillHeight: true
+                        Button {
+                            id: updateButton
+                            anchors.fill: parent
+                            enabled: searchQueryTextField.text > ""
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(parent)
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: app.info.properties.mainButtonBorderColor
+                            }
+                            Text {
+                                color: app.info.properties.mainButtonFontColor
+                                anchors.centerIn: parent
+                                textFormat: Text.RichText
+                                text: qsTr("Update")
+                                font.pointSize: Singletons.Config.baseFontSizePoint
+                                font.family: notoRegular
+                            }
+                            onClicked: {
+                                app.servicesSearchQuery = searchQueryTextField.text;
+                            }
+                        }
+                    }
+
+
+
+                }
+            }
+
+
+        }
+
+        Rectangle {
+            Layout.preferredHeight: sf(1)
+            Layout.fillWidth: true
+            Layout.topMargin: sf(20)
+            Layout.bottomMargin: sf(20)
+            color: Singletons.Colors.darkGray
+        }
+
         //----------------------------------------------------------------------
 
 //        Item {

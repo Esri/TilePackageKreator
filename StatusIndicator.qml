@@ -61,6 +61,7 @@ Rectangle {
 
     signal show()
     signal hide()
+    signal hideImmediately()
     signal linkClicked(string link)
 
     color: messageType.backgroundColor
@@ -141,6 +142,15 @@ Rectangle {
 
     onHide: {
         fader.start()
+    }
+
+    //--------------------------------------------------------------------------
+
+    onHideImmediately: {
+        esriStatusIndicator.visible = false;
+        if (hideStatusMessage.running) {
+            hideStatusMessage.stop();
+        }
     }
 
     // COMPONENTS //////////////////////////////////////////////////////////////

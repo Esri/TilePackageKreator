@@ -45,6 +45,9 @@ App {
     property bool allowNonWebMercatorServices: app.settings.boolValue(Singletons.Constants.kAllowNonWebMercatorServices, false)
     property bool timeoutNonResponsiveServices: app.settings.boolValue(Singletons.Constants.kTimeOutUnresponsiveServices, true)
     property int timeoutValue: app.settings.numberValue(Singletons.Constants.kTimeOutValue, 7)
+    property string defaultSearchQuery: '(type:"Map Service" AND owner:esri AND title:(for Export)) OR (type:("Map Service") AND group:(access:org))'
+    property string servicesSearchQuery: app.settings.value(Singletons.Constants.kSearchQueryString, defaultSearchQuery);
+
 
     Component.onCompleted: {
         if (!appDatabase.exists()) {
@@ -75,6 +78,10 @@ App {
 
     onTimeoutValueChanged: {
         app.settings.setValue(Singletons.Constants.kTimeOutValue, timeoutValue);
+    }
+
+    onServicesSearchQueryChanged: {
+        app.settings.setValue(Singletons.Constants.kSearchQueryString, servicesSearchQuery);
     }
 
     // COMPONENTS //////////////////////////////////////////////////////////////

@@ -172,6 +172,10 @@ Item {
                                 zoomLevelIndicator.text = "%1".arg(parseFloat(level).toFixed(1));
                             }
 
+                            onClearErrors: {
+                                exportStatusIndicator.hideImmediately();
+                            }
+
                             onPositionChanged: {
                                if (!cursorIsOffMap) {
                                     _displayCoordinates(position.coordinate);

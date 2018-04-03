@@ -81,6 +81,7 @@ Item {
     signal drawingFinished()
     signal drawingCleared()
     signal drawingError(string error)
+    signal clearErrors()
     signal zoomLevelChanged(var level)
     signal positionChanged(var position)
     signal redraw(var data)
@@ -369,6 +370,7 @@ Item {
                                         }
 
                                         onClicked: {
+                                            clearErrors();
                                             var featureToGet = geoJsonHelper.currentFeature === 0
                                                     ? geoJsonHelper.numberOfFeatures - 1
                                                     : geoJsonHelper.currentFeature - 1;
@@ -403,6 +405,8 @@ Item {
                                         rightPadding: 0
                                         font.pointSize: Singletons.Config.mediumFontSizePoint
                                         onAccepted: {
+                                            clearErrors();
+
                                             var enteredNumber;
 
                                             if (!text.match(/^\d+$/)) {
@@ -460,6 +464,7 @@ Item {
                                         }
 
                                         onClicked: {
+                                            clearErrors();
                                             var featureToGet = geoJsonHelper.currentFeature === geoJsonHelper.numberOfFeatures - 1
                                                     ? 0
                                                     : geoJsonHelper.currentFeature + 1;
@@ -567,7 +572,7 @@ Item {
                             }
 
                             onClicked: {
-                                geoJsonHelper.saveGeoJsonToFile(geoJsonHelper.geojson, "geojson%1".arg(Date.now()));
+                                geoJsonHelper.saveGeoJsonToFile(geoJsonHelper.geojson, "tpk_saved_geojson_%1".arg(Date.now().toString()));
                             }
 
                             Accessible.role: Accessible.Button
@@ -727,7 +732,7 @@ Item {
                     }
                 }
                 onClicked: {
-                    if(map.zoomLevel > 0 && map.zoomLevel > map.minimumZoomLevel){
+                    if (map.zoomLevel > 0 && map.zoomLevel > map.minimumZoomLevel){
                         map.zoomLevel = Math.ceil(map.zoomLevel) - 1;
                     }
                 }
@@ -803,6 +808,7 @@ Item {
             // drag.urls
         }
         onDropped: {
+            clearErrors();
 
             var notJSON = false;
 
@@ -1258,8 +1264,7 @@ Item {
                 console.log("paste")
                 if (AppFramework.clipboard.dataAvailable) {
                     try {
-                        var json = JSON.parse(AppFramework.clipboard.text)
-                        //geoJsonHelper.parseGeometry(json);
+                        var json = JSON.parse(AppFramework.clipboard.text);
                         geoJsonHelper.setGeoJson(json);
                         geoJsonHelper.getFeature(0);
                     }
@@ -1406,6 +1411,18 @@ Item {
             }
 
             mapViewPlus.map.fitViewportToMapItems();
+
+            if (!geoJsonPopup.visible) {
+                geoJsonPopup.open();
+            }
+        }
+
+        onUnsupportedGeometry: {
+            drawingFinished();
+            clearDrawingCanvas();
+            clearMap();
+            drawingCleared();
+            _updateDrawingHistory("clear", null);
         }
 
         onError: {

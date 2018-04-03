@@ -36,7 +36,7 @@ Item {
     property int tileServiceSum: 0
     property var requests: []
     property alias getAvailableServices: tileServicesSearch
-    property string searchQuery: '(type:"Map Service" AND owner:esri AND title:(for Export)) OR (type:"Map Service" AND owner:' + portal.username + ') OR (type:("Map Service") AND group:(access:org))'
+    property string searchQuery: app.servicesSearchQuery //'(type:"Map Service" AND owner:esri AND title:(for Export)) OR (type:"Map Service" AND owner:' + portal.username + ') OR (type:("Map Service") AND group:(access:org))'
     property SqlQueryModel userAddedServices
     property bool useTimeout: app.timeoutNonResponsiveServices
     property int timeoutInterval: app.timeoutValue

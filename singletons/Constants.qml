@@ -40,4 +40,5 @@ QtObject {
     readonly property string kAllowNonWebMercatorServices: "allowNonWebMercatorServices"
     readonly property string kTimeOutUnresponsiveServices: "timeoutUnresponsiveServices"
     readonly property string kTimeOutValue: "timeoutValue"
+    readonly property string kSearchQueryString: "searchQueryString"
 }

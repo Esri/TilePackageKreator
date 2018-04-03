@@ -42,6 +42,7 @@ Item{
 
     signal success(var geometry)
     signal error(string message)
+    signal unsupportedGeometry()
 
     // METHODS /////////////////////////////////////////////////////////////////
 
@@ -135,8 +136,13 @@ Item{
                 if(features.geometry.type === "Polygon"){
                     returnGeometry.type = "esriGeometryPolygon";
                 }
-                if(features.geometry.type === "LineString"){
+                else if(features.geometry.type === "LineString"){
                     returnGeometry.type = "esriGeometryPolyline";
+                }
+                else {
+                    error("%1 feature. Feature type not supported.".arg(features.geometry.type));
+                    unsupportedGeometry();
+                    return;
                 }
             }
 

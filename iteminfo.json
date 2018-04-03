@@ -10,7 +10,7 @@
     "commentsEnabled": true,
     "created": 1481688674000,
     "culture": "en-au",
-    "description": "\n<p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Tile package creation tool.</p>",
+    "description": "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" font-family:'Avenir Next LT Pro'; font-size:14.5pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Tile package creation tool.</p></body></html>",
     "documentation": null,
     "extent": [
     ],
@@ -22,7 +22,7 @@
     "languages": [
     ],
     "largeThumbnail": null,
-    "licenseInfo": "\n<p style='-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><br /></p>",
+    "licenseInfo": "",
     "listed": false,
     "modified": 1522295044000,
     "name": "561a8441825441349a3b1ad23fdaea75.zip",

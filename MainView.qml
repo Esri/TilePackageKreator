@@ -107,6 +107,9 @@ Item {
                 appMetrics.userEmail = portal.user.email;
                 appMetrics.checkForUpdates();
 
+                app.defaultSearchQuery = '(type:"Map Service" AND owner:esri AND title:(for Export)) OR (type:"Map Service" AND owner:' + portal.username + ') OR (type:("Map Service") AND group:(access:org))';
+                app.servicesSearchQuery = app.defaultSearchQuery;
+
                 if (!calledFromAnotherApp) {
                     mainStackView.push(osv, {}, StackView.Immediate);
                 }
