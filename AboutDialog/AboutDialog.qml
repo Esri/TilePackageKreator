@@ -81,7 +81,7 @@ Dialog {
         }
 
         AboutText {
-            text: "Copyright © 2016 Esri Inc. All Rights Reserved"
+            text: "Copyright © 2018 Esri Inc. All Rights Reserved"
         }
 
         AboutText {
