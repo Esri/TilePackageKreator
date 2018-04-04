@@ -54,7 +54,7 @@ RadioButton {
         rightPadding: !control.rtl ? 0 : control.indicator.width + sf(1)
         color: Singletons.Colors.darkGray
         font {
-            family: notoRegular
+            family: defaultFontFamily
             pointSize: Singletons.Config.smallFontSizePoint
         }
     }

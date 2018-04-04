@@ -114,7 +114,7 @@ Rectangle {
         minimumPointSize: statusTextMinimumFontSize
         text: ""
         font.pointSize: statusTextFontSize
-        font.family: notoRegular
+        font.family: defaultFontFamily
         onLinkActivated: {
             Qt.openUrlExternally(link);
         }

@@ -87,7 +87,7 @@ Rectangle {
             textFormat: Text.RichText
             text: ""
             font.pointSize: statusTextFontSize
-            font.family: notoRegular
+            font.family: defaultFontFamily
             wrapMode: Text.WordWrap
             lineHeight: narrowLineHeight ? .7 : 1
             onLinkActivated: {

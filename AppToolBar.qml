@@ -133,7 +133,7 @@ Item {
                     anchors.centerIn: parent
                     verticalAlignment: Text.AlignVCenter
                     leftPadding: sf(20)
-                    font.family: notoRegular
+                    font.family: defaultFontFamily
                     font.pointSize: toolBarFontPointSize
                     color: toolBarFontColor
                     textFormat: Text.RichText

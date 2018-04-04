@@ -72,7 +72,7 @@ CheckBox {
         textFormat: Text.RichText
         wrapMode: Text.Wrap
         font {
-            family: notoRegular
+            family: defaultFontFamily
             pointSize: Singletons.Config.baseFontSizePoint * control.fontSizeMultiplier
         }
         onLinkActivated: {

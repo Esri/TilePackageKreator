@@ -30,7 +30,7 @@ TextField {
         color: parent.enabled ? "#fff" : Singletons.Colors.lightGray
     }
     color: Singletons.Colors.darkGray
-    font.family: notoRegular
+    font.family: defaultFontFamily
     font.pointSize: Singletons.Config.smallFontSizePoint
 
     Accessible.role: Accessible.EditableText

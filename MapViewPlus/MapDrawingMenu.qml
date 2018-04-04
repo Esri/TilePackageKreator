@@ -275,7 +275,7 @@ Rectangle{
                             textFormat: Text.RichText
                             text: name
                             font.pointSize: Singletons.Config.baseFontSizePoint
-                            font.family: notoRegular
+                            font.family: defaultFontFamily
                         }
                     }
                 }

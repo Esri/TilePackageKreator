@@ -278,7 +278,7 @@ Rectangle {
                     color: Singletons.Colors.darkGray
 
                     font {
-                        family: notoRegular
+                        family: defaultFontFamily
                         pointSize: Singletons.Config.smallFontSizePoint
                     }
                 }
@@ -289,7 +289,7 @@ Rectangle {
                     color: Singletons.Colors.darkGray
 
                     font {
-                        family: notoRegular
+                        family: defaultFontFamily
                         pointSize: Singletons.Config.xSmallFontSizePoint
                     }
                 }

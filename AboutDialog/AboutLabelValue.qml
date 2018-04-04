@@ -43,7 +43,7 @@ Item {
             pointSize: valueText.font.pointSize
             bold: !valueText.font.bold
         }
-        font.family: notoRegular
+        font.family: defaultFontFamily
         text: "Label"
         anchors {
             left: parent.left
@@ -57,7 +57,7 @@ Item {
             pointSize: 9
             bold: true
         }
-        font.family: notoRegular
+        font.family: defaultFontFamily
         color: labelText.color
 
         wrapMode: Text.WordWrap

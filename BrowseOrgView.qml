@@ -124,7 +124,8 @@ Item {
             Text {
                 anchors.centerIn: parent
                 text: Singletons.Strings.noOrgTileServices
-                font.family: notoBold
+                font.family: defaultFontFamily
+                font.weight: Font.Bold
                 font.pointSize: Singletons.Config.largeFontSizePoint
                 color: Singletons.Colors.boldUIElementFontColor
             }
@@ -238,7 +239,7 @@ Item {
                                     anchors.margins: sf(10)
                                     font {
                                         pointSize: Singletons.Config.smallFontSizePoint
-                                        family: notoRegular
+                                        family: defaultFontFamily
                                     }
                                     color: Singletons.Colors.boldUIElementFontColor
                                     verticalAlignment: Text.AlignVCenter
@@ -274,7 +275,7 @@ Item {
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignHCenter
                                             font.pointSize: Singletons.Config.xSmallFontSizePoint
-                                            font.family: notoRegular
+                                            font.family: defaultFontFamily
                                             text: spatialReference
                                             color: isWebMercator ? "#007ac2" : "red"
                                             elide: Text.ElideRight
@@ -298,7 +299,7 @@ Item {
                                             verticalAlignment: Text.AlignVCenter
                                             horizontalAlignment: Text.AlignHCenter
                                             font.pointSize: Singletons.Config.xSmallFontSizePoint
-                                            font.family: notoRegular
+                                            font.family: defaultFontFamily
                                             text: owner === "esri" ? "Esri" : "Non-Esri"
                                             color: owner === "esri" ? "#007ac2" : "darkorange"
 
@@ -461,7 +462,7 @@ Item {
                     width: parent.width
                     text: ""
                     color: app.info.properties.toolBarBackgroundColor
-                    font.family: notoRegular
+                    font.family: defaultFontFamily
                     readOnly: true
                     textFormat: Text.RichText
                     wrapMode: TextArea.Wrap

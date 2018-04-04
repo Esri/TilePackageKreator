@@ -500,7 +500,7 @@ Item {
                                 text: Singletons.Strings.viewingFeatureXofX.arg(geoJsonHelper.currentFeature + 1).arg(geoJsonHelper.numberOfFeatures)
                                 color: Singletons.Colors.darkGray
                                 font.pointSize: Singletons.Config.xSmallFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                                 wrapMode: Text.Wrap
                             }
                         }
@@ -554,7 +554,7 @@ Item {
                                         anchors.fill: parent
                                         verticalAlignment: Text.AlignVCenter
                                         text: Singletons.Strings.saveAsGeojson
-                                        font.family: notoRegular
+                                        font.family: defaultFontFamily
                                         font.pointSize: Singletons.Config.smallFontSizePoint
                                         elide: Text.ElideRight
                                         color: app.info.properties.mainButtonBorderColor
@@ -616,7 +616,7 @@ Item {
                                         anchors.fill: parent
                                         verticalAlignment: Text.AlignVCenter
                                         text: Singletons.Strings.clearAllData
-                                        font.family: notoRegular
+                                        font.family: defaultFontFamily
                                         font.pointSize: Singletons.Config.smallFontSizePoint
                                         elide: Text.ElideRight
                                         color: "red"
@@ -777,7 +777,7 @@ Item {
                 Text {
                     id: drawingNotice
                     anchors.fill: parent
-                    font.family: notoRegular
+                    font.family: defaultFontFamily
                     font.pointSize: Singletons.Config.xSmallFontSizePoint
                     verticalAlignment: Text.AlignVCenter
                     wrapMode: Text.Wrap
@@ -1468,7 +1468,7 @@ Item {
                             text: qsTr("Enter a title")
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: Singletons.Config.baseFontSizePoint
-                            font.family: notoRegular
+                            font.family: defaultFontFamily
                         }
                     }
                 }
@@ -1523,7 +1523,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: Singletons.Strings.cancel
                                 font.pointSize: Singletons.Config.smallFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
 
                             onClicked: {
@@ -1553,7 +1553,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: Singletons.Strings.create
                                 font.pointSize: Singletons.Config.smallFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
 
                             onClicked: {
@@ -1649,7 +1649,7 @@ Item {
                                 anchors.fill: parent
                                 verticalAlignment: Text.AlignVCenter
                                 text: name
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                                 font.pointSize: Singletons.Config.smallFontSizePoint
                                 elide: Text.ElideRight
                                 color: app.info.properties.mainButtonFontColor

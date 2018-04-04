@@ -154,7 +154,7 @@ Item {
                     color: Singletons.Colors.formElementFontColor
                     textFormat: Text.RichText
                     font {
-                        family: notoRegular
+                        family: defaultFontFamily
                         pointSize: Singletons.Config.baseFontSizePoint
                     }
                     onLinkActivated: {
@@ -214,7 +214,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: qsTr("Reset to default")
                                 font.pointSize: Singletons.Config.baseFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
                             onClicked: {
                                 searchQueryTextField.text = app.defaultSearchQuery;
@@ -247,7 +247,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: qsTr("Update")
                                 font.pointSize: Singletons.Config.baseFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
                             onClicked: {
                                 app.servicesSearchQuery = searchQueryTextField.text;

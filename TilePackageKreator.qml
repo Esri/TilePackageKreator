@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.7
+import QtQuick 2.9
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
@@ -36,10 +36,7 @@ App {
     property bool useIconFont: Qt.platform.os !== "windows" ? true : false
 
     property string icons: _icons.status == FontLoader.Ready ? _icons.name : "tilepackage"
-    property string notoRegular: _notoRegular.status == FontLoader.Ready ? _notoRegular.name : Qt.application.font.family
-    property string notoBold: _notoBold.status == FontLoader.Ready ? _notoBold.name : Qt.application.font.family
-    property string notoItalic: _notoItalic.status == FontLoader.Ready ? _notoItalic.name : Qt.application.font.family
-    property string notoBoldItalic: _notoBoldItalic.status == FontLoader.Ready ? _notoBoldItalic.name : Qt.application.font.family
+    property string defaultFontFamily: Qt.application.font.family
 
     property bool allowAllLevels: app.settings.boolValue(Singletons.Constants.kAllowAllZoomLevels, false)
     property bool allowNonWebMercatorServices: app.settings.boolValue(Singletons.Constants.kAllowNonWebMercatorServices, false)
@@ -111,23 +108,6 @@ App {
     }
 
     //--------------------------------------------------------------------------
-
-    FontLoader {
-        id: _notoRegular
-        source: "fonts/NotoSans-Regular.ttf"
-    }
-    FontLoader {
-        id: _notoBold
-        source: "fonts/NotoSans-Bold.ttf"
-    }
-    FontLoader {
-        id: _notoItalic
-        source: "fonts/NotoSans-Italic.ttf"
-    }
-    FontLoader {
-        id: _notoBoldItalic
-        source: "fonts/NotoSans-BoldItalic.ttf"
-    }
 
     FontLoader {
         id: _icons

@@ -55,7 +55,7 @@ Rectangle {
 
     property int buttonHeight: 35 * AppFramework.displayScaleFactor
 
-    property string fontFamily: notoRegular
+    property string fontFamily: defaultFontFamily
 
     signal accepted()
     signal rejected()
@@ -405,7 +405,7 @@ Rectangle {
             anchors.fill: parent
 
             username: portal.username
-            fontFamily: notoRegular.family
+            fontFamily: defaultFontFamily.family
 
             onRejected: {
                 signInView.rejected();

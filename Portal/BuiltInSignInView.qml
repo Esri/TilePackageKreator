@@ -33,7 +33,7 @@ FocusScope {
     property alias username: usernameField.text
     property alias password: passwordField.text
     property bool hideCancel: false
-    property string fontFamily: notoRegular
+    property string fontFamily: defaultFontFamily
 
     signal rejected()
 

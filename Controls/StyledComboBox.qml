@@ -5,7 +5,7 @@ import "../singletons" as Singletons
 ComboBox {
     id: control
 
-    font: notoRegular
+    font: defaultFontFamily
 
     onActivated: {
         console.log(currentIndex)
@@ -58,7 +58,7 @@ ComboBox {
         rightPadding: control.indicator.width + control.spacing
 
         text: control.model !== null ? control.model.get(control.currentIndex)[control.textRole] : ""
-        font.family: notoRegular
+        font.family: defaultFontFamily
         font.pointSize: Singletons.Config.smallFontSizePoint
         color: Singletons.Colors.darkGray
         horizontalAlignment: Text.AlignLeft

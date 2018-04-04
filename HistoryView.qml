@@ -92,7 +92,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: Singletons.Strings.exportHistory
                                 font.pointSize: Singletons.Config.mediumFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                                 verticalAlignment: Text.AlignVCenter
                             }
                             Rectangle {
@@ -117,7 +117,7 @@ Item {
                                         textFormat: Text.RichText
                                         text: Singletons.Strings.deleteHistory
                                         font.pointSize: Singletons.Config.baseFontSizePoint
-                                        font.family: notoRegular
+                                        font.family: defaultFontFamily
                                     }
 
                                     onClicked: {
@@ -234,7 +234,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: Singletons.Strings.uploadHistory
                                 font.pointSize: Singletons.Config.mediumFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                                 verticalAlignment: Text.AlignVCenter
                             }
                             Rectangle {
@@ -259,7 +259,7 @@ Item {
                                         textFormat: Text.RichText
                                         text: Singletons.Strings.deleteHistory
                                         font.pointSize: Singletons.Config.baseFontSizePoint
-                                        font.family: notoRegular
+                                        font.family: defaultFontFamily
                                     }
 
                                     onClicked: {
