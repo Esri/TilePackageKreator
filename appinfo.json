@@ -101,7 +101,7 @@
     "urlScheme": "arcgis-tilepackage",
     "version": {
         "major": 1,
-        "micro": 10,
+        "micro": 11,
         "minor": 3
     }
 }
