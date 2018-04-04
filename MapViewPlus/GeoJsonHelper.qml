@@ -39,6 +39,7 @@ Item{
 
     property int currentFeature: 0
     property int numberOfFeatures: 0
+    property bool multipleFeatures: numberOfFeatures > 1
 
     signal success(var geometry)
     signal error(string message)
@@ -55,11 +56,11 @@ Item{
 
         if (geoJsonFileFolder.fileExists(filepath)) {
             try {
-                var json = geoJsonFileFolder.readJsonFile(filepath)
+                var json = geoJsonFileFolder.readJsonFile(filepath);
                 setGeoJson(json);
                 getFeature(0);
             }
-            catch(error) {
+            catch(e) {
                 error("There was an error reading the JSON file.");
             }
         }
@@ -93,106 +94,118 @@ Item{
             return;
         }
 
+        if (!geojson.hasOwnProperty("features")) {
+            error("JSON is missing 'features' attribute.");
+            return;
+        }
+
         var features;
         var isWebMercator = false;
 
-        if (geojson.hasOwnProperty("features")) {
+        if (feature === undefined || feature < 0 || feature > geojson.features.length){
+            feature = 0;
+        }
 
-            if (feature === undefined || feature < 0 || feature > geojson.features.length){
-                feature = 0;
+        features = geojson.features[feature];
+
+        // Esri geojson has crs property -----------------------------------
+
+        if (geojson.hasOwnProperty("crs")) {
+            var sr = geojson.crs.properties.name;
+            if (sr.indexOf("3857") > -1 || sr.indexOf("102100") > -1) {
+                isWebMercator = true;
+                //returnGeometry.spatialReference = 3857;
             }
-
-            features = geojson.features[feature];
-
-            // Esri geojson has crs property -----------------------------------
-
-            if(geojson.hasOwnProperty("crs")){
-                var sr = geojson.crs.properties.name;
-                if(sr.indexOf("3857") > -1 || sr.indexOf("102100") > -1){
-                    isWebMercator = true;
-                    //returnGeometry.spatialReference = 3857;
-                }
-                else if(sr.indexOf("4326") > -1){
-                    returnGeometry.spatialReference = 4326;
-                }
-                else{
-                    returnGeometry.spatialRefernce = null;
-                    error("Spatial reference cannot be determined for geojson file.")
-                }
+            else if (sr.indexOf("4326") > -1) {
+                returnGeometry.spatialReference = 4326;
             }
-
-            // Esri json has spatialReference property -------------------------
-
-            if(geojson.hasOwnProperty("spatialReference")){
-                if(geojson.spatialReference.wkid === 102100 || geojson.spatialReference.wkid === 3857 || geojson.spatialReference.latestWkid === 3857){
-                    //returnGeometry.spatialReference = 3857;
-                    isWebMercator = true;
-                }
-            }
-
-            // Normalize type, for convenience normalize to esri types -----
-
-            if(features.geometry.hasOwnProperty("type")){
-                if(features.geometry.type === "Polygon"){
-                    returnGeometry.type = "esriGeometryPolygon";
-                }
-                else if(features.geometry.type === "LineString"){
-                    returnGeometry.type = "esriGeometryPolyline";
-                }
-                else {
-                    error("%1 feature. Feature type not supported.".arg(features.geometry.type));
-                    unsupportedGeometry();
-                    return;
-                }
-            }
-
-            if(geojson.hasOwnProperty("geometryType")){
-                returnGeometry.type = json.geometryType;
-            }
-
-
-            if(features.hasOwnProperty("geometry")){
-
-                if(features.geometry.hasOwnProperty("coordinates")){
-                    returnGeometry.coordinates = (returnGeometry.type === "esriGeometryPolygon") ? features.geometry.coordinates[0]: features.geometry.coordinates;
-                }
-                else if(features.geometry.hasOwnProperty("paths")){
-                    if(features.geometry.paths.length > 0){
-                        returnGeometry.coordinates = features.geometry.paths[0];
-                    }
-                }
-                else if(features.geometry.hasOwnProperty("rings")){
-                    if(features.geometry.rings.length > 0){
-                        returnGeometry.coordinates = features.geometry.rings[0];
-                    }
-                }
-                else{
-                    returnGeometry.coordinates = [];
-                }
-
-                // NOTE: Might need to throw an error if coordinate count is way way too large. Needs testing.
-
-                if(returnGeometry.coordinates.length > 0){
-                    if(isWebMercator){
-                        var newCoordsInLngLat = [];
-                        for(var i = 0; i < returnGeometry.coordinates.length; i++){
-                           newCoordsInLngLat.push(converter.xyToLngLat(returnGeometry.coordinates[i]));
-                        }
-
-                        returnGeometry.coordinates = newCoordsInLngLat;
-                    }
-
-                    returnGeometry.coordinatesForQML = _prepareGeometryForQMLMap(returnGeometry.coordinates);
-
-                    success(returnGeometry);
-                }
-                else{
-                    error("JSON is missing geometry");
-                }
+            else {
+                returnGeometry.spatialRefernce = null;
+                error("Spatial reference cannot be determined for geojson file.")
             }
         }
-        else{
-            error("JSON is missing 'features' attribute");
+
+        // Esri json has spatialReference property -------------------------
+
+        if (geojson.hasOwnProperty("spatialReference")) {
+            console.log("has spatialReference")
+            if (geojson.spatialReference.wkid === 102100 || geojson.spatialReference.wkid === 3857 || geojson.spatialReference.latestWkid === 3857) {
+                //returnGeometry.spatialReference = 3857;
+                isWebMercator = true;
+            }
+        }
+
+        // Normalize type, for convenience normalize to esri types -----
+
+        if (features.geometry.hasOwnProperty("type")) {
+            if (features.geometry.type === "Polygon") {
+                returnGeometry.type = "esriGeometryPolygon";
+            }
+            else if (features.geometry.type === "LineString") {
+                returnGeometry.type = "esriGeometryPolyline";
+            }
+            else {
+                error("%1 feature. Feature type not supported.".arg(features.geometry.type));
+                unsupportedGeometry();
+                return;
+            }
+        }
+
+        if (geojson.hasOwnProperty("geometryType")){
+
+            returnGeometry.type = geojson.geometryType;
+
+            if (returnGeometry.type !== "esriGeometryPolygon" && returnGeometry.type !== "esriGeometryPolyline") {
+                error("%1 feature. Feature type not supported.".arg(geojson.geometryType));
+                unsupportedGeometry();
+                return;
+            }
+        }
+
+        if (features.hasOwnProperty("geometry")) {
+
+            if (features.geometry.hasOwnProperty("coordinates")) {
+                returnGeometry.coordinates = (returnGeometry.type === "esriGeometryPolygon") ? features.geometry.coordinates[0]: features.geometry.coordinates;
+            }
+            else if (features.geometry.hasOwnProperty("paths")) {
+                if (features.geometry.paths.length > 0) {
+                    if (features.geometry.paths.length > 1) {
+                        error(qsTr("Multi-part path features not supported currently. Showing first path only."));
+                    }
+                    returnGeometry.coordinates = features.geometry.paths[0];
+                }
+            }
+            else if (features.geometry.hasOwnProperty("rings")) {
+                if (features.geometry.rings.length > 0) {
+                    if (features.geometry.rings.length > 1) {
+                        error(qsTr("Multi-part polygon features not supported currently. Showing first polygon only."));
+                    }
+                    returnGeometry.coordinates = features.geometry.rings[0];
+                }
+            }
+            else {
+                returnGeometry.coordinates = [];
+            }
+
+            // NOTE: Might need to throw an error if coordinate count is way way too large. Needs testing.
+
+            if (returnGeometry.coordinates.length > 0) {
+                if (isWebMercator) {
+                    var newCoordsInLngLat = [];
+                    for (var i = 0; i < returnGeometry.coordinates.length; i++) {
+                       newCoordsInLngLat.push(converter.xyToLngLat(returnGeometry.coordinates[i]));
+                    }
+
+                    returnGeometry.coordinates = newCoordsInLngLat;
+                }
+
+                returnGeometry.coordinatesForQML = _prepareGeometryForQMLMap(returnGeometry.coordinates);
+
+                success(returnGeometry);
+            }
+            else {
+                error("JSON is missing geometry");
+            }
         }
     }
 
@@ -202,7 +215,7 @@ Item{
 
         var qmlGeometry = [];
 
-        for(var i = 0; i < coords.length; i++){
+        for (var i = 0; i < coords.length; i++) {
 
             var set = coords[i];
 
@@ -232,7 +245,7 @@ Item{
 
         if (g.hasOwnProperty("type")) {
 
-            if(g.type === Singletons.Constants.kMultipath) {
+            if (g.type === Singletons.Constants.kMultipath) {
                 gType = "LineString";
                 gCoords = [];
                 for(var x = 0; x < g.geometry.length; x++){
@@ -240,10 +253,10 @@ Item{
                 }
             }
 
-            if(g.type === Singletons.Constants.kPolygon){
+            if (g.type === Singletons.Constants.kPolygon) {
                 gType = "Polygon";
                 gCoords = [[]];
-                for(var y = 0; y < g.geometry.length; y++){
+                for (var y = 0; y < g.geometry.length; y++) {
                     gCoords[0].push([g.geometry[y].coordinate.longitude, g.geometry[y].coordinate.latitude]);
                 }
             }
@@ -295,13 +308,13 @@ Item{
 
     //--------------------------------------------------------------------------
 
-    CoordinateConverter{
+    CoordinateConverter {
         id:converter
     }
 
     //--------------------------------------------------------------------------
 
-    GeometryUtilities{
+    GeometryUtilities {
         id: geomUtilities
     }
 

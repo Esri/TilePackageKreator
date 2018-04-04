@@ -355,6 +355,7 @@ Item {
 
                                         ToolTip.visible: hovered
                                         ToolTip.text: Singletons.Strings.selectPreviousFeature
+                                        enabled: geoJsonHelper.multipleFeatures
 
                                         background: Rectangle{
                                             color: "transparent"
@@ -404,6 +405,7 @@ Item {
                                         leftPadding: 0
                                         rightPadding: 0
                                         font.pointSize: Singletons.Config.mediumFontSizePoint
+                                        enabled: geoJsonHelper.multipleFeatures
                                         onAccepted: {
                                             clearErrors();
 
@@ -449,6 +451,7 @@ Item {
 
                                         ToolTip.visible: hovered
                                         ToolTip.text: Singletons.Strings.selectNextFeature
+                                        enabled: geoJsonHelper.multipleFeatures
 
                                         background: Rectangle{
                                             color: "transparent"
