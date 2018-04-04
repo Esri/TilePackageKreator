@@ -140,7 +140,7 @@ Item {
 
         Item {
             Layout.preferredWidth: parent.width
-            Layout.preferredHeight: sf(110)
+            Layout.preferredHeight: sf(160)
 
             ColumnLayout {
                 anchors.fill: parent
@@ -175,6 +175,21 @@ Item {
                     }
                 }
 
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: sf(50)
+                    Controls.StyledCheckBox {
+                        id: includeCurrentUserSearchQuery
+                        anchors.fill: parent
+                        checked: app.includeCurrentUserInSearch
+                        label: qsTr("Include Map and Image Services owned by %1 in query?<br> <small><em>%2</em></small>".arg(portal.username).arg(app.currentUserSearchQuery))
+                        fontSizeMultiplier: .8
+                        onCheckedChanged: {
+                            app.includeCurrentUserInSearch = checked;
+                        }
+                    }
+                }
+
                 RowLayout {
                     spacing: sf(5)
                     Layout.preferredHeight: sf(40)
@@ -203,6 +218,7 @@ Item {
                             }
                             onClicked: {
                                 searchQueryTextField.text = app.defaultSearchQuery;
+                                includeCurrentUserSearchQuery.checked = true;
                                 updateButton.clicked();
                             }
                         }
@@ -238,13 +254,8 @@ Item {
                             }
                         }
                     }
-
-
-
                 }
             }
-
-
         }
 
         Rectangle {

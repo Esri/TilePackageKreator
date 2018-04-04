@@ -41,4 +41,5 @@ QtObject {
     readonly property string kTimeOutUnresponsiveServices: "timeoutUnresponsiveServices"
     readonly property string kTimeOutValue: "timeoutValue"
     readonly property string kSearchQueryString: "searchQueryString"
+    readonly property string kIncludeCurrentUserInSearch: "includeCurrentUser"
 }

@@ -35,6 +35,7 @@ CheckBox {
     property string label: "Checkbox"
     property string tooltip: ""
     property bool displayTooltip: tooltip > "" ? true : false
+    property double fontSizeMultiplier: 1
 
     ToolTip.visible: displayTooltip && hovered
     ToolTip.text: tooltip
@@ -72,7 +73,7 @@ CheckBox {
         wrapMode: Text.Wrap
         font {
             family: notoRegular
-            pointSize: Singletons.Config.baseFontSizePoint
+            pointSize: Singletons.Config.baseFontSizePoint * control.fontSizeMultiplier
         }
         onLinkActivated: {
             Qt.openUrlExternally(link);

@@ -46,8 +46,9 @@ App {
     property bool timeoutNonResponsiveServices: app.settings.boolValue(Singletons.Constants.kTimeOutUnresponsiveServices, true)
     property int timeoutValue: app.settings.numberValue(Singletons.Constants.kTimeOutValue, 7)
     property string defaultSearchQuery: '(type:"Map Service" AND owner:esri AND title:(for Export)) OR (type:("Map Service") AND group:(access:org))'
+    property string currentUserSearchQuery: ""
+    property bool includeCurrentUserInSearch: app.settings.boolValue(Singletons.Constants.kIncludeCurrentUserInSearch, true);
     property string servicesSearchQuery: app.settings.value(Singletons.Constants.kSearchQueryString, defaultSearchQuery);
-
 
     Component.onCompleted: {
         if (!appDatabase.exists()) {
@@ -82,6 +83,10 @@ App {
 
     onServicesSearchQueryChanged: {
         app.settings.setValue(Singletons.Constants.kSearchQueryString, servicesSearchQuery);
+    }
+
+    onIncludeCurrentUserInSearchChanged: {
+        app.settings.boolValue(Singletons.Constants.kIncludeCurrentUserInSearch, includeCurrentUserInSearch);
     }
 
     // COMPONENTS //////////////////////////////////////////////////////////////
