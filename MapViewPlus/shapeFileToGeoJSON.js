@@ -48,23 +48,13 @@ WorkerScript.onMessage = function(shapeFile) {
 }
 
 function establishSpatialReference(minx, miny, maxx, maxy){
-    console.log("establishSpatialReference")
-
     // the shape file .prj file was other than 3857 or 4326, so attempt
     // to see if it is lat / lon or web mercator type values.
 
     // its highly unlikely a web mercator projection will fall within
     // the following parameters,
 
-    if (minx > 180
-        || minx < -180
-        || maxx > 180
-        || maxx < -180
-        || miny > 90
-        || miny < -90
-        || maxy > 90
-        || maxy < -90) {
-
+    if (minx > 180 || minx < -180 || maxx > 180 || maxx < -180 || miny > 90 || miny < -90 || maxy > 90 || maxy < -90) {
         return "3857";
     }
     else {
@@ -184,11 +174,13 @@ function shapefileByteArrayToGeoJson(byteArray) {
             WorkerScript.sendMessage({"error": e});
         }
         finally {
+            resetFeatures();
             return;
         }
     }
 
     shapeValue = shpDataArray.getInt32(shpHeader.shape_type.position, shpHeader.shape_type.bigEndian);
+    shapeType = shapeTypes[shapeValue];
 
     geoJson["shapefile_related"]["byteLength"] = shapeFileByteLength;
     geoJson["shapefile_related"]["shapeType"] = shapeValue;
@@ -197,12 +189,13 @@ function shapefileByteArrayToGeoJson(byteArray) {
     if (shapeValue !== 3 && shapeValue !== 5) {
 
         try {
-            throw new Error("This tool currently only supports polygons and polylines.");
+            throw new Error("This tool currently only supports polygons and polylines. Not %1".arg(shapeType.esri));
         }
         catch(e) {
             WorkerScript.sendMessage({"error": e});
         }
         finally {
+            resetFeatures();
             return;
         }
     }
@@ -219,11 +212,24 @@ function shapefileByteArrayToGeoJson(byteArray) {
     var boundingBoxYMax = shpDataArray.getFloat64(shpHeader.ymax.position, shpHeader.ymax.bigEndian);
     geoJson["bbox"][3] = boundingBoxYMax;
 
-    if (geoJson["crs"]["properties"]["name"] === "") {
-        geoJson["crs"]["properties"]["name"] = establishSpatialReference(boundingBoxXMin, boundingBoxXMin, boundingBoxXMax, boundingBoxYMax);
+    var sniffedSpatialReference = establishSpatialReference(boundingBoxXMin, boundingBoxYMin, boundingBoxXMax, boundingBoxYMax);
+
+    if (geoJson["crs"]["properties"]["name"] > "" && geoJson["crs"]["properties"]["name"] !== sniffedSpatialReference.toString()){
+        try {
+            throw new Error("Possible spatial reference mismatch. SR in .prj file doesn't seem to match coordinates found in .shp file.");
+        }
+        catch(e) {
+            WorkerScript.sendMessage({"error": e});
+        }
+        finally {
+            resetFeatures();
+            return;
+        }
     }
 
-    shapeType = shapeTypes[shapeValue];
+    if (geoJson["crs"]["properties"]["name"] === "") {
+        geoJson["crs"]["properties"]["name"] = sniffedSpatialReference;
+    }
 
     // geometry entries start at 100 after shape file header -------------------
     cursor = 100;
@@ -235,17 +241,17 @@ function shapefileByteArrayToGeoJson(byteArray) {
         }
     }
 
-    console.log(JSON.stringify(geoJson));
+    //console.log(JSON.stringify(geoJson));
 
     WorkerScript.sendMessage({"geojson": geoJson});
 
-    return geoJson;
+    resetFeatures();
 
 }
 
 function getFeature(thisCursor){
 
-    console.log("getFeature: ", thisCursor);
+    //console.log("getFeature: ", thisCursor);
 
     var currentFeature = {};
     partsArray = [];
@@ -283,21 +289,20 @@ function getFeature(thisCursor){
     thisCursor += 4;
 
 
-    if (currentFeature["shapefile_related"]["numParts"] > 500) {
+    if (currentFeature["shapefile_related"]["numParts"] > 1000) {
         try {
-            throw new Error("This tool only supports shapefiles with less than 500 parts.");
+            throw new Error("This tool only supports shapefiles with less than 1000 parts.");
         }
         catch(e) {
             WorkerScript.sendMessage({"error": e});
         }
         finally {
+            resetFeatures();
             return;
         }
     }
 
     if (currentFeature["shapefile_related"]["numParts"] > 0) {
-
-
 
         try {
 
@@ -362,6 +367,7 @@ function getFeature(thisCursor){
         }
         catch(e) {
             WorkerScript.sendMessage({"error": e});
+            resetFeatures();
         }
     }
 

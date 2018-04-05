@@ -829,12 +829,11 @@ Item {
                 for (var x = 0; x < drop.urls.length; x++) {
 
                     var url = drop.urls[x].toString();
-                    var fileType = url.substr(url.length-4, 4);
 
-                    if (fileType === ".prj") {
+                    if (url.search(/.prj$/gi) > -1) {
                         projectionFilePath = url;
                     }
-                    if (fileType === ".shp") {
+                    if (url.search(/.shp$/gi) > -1) {
                         shapeFilePath = url;
                     }
                 }
@@ -871,8 +870,6 @@ Item {
                             coordinateSystem = "";
                             return;
                         }
-
-                        console.log(coordinateSystem);
                     }
                 }
 
@@ -1290,7 +1287,7 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    MapPolyline{
+    MapPolyline {
         id: drawnPolyline
         line.width: sf(3)
         line.color: drawnExtentOutlineColor
@@ -1298,7 +1295,7 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    MapPolygon{
+    MapPolygon {
         id: drawnPolygon
         color: drawingExtentFillColor
         border.width: sf(2)
@@ -1750,6 +1747,7 @@ Item {
             }
             if (messageObject.hasOwnProperty("error")){
                 drawingError("Error: %1".arg(messageObject.error.message));
+                busyIndicator.visible = false;
             }
             if (messageObject.hasOwnProperty("status")){
                 workerScriptProgressIndicator.progressText = messageObject.status;
