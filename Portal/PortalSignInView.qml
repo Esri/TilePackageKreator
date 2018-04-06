@@ -50,8 +50,7 @@ Rectangle {
 
     readonly property string messageCodePasswordExired: "LLS_0002"
 
-    readonly property bool hasWebView: !(Qt.platform.os == "winrt") //|| Qt.platform.os == "winphone")
-    readonly property bool useOAuth: hasWebView && portal.supportsOAuth
+    readonly property bool useOAuth: portal.supportsOAuth
 
     property int buttonHeight: 35 * AppFramework.displayScaleFactor
 
