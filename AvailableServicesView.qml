@@ -91,11 +91,7 @@ Item {
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     Component.onCompleted: {
-        asm.getAvailableServices.start();
-        activityIndicator.visible = true;
-        rotator.target = refreshSpinner;
-        refreshSpinner.visible = true;
-        rotator.start();
+        getServices();
     }
 
     //--------------------------------------------------------------------------
@@ -107,6 +103,20 @@ Item {
         mainView.appToolBar.historyButtonEnabled = true;
         mainView.appToolBar.settingsButtonEnabled = true;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage
+        if (settingsChanged) {
+            asm.reset();
+            servicesStatusText.text = Singletons.Strings.queryingServices;
+            getServices();
+            settingsChanged = false;
+        }
+    }
+
+    function getServices(){
+        asm.getAvailableServices.start();
+        activityIndicator.visible = true;
+        rotator.target = refreshSpinner;
+        refreshSpinner.visible = true;
+        rotator.start();
     }
 
     // UI //////////////////////////////////////////////////////////////////////

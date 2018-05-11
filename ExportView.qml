@@ -84,7 +84,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = true;
         mainView.appToolBar.backButtonVisible = true;
         mainView.appToolBar.historyButtonEnabled = true;
-        mainView.appToolBar.settingsButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = false;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage
     }
 

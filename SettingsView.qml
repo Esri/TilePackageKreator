@@ -35,6 +35,7 @@ Item {
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     StackView.onActivating: {
+        app.settingsChanged = false;
         mainView.appToolBar.enabled = true;
         mainView.appToolBar.settingsButtonEnabled = false;
         mainView.appToolBar.historyButtonEnabled = true;

@@ -38,6 +38,7 @@ App {
     property string icons: _icons.status == FontLoader.Ready ? _icons.name : "tilepackage"
     property string defaultFontFamily: Qt.application.font.family
 
+    property bool settingsChanged: false
     property bool allowAllLevels: app.settings.boolValue(Singletons.Constants.kAllowAllZoomLevels, false)
     property bool allowNonWebMercatorServices: app.settings.boolValue(Singletons.Constants.kAllowNonWebMercatorServices, false)
     property bool timeoutNonResponsiveServices: app.settings.boolValue(Singletons.Constants.kTimeOutUnresponsiveServices, true)
@@ -71,18 +72,22 @@ App {
     }
 
     onTimeoutNonResponsiveServicesChanged: {
+        settingsChanged = true;
         app.settings.setValue(Singletons.Constants.kTimeOutUnresponsiveServices, timeoutNonResponsiveServices);
     }
 
     onTimeoutValueChanged: {
+        settingsChanged = true;
         app.settings.setValue(Singletons.Constants.kTimeOutValue, timeoutValue);
     }
 
     onServicesSearchQueryChanged: {
+        settingsChanged = true;
         app.settings.setValue(Singletons.Constants.kSearchQueryString, servicesSearchQuery);
     }
 
     onIncludeCurrentUserInSearchChanged: {
+        settingsChanged = true;
         app.settings.boolValue(Singletons.Constants.kIncludeCurrentUserInSearch, includeCurrentUserInSearch);
     }
 

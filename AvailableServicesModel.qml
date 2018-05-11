@@ -69,6 +69,13 @@ Item {
     signal serviceAdded()
     signal serviceNotAdded()
 
+
+    function reset(){
+        tileServiceCount = 0;
+        tileServiceSum = 0;
+        requests = [];
+    }
+
     // COMPONENTS //////////////////////////////////////////////////////////////
 
     PortalSearch {
