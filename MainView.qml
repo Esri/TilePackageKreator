@@ -107,6 +107,8 @@ Item {
                 appMetrics.userEmail = portal.user.email;
                 appMetrics.checkForUpdates();
 
+                app.currentUserSearchQuery = 'OR (type:"Map Service" AND owner:' + portal.username + ') OR (type:"Image Service" AND owner:' + portal.username + ')';
+
                 if (!calledFromAnotherApp) {
                     mainStackView.push(osv, {}, StackView.Immediate);
                 }
@@ -169,6 +171,14 @@ Item {
     Component {
         id: hv
         HistoryView {
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
+    Component {
+        id: sv
+        SettingsView {
         }
     }
 

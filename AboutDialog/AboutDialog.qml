@@ -54,7 +54,7 @@ Dialog {
 
                 text: qsTr("About %1").arg(app.info.title)
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                font.family: notoRegular
+                font.family: defaultFontFamily
                 font {
                     pointSize: 22
                     bold: true
@@ -81,7 +81,7 @@ Dialog {
         }
 
         AboutText {
-            text: "Copyright © 2016 Esri Inc. All Rights Reserved"
+            text: "Copyright © 2018 Esri Inc. All Rights Reserved"
         }
 
         AboutText {

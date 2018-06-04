@@ -67,6 +67,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = (!calledFromAnotherApp) ? true : false
         mainView.appToolBar.backButtonVisible = (!calledFromAnotherApp) ? true : false
         mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = true;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.uploadTilePackage
     }
 
@@ -166,7 +167,7 @@ Item {
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                         font.pointSize: Singletons.Config.largeFontSizePoint
-                                        font.family: notoRegular
+                                        font.family: defaultFontFamily
                                     }
                                     Text {
                                         Layout.fillWidth: true
@@ -175,7 +176,7 @@ Item {
                                         color: Singletons.Colors.boldUIElementFontColor
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
-                                        font.family: notoRegular
+                                        font.family: defaultFontFamily
                                     }
                                     Rectangle {
                                         Layout.fillWidth: true
@@ -202,7 +203,7 @@ Item {
                                                 textFormat: Text.RichText
                                                 text: Singletons.Strings.browseForFile
                                                 font.pointSize: Singletons.Config.baseFontSizePoint
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
                                             }
                                             onClicked: {
                                                 resetProperties();
@@ -244,7 +245,7 @@ Item {
                                         Layout.preferredHeight: selectedTPK.height / 4
                                         text: "filename.tpk"
                                         fontSizeMode: Text.Fit
-                                        font.family: notoRegular
+                                        font.family: defaultFontFamily
                                         minimumPointSize: Singletons.Config.smallFontSizePoint
                                         color: Singletons.Colors.boldUIElementFontColor
                                         font.pointSize: Singletons.Config.largeFontSizePoint
@@ -287,7 +288,7 @@ Item {
                                                 textFormat: Text.RichText
                                                 text: Singletons.Strings.useDifferentFile
                                                 font.pointSize: Singletons.Config.baseFontSizePoint
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
                                             }
                                             onClicked: {
                                                 fileAcceptedForUpload = false;
@@ -414,7 +415,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: uploading ? ( tpkPackage.aborted ?  Singletons.Strings.cancelling : Singletons.Strings.uploading ): Singletons.Strings.upload
                                     font.pointSize: Singletons.Config.baseFontSizePoint
-                                    font.family: notoRegular
+                                    font.family: defaultFontFamily
                                 }
 
                                 ProgressIndicator{
@@ -464,7 +465,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: Singletons.Strings.cancel
                                 font.pointSize: Singletons.Config.baseFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
 
                             onClicked: {

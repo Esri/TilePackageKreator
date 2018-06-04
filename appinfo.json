@@ -8,6 +8,10 @@
         "camera": false,
         "fileSharing": false,
         "highAccuracyLocation": false,
+        "ios": {
+            "externalAccessoryProtocolStrings": [
+            ]
+        },
         "localnotification": false,
         "location": true,
         "microphone": false,
@@ -71,6 +75,7 @@
         "arcgis-survey123connect"
     ],
     "mainFile": "TilePackageKreator.qml",
+    "multipleInstances": true,
     "projectFile": "TilePackageKreator.qmlproject",
     "properties": {
         "mainButtonBackgroundColor": "#196fa6",
@@ -96,7 +101,7 @@
     "urlScheme": "arcgis-tilepackage",
     "version": {
         "major": 1,
-        "micro": 23,
-        "minor": 2
+        "micro": 29,
+        "minor": 3
     }
 }

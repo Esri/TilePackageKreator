@@ -50,7 +50,7 @@ Item {
         id: _iconImage
         visible: !useIconFont
         anchors.centerIn: _tpkIcon
-        source: !useIconFont ? _tpkIcon.icon : "images/alpha.svg"
+        source: !useIconFont ? _tpkIcon.icon : ""
         sourceSize.width: _tpkIcon.iconImageSize * _tpkIcon.iconSizeMultiplier
         sourceSize.height: _tpkIcon.iconImageSize * _tpkIcon.iconSizeMultiplier
         mipmap: true

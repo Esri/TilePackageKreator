@@ -1,4 +1,4 @@
-/* Copyright 2017 Esri
+/* Copyright 2018 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  *
  */
 
-import QtQuick 2.7
-import QtQuick.Controls 2.1
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import "../singletons" as Singletons
 
 TextField {
@@ -30,7 +30,7 @@ TextField {
         color: parent.enabled ? "#fff" : Singletons.Colors.lightGray
     }
     color: Singletons.Colors.darkGray
-    font.family: notoRegular
+    font.family: defaultFontFamily
     font.pointSize: Singletons.Config.smallFontSizePoint
 
     Accessible.role: Accessible.EditableText

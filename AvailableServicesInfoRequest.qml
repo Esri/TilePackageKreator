@@ -30,8 +30,16 @@ Item {
     property int tileIndex
     property string serviceUrl
     property bool useToken: true
+    property bool useTimeout: false
+    property int timeoutInterval: 30
 
     signal complete(var data)
+
+    onComplete:  {
+        if (timeoutTimer.running) {
+            timeoutTimer.stop();
+        }
+    }
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 
@@ -136,7 +144,7 @@ Item {
 
     Timer {
         id: timeoutTimer
-        interval: 10000
+        //interval: timeoutInterval * 1000
         running: false
         repeat: false
         onTriggered: {
@@ -151,10 +159,15 @@ Item {
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function sendRequest(){
+    function sendRequest() {
         serviceRequest.send();
-        timeoutTimer.start();
+        if (useTimeout) {
+            timeoutTimer.interval = timeoutInterval * 1000;
+            timeoutTimer.start();
+        }
     }
+
+    //--------------------------------------------------------------------------
 
     function _exportTilesAllowed(serviceInfo) {
 
@@ -169,7 +182,6 @@ Item {
         else {
             return false;
         }
-
     }
 
     // END /////////////////////////////////////////////////////////////////////

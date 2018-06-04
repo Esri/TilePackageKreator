@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2018 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,13 @@ Rectangle{
     property string activeGeometryType: ""
     property bool historyAvailable: false
     property bool bookmarksAvailable: false
+    property bool bookmarksPopupOpen: false
+    property bool geoJsonInMemory: false
+    property bool geoJsonPopupOpen: false
 
     signal drawingRequest(string g)
     signal bookmarksRequested()
+    signal geoJsonFeatureRequested()
 
     // UI //////////////////////////////////////////////////////////////////////
 
@@ -104,6 +108,42 @@ Rectangle{
 
         Rectangle {
             Layout.fillHeight: true
+            Layout.preferredWidth: height
+            Layout.margins: sf(5)
+            color: "#fff"
+            Button {
+                id: geojsonBtn
+                anchors.fill: parent
+                enabled: geoJsonInMemory
+                visible: geoJsonInMemory
+                ToolTip.text: qsTr("Shapefile or geojson data")
+                ToolTip.visible: hovered
+
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: geoJsonPopupOpen ? app.info.properties.mainButtonBorderColor : "#fff"
+                    border.width: app.info.properties.mainButtonBorderWidth
+                    border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    radius: sf(3)
+                }
+
+                IconFont {
+                    anchors.centerIn: parent
+                    iconSizeMultiplier: 1.5
+                    color: parent.enabled
+                           ? geoJsonPopupOpen ? "#fff" : app.info.properties.mainButtonBorderColor
+                           : "#ddd"
+                    icon: _icons.geojson
+                }
+
+                onClicked: {
+                    geoJsonFeatureRequested();
+                }
+            }
+        }
+
+        Rectangle {
+            Layout.fillHeight: true
             Layout.preferredWidth: sf(1)
             color: Singletons.Colors.lightBlue
         }
@@ -122,7 +162,9 @@ Rectangle{
 
                 background: Rectangle {
                     anchors.fill: parent
-                    color: parent.enabled ? ( parent.pressed ? "#bddbee" : "#fff" ) : "#fff"
+                    color: parent.enabled
+                           ? bookmarksPopupOpen ? app.info.properties.mainButtonBorderColor : ( parent.pressed ? "#bddbee" : "#fff" )
+                           : "#fff"
                     border.width: app.info.properties.mainButtonBorderWidth
                     border.color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
                     radius: sf(3)
@@ -131,7 +173,9 @@ Rectangle{
                 IconFont {
                     anchors.centerIn: parent
                     iconSizeMultiplier: 1.5
-                    color: parent.enabled ? app.info.properties.mainButtonBorderColor : "#ddd"
+                    color: parent.enabled
+                           ? bookmarksPopupOpen ? "#fff" : app.info.properties.mainButtonBorderColor
+                           : "#ddd"
                     icon: _icons.bookmark
                 }
 
@@ -231,7 +275,7 @@ Rectangle{
                             textFormat: Text.RichText
                             text: name
                             font.pointSize: Singletons.Config.baseFontSizePoint
-                            font.family: notoRegular
+                            font.family: defaultFontFamily
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2018 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,7 @@ Rectangle {
 
     signal show()
     signal hide()
+    signal hideImmediately()
     signal linkClicked(string link)
 
     color: messageType.backgroundColor
@@ -86,7 +87,7 @@ Rectangle {
             textFormat: Text.RichText
             text: ""
             font.pointSize: statusTextFontSize
-            font.family: notoRegular
+            font.family: defaultFontFamily
             wrapMode: Text.WordWrap
             lineHeight: narrowLineHeight ? .7 : 1
             onLinkActivated: {
@@ -141,6 +142,15 @@ Rectangle {
 
     onHide: {
         fader.start()
+    }
+
+    //--------------------------------------------------------------------------
+
+    onHideImmediately: {
+        esriStatusIndicator.visible = false;
+        if (hideStatusMessage.running) {
+            hideStatusMessage.stop();
+        }
     }
 
     // COMPONENTS //////////////////////////////////////////////////////////////

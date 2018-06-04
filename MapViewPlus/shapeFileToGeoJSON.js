@@ -2,6 +2,27 @@
 // An Esri White Paper -- July 1998
 // https://www.esri.com/library/whitepapers/pdfs/shapefile.pdf
 
+var shpDataArray = null;
+var shapeType = null;
+var shapeValue = -1;
+var shapeFileByteLength = 0;
+var partsArray = [];
+var pointsArray = [];
+var cursor = 0;
+var featureCount = 1;
+
+var geoJson = {
+    "type": "FeatureCollection",
+    "crs": {
+        "type" : "name",
+        "properties" : {
+          "name" : ""
+        }
+      },
+    "bbox": [],
+    "shapefile_related": {},
+    "features": []
+};
 
 WorkerScript.onMessage = function(shapeFile) {
 
@@ -24,7 +45,21 @@ WorkerScript.onMessage = function(shapeFile) {
     xhr.responseType = "arraybuffer";
     xhr.open("GET", shapeFile.path, true);
     xhr.send();
+}
 
+function establishSpatialReference(minx, miny, maxx, maxy){
+    // the shape file .prj file was other than 3857 or 4326, so attempt
+    // to see if it is lat / lon or web mercator type values.
+
+    // its highly unlikely a web mercator projection will fall within
+    // the following parameters,
+
+    if (minx > 180 || minx < -180 || maxx > 180 || maxx < -180 || miny > 90 || miny < -90 || maxy > 90 || maxy < -90) {
+        return "3857";
+    }
+    else {
+        return "4326";
+    }
 }
 
 var shapeTypes = [];
@@ -106,36 +141,32 @@ var shpHeader = {
     }
 }
 
-var geoJson = {
-    "type": "FeatureCollection",
-    "crs": {
-        "type" : "name",
-        "properties" : {
-          "name" : ""
-        }
-      },
-    "features": []
-};
-
-
 function getShapeType(val){
     return shapeTypes[val];
 }
 
 function resetFeatures(){
+    shpDataArray = null;
+    shapeFileByteLength = 0;
+    shapeType = null;
+    shapeValue = -1;
     geoJson.features = [];
+    cursor = 0;
+    partsArray = [];
+    pointsArray = [];
+    featureCount = 1;
 }
 
 function shapefileByteArrayToGeoJson(byteArray) {
 
     resetFeatures();
 
-    var geoJsonFeature = {};
+    shpDataArray = new DataView(byteArray);
 
-    var shpDataArray = new DataView(byteArray);
+    shapeFileByteLength = shpDataArray.byteLength;
 
     // A byteLength less than 101 means there is no geometry.-------------------
-    if (shpDataArray.byteLength < 101){
+    if (shapeFileByteLength < 101){
         try {
             throw new Error("This shapefile contains no geometry");
         }
@@ -143,149 +174,210 @@ function shapefileByteArrayToGeoJson(byteArray) {
             WorkerScript.sendMessage({"error": e});
         }
         finally {
+            resetFeatures();
             return;
         }
     }
 
-    var shapeValue = shpDataArray.getInt32(shpHeader.shape_type.position, shpHeader.shape_type.bigEndian);
+    shapeValue = shpDataArray.getInt32(shpHeader.shape_type.position, shpHeader.shape_type.bigEndian);
+    shapeType = shapeTypes[shapeValue];
+
+    geoJson["shapefile_related"]["byteLength"] = shapeFileByteLength;
+    geoJson["shapefile_related"]["shapeType"] = shapeValue;
 
     // only supporting MultilineString, Polygon --------------------------------
     if (shapeValue !== 3 && shapeValue !== 5) {
 
         try {
-            throw new Error("This tool currently only supports polygons and polylines.");
+            throw new Error("This tool currently only supports polygons and polylines. Not %1".arg(shapeType.esri));
         }
         catch(e) {
             WorkerScript.sendMessage({"error": e});
         }
         finally {
+            resetFeatures();
             return;
         }
     }
 
-    var shapeType = shapeTypes[shapeValue];
+    var boundingBoxXMin = shpDataArray.getFloat64(shpHeader.xmin.position, shpHeader.xmin.bigEndian);
+    geoJson["bbox"][0] = boundingBoxXMin;
 
-    if (shapeType !== undefined && shapeType !== null && shapeType !== 0 && shapeType.geojson !== null) {
+    var boundingBoxYMin = shpDataArray.getFloat64(shpHeader.ymin.position, shpHeader.ymin.bigEndian);
+    geoJson["bbox"][1] = boundingBoxYMin;
 
-        geoJsonFeature["type"] = "Feature";
-        geoJsonFeature["properties"] = {};
-        geoJsonFeature["bbox"] = [];
-        geoJsonFeature["shapefile_related"] = {};
-        geoJsonFeature["geometry"] = {
-            "type": shapeType.geojson,
-            "coordinates": []
+    var boundingBoxXMax = shpDataArray.getFloat64(shpHeader.xmax.position, shpHeader.xmax.bigEndian);
+    geoJson["bbox"][2] = boundingBoxXMax;
+
+    var boundingBoxYMax = shpDataArray.getFloat64(shpHeader.ymax.position, shpHeader.ymax.bigEndian);
+    geoJson["bbox"][3] = boundingBoxYMax;
+
+    var sniffedSpatialReference = establishSpatialReference(boundingBoxXMin, boundingBoxYMin, boundingBoxXMax, boundingBoxYMax);
+
+    if (geoJson["crs"]["properties"]["name"] > "" && geoJson["crs"]["properties"]["name"] !== sniffedSpatialReference.toString()){
+        try {
+            throw new Error("Possible spatial reference mismatch. SR in .prj file doesn't seem to match coordinates found in .shp file.");
         }
-
-        if (shapeValue === 5){
-            geoJsonFeature["geometry"]["coordinates"][0] = [];
+        catch(e) {
+            WorkerScript.sendMessage({"error": e});
         }
-
-        var boundingBoxXMin = shpDataArray.getFloat64(shpHeader.xmin.position, shpHeader.xmin.bigEndian);
-        geoJsonFeature["bbox"][0] = boundingBoxXMin;
-
-        var boundingBoxYMin = shpDataArray.getFloat64(shpHeader.ymin.position, shpHeader.ymin.bigEndian);
-        geoJsonFeature["bbox"][1] = boundingBoxYMin;
-
-        var boundingBoxXMax = shpDataArray.getFloat64(shpHeader.xmax.position, shpHeader.xmax.bigEndian);
-        geoJsonFeature["bbox"][2] = boundingBoxXMax;
-
-        var boundingBoxYMax = shpDataArray.getFloat64(shpHeader.ymax.position, shpHeader.ymax.bigEndian);
-        geoJsonFeature["bbox"][3] = boundingBoxYMax;
-
-        if (geoJson["crs"]["properties"]["name"] === "") {
-            geoJson["crs"]["properties"]["name"] = establishSpatialReference(boundingBoxXMin, boundingBoxXMin, boundingBoxXMax, boundingBoxYMax);
+        finally {
+            resetFeatures();
+            return;
         }
-
-        geoJsonFeature["shapefile_related"]["RecordNumber"] = shpDataArray.getInt32(100);
-        geoJsonFeature["shapefile_related"]["Content Length"] = shpDataArray.getInt32(104);
-        geoJsonFeature["shapefile_related"]["ShapeType"] = shpDataArray.getInt32(108, true);
-        geoJsonFeature["shapefile_related"]["box"] = [shpDataArray.getFloat64(112, true), shpDataArray.getFloat64(120, true), shpDataArray.getFloat64(128, true), shpDataArray.getFloat64(136, true)];
-        geoJsonFeature["shapefile_related"]["numParts"] = shpDataArray.getInt32(144, true);
-        geoJsonFeature["shapefile_related"]["numPoints"] = shpDataArray.getInt32(148, true);
-        geoJsonFeature["shapefile_related"]["Parts"] = shpDataArray.getInt32(152, true);
-        geoJsonFeature["shapefile_related"]["X"] = (152 + 4 * geoJsonFeature["numParts"]);
-
-        // can only handle one feature currenly --------------------------------
-        if (geoJsonFeature["shapefile_related"]["numParts"] > 1) {
-            try {
-                throw new Error("This tool currently only supports one polygon, line, or multipath feature per shapefile.");
-            }
-            catch(e) {
-                WorkerScript.sendMessage({"error": e});
-            }
-            finally {
-                return;
-            }
-        }
-
-        // over 10000 points? then not gonna process currently -----------------
-        if (geoJsonFeature["shapefile_related"]["numParts"] > 10000) {
-            try {
-                throw new Error("This tool only supports features with 10000 points on less.");
-            }
-            catch(e) {
-                WorkerScript.sendMessage({"error": e});
-            }
-            finally {
-                return;
-            }
-        }
-
-        // You've passed all the checks, now cursor through the data -----------
-        var pointShapeType = shpDataArray.getFloat64(156, true);
-        console.log(pointShapeType);
-
-        var cursor = 156;
-        var points = geoJsonFeature["shapefile_related"]["numPoints"];
-
-        for (var i = 0; i < points; i++) {
-            var pointX = shpDataArray.getFloat64(cursor, true);
-            cursor += 8;
-            var pointY = shpDataArray.getFloat64(cursor, true);
-            if(shapeValue === 5){
-                geoJsonFeature["geometry"].coordinates[0].push([pointX,pointY]);
-            }
-            else if(shapeValue === 3){
-                geoJsonFeature["geometry"].coordinates.push([pointX,pointY]);
-            }
-            else{
-
-            }
-
-            cursor +=8;
-        }
-
     }
 
-    geoJson.features.push(geoJsonFeature);
+    if (geoJson["crs"]["properties"]["name"] === "") {
+        geoJson["crs"]["properties"]["name"] = sniffedSpatialReference;
+    }
+
+    // geometry entries start at 100 after shape file header -------------------
+    cursor = 100;
+
+    if (shapeType !== undefined && shapeType !== null && shapeType !== 0 && shapeType.geojson !== null) {
+        while (cursor < shapeFileByteLength) {
+            var feature = getFeature(cursor);
+            geoJson.features.push(feature);
+        }
+    }
+
+    //console.log(JSON.stringify(geoJson));
 
     WorkerScript.sendMessage({"geojson": geoJson});
 
-    return geoJson;
+    resetFeatures();
 
 }
 
-function establishSpatialReference(minx, miny, maxx, maxy){
-    console.log("establishSpatialReference")
+function getFeature(thisCursor){
 
-    // the shape file .prj file was other than 3857 or 4326, so attempt
-    // to see if it is lat / lon or web mercator type values.
+    //console.log("getFeature: ", thisCursor);
 
-    // its highly unlikely a web mercator projection will fall within
-    // the following parameters,
+    var currentFeature = {};
+    partsArray = [];
+    pointsArray = [];
 
-    if (minx > 180
-        || minx < -180
-        || maxx > 180
-        || maxx < -180
-        || miny > 90
-        || miny < -90
-        || maxy > 90
-        || maxy < -90) {
-
-        return "3857";
+    currentFeature["type"] = "Feature";
+    currentFeature["bbox"] = [];
+    currentFeature["properties"] = {};
+    currentFeature["shapefile_related"] = {};
+    currentFeature["geometry"] = {
+        "type": shapeType.geojson,
+        "coordinates": []
     }
-    else {
-        return "4326";
+
+    console.log(JSON.stringify(currentFeature));
+
+    currentFeature["properties"]["RecordNumber"] = shpDataArray.getInt32(thisCursor);
+    thisCursor += 4;
+    currentFeature["shapefile_related"]["Content Length"] = shpDataArray.getInt32(thisCursor);
+    thisCursor += 4;
+    currentFeature["shapefile_related"]["ShapeType"] = shpDataArray.getInt32(108, true);
+    thisCursor += 4;
+    currentFeature["bbox"] = []
+    currentFeature["bbox"][0] = shpDataArray.getFloat64(thisCursor, true);
+    thisCursor += 8;
+    currentFeature["bbox"][1] = shpDataArray.getFloat64(thisCursor, true);
+    thisCursor += 8;
+    currentFeature["bbox"][2] = shpDataArray.getFloat64(thisCursor, true);
+    thisCursor += 8;
+    currentFeature["bbox"][3] = shpDataArray.getFloat64(thisCursor, true);
+    thisCursor += 8;
+    currentFeature["shapefile_related"]["numParts"] = shpDataArray.getInt32(thisCursor, true);
+    thisCursor += 4;
+    currentFeature["shapefile_related"]["numPoints"] = shpDataArray.getInt32(thisCursor, true);
+    thisCursor += 4;
+
+
+    if (currentFeature["shapefile_related"]["numParts"] > 1000) {
+        try {
+            throw new Error("This tool only supports shapefiles with less than 1000 parts.");
+        }
+        catch(e) {
+            WorkerScript.sendMessage({"error": e});
+        }
+        finally {
+            resetFeatures();
+            return;
+        }
     }
+
+    if (currentFeature["shapefile_related"]["numParts"] > 0) {
+
+        try {
+
+            WorkerScript.sendMessage({"status": qsTr("Reading %1 features.".arg(featureCount))});
+
+            var x = 0;
+
+            for (x = 0; x < currentFeature["shapefile_related"]["numParts"]; x++) {
+                var pointLocation = shpDataArray.getInt32(thisCursor, true);
+                partsArray.push(pointLocation);
+                thisCursor += 4;
+            }
+
+            console.log("partsArray.length: ", partsArray.length);
+
+            var nP = currentFeature["shapefile_related"]["numPoints"] * 2;
+
+            for (x = 0; x < nP; x++) {
+                var point = shpDataArray.getFloat64(thisCursor, true);
+                pointsArray.push(point);
+                thisCursor += 8;
+            }
+
+//            console.log("pointsArray.length: ", pointsArray.length);
+
+            for (x = 0; x < partsArray.length; x++) {
+
+                if (shapeValue === 5) {
+                   currentFeature["geometry"].coordinates[x] = [];
+                }
+
+                var pointStart = partsArray[x] * 2; // e.g. [0,320,333]
+
+//                console.log("pointStart: ", pointStart);
+
+                var lastPoint = (x === partsArray.length - 1) ? pointsArray.length : partsArray[x+1] * 2;
+//                console.log("lastPoint: ", lastPoint)
+
+                var coordinate = [];
+
+                for (var pointCounter = pointStart; pointCounter < lastPoint; pointCounter++) {
+//                    console.log("step: %1, pointCounter: %2, coord:%3, cLength:%4".arg(x).arg(pointCounter).arg(pointsArray[pointCounter]).arg(currentFeature["geometry"].coordinates[x].length));
+
+                    coordinate.push(pointsArray[pointCounter]);
+
+                    if (coordinate.length === 2) {
+
+                        if (shapeValue === 5) {
+                            currentFeature["geometry"].coordinates[x].push(coordinate);
+                        }
+                        else if (shapeValue === 3) {
+                            currentFeature["geometry"].coordinates.push(coordinate);
+                        }
+                        else {
+
+                        }
+                        coordinate = [];
+                    }
+                }
+            }
+            featureCount ++;
+        }
+        catch(e) {
+            WorkerScript.sendMessage({"error": e});
+            resetFeatures();
+        }
+    }
+
+//    console.log("currentFeature: ", JSON.stringify(currentFeature));
+
+    // Set global cursor so next feature can be read by while loop -------------
+    cursor = thisCursor;
+
+//    console.log("cursor: ", cursor)
+
+    return currentFeature;
+
 }

@@ -1,4 +1,4 @@
-/* Copyright 2017 Esri
+/* Copyright 2018 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,12 @@
  *
  */
 
-import QtQuick 2.7
+import QtQuick 2.9
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------
 import "Portal"
+import "singletons" as Singletons
 //------------------------------------------------------------------------------
 
 App {
@@ -35,10 +36,17 @@ App {
     property bool useIconFont: Qt.platform.os !== "windows" ? true : false
 
     property string icons: _icons.status == FontLoader.Ready ? _icons.name : "tilepackage"
-    property string notoRegular: _notoRegular.status == FontLoader.Ready ? _notoRegular.name : "Noto Sans"
-    property string notoBold: _notoBold.status == FontLoader.Ready ? _notoBold.name : "Noto Sans"
-    property string notoItalic: _notoItalic.status == FontLoader.Ready ? _notoItalic.name : "Noto Sans"
-    property string notoBoldItalic: _notoBoldItalic.status == FontLoader.Ready ? _notoBoldItalic.name : "Noto Sans"
+    property string defaultFontFamily: Qt.application.font.family
+
+    property bool settingsChanged: false
+    property bool allowAllLevels: app.settings.boolValue(Singletons.Constants.kAllowAllZoomLevels, false)
+    property bool allowNonWebMercatorServices: app.settings.boolValue(Singletons.Constants.kAllowNonWebMercatorServices, false)
+    property bool timeoutNonResponsiveServices: app.settings.boolValue(Singletons.Constants.kTimeOutUnresponsiveServices, true)
+    property int timeoutValue: app.settings.numberValue(Singletons.Constants.kTimeOutValue, 7)
+    property string defaultSearchQuery: '(type:"Map Service" AND owner:esri AND title:(for Export)) OR (type:("Map Service") AND group:(access:org))'
+    property string currentUserSearchQuery: ""
+    property bool includeCurrentUserInSearch: app.settings.boolValue(Singletons.Constants.kIncludeCurrentUserInSearch, true);
+    property string servicesSearchQuery: app.settings.value(Singletons.Constants.kSearchQueryString, defaultSearchQuery);
 
     Component.onCompleted: {
         if (!appDatabase.exists()) {
@@ -53,6 +61,34 @@ App {
             calledFromAnotherApp = true;
             incomingUrl = url;
         }
+    }
+
+    onAllowAllLevelsChanged: {
+        app.settings.setValue(Singletons.Constants.kAllowAllZoomLevels, allowAllLevels);
+    }
+
+    onAllowNonWebMercatorServicesChanged: {
+        app.settings.setValue(Singletons.Constants.kAllowNonWebMercatorServices, allowNonWebMercatorServices);
+    }
+
+    onTimeoutNonResponsiveServicesChanged: {
+        settingsChanged = true;
+        app.settings.setValue(Singletons.Constants.kTimeOutUnresponsiveServices, timeoutNonResponsiveServices);
+    }
+
+    onTimeoutValueChanged: {
+        settingsChanged = true;
+        app.settings.setValue(Singletons.Constants.kTimeOutValue, timeoutValue);
+    }
+
+    onServicesSearchQueryChanged: {
+        settingsChanged = true;
+        app.settings.setValue(Singletons.Constants.kSearchQueryString, servicesSearchQuery);
+    }
+
+    onIncludeCurrentUserInSearchChanged: {
+        settingsChanged = true;
+        app.settings.boolValue(Singletons.Constants.kIncludeCurrentUserInSearch, includeCurrentUserInSearch);
     }
 
     // COMPONENTS //////////////////////////////////////////////////////////////
@@ -79,23 +115,6 @@ App {
     //--------------------------------------------------------------------------
 
     FontLoader {
-        id: _notoRegular
-        source: "fonts/NotoSans-Regular.ttf"
-    }
-    FontLoader {
-        id: _notoBold
-        source: "fonts/NotoSans-Bold.ttf"
-    }
-    FontLoader {
-        id: _notoItalic
-        source: "fonts/NotoSans-Italic.ttf"
-    }
-    FontLoader {
-        id: _notoBoldItalic
-        source: "fonts/NotoSans-BoldItalic.ttf"
-    }
-
-    FontLoader {
         id: _icons
         source: "fonts/tilepackage.ttf"
         readonly property string app_studio: useIconFont ? "\ue904" : "images/appstudio.svg"
@@ -111,6 +130,7 @@ App {
         property string draw_path: useIconFont ? "y" : "images/draw-path.svg"
         property string draw_polygon: useIconFont ? "D" : "images/draw-polygon.svg"
         property string draw_tool: useIconFont ? "F" : "images/draw-tool.svg"
+        property string geojson: useIconFont ? "H" : "images/geojson.svg"
         property string happy_face: useIconFont ? "x" : "images/happy.svg"
         property string history: useIconFont ? "f" : "images/history.svg"
         property string info: useIconFont ? "r" : "images/info.svg"
@@ -121,6 +141,7 @@ App {
         property string question: useIconFont ? "u" : "images/question.svg"
         property string redraw_last_path: useIconFont ? "d" : "images/redraw-last.svg"
         property string sad_face: useIconFont ? "w" : "images/sad.svg"
+        property string settings: useIconFont ? "G" : "images/settings.svg"
         property string sign_out: useIconFont ? "c" : "images/sign-out.svg"
 //        property string spinner: "\ue982"
         property string spinner2: useIconFont ? "i" : "images/spinner2.svg"

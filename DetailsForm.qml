@@ -36,7 +36,7 @@ Rectangle {
 
     id: tpkDetailsForm
 
-    property int maxLevels: 19
+    property int maxLevels: 21
     property string currentSharing: ""
     property string currentExportTitle: ""
     property var currentTileService: null
@@ -153,7 +153,7 @@ Rectangle {
                         text: Singletons.Strings.currentTileService
                         color: Singletons.Colors.darkGray
                         font.pointSize: Singletons.Config.smallFontSizePoint
-                        font.family: notoRegular
+                        font.family: defaultFontFamily
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
@@ -204,7 +204,7 @@ Rectangle {
                         text: Singletons.Strings.numberOfZoomLevels
                         color: Singletons.Colors.darkGray
                         font.pointSize: Singletons.Config.smallFontSizePoint
-                        font.family: notoRegular
+                        font.family: defaultFontFamily
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
@@ -254,7 +254,7 @@ Rectangle {
                                 horizontalAlignment: Text.AlignRight
                                 verticalAlignment: Text.AlignVCenter
                                 font.pointSize: Singletons.Config.mediumFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                                 color: Singletons.Colors.darkGray
 
                                 Accessible.role: Accessible.StaticText
@@ -318,7 +318,7 @@ Rectangle {
                         text: Singletons.Strings.bufferRadius
                         color: Singletons.Colors.darkGray
                         font.pointSize: Singletons.Config.smallFontSizePoint
-                        font.family: notoRegular
+                        font.family: defaultFontFamily
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         Accessible.role: Accessible.Heading
@@ -412,7 +412,7 @@ Rectangle {
                         text: Singletons.Strings.title + "<span style=\"color:red\"> *</span>"
                         textFormat: Text.RichText
                         font.pointSize: Singletons.Config.smallFontSizePoint
-                        font.family: notoRegular
+                        font.family: defaultFontFamily
                         color: Singletons.Colors.darkGray
                         verticalAlignment: Text.AlignVCenter
 
@@ -460,7 +460,7 @@ Rectangle {
                     id: tpkFileTitleName
                     anchors.fill: parent
                     font.pointSize: Singletons.Config.xSmallFontSizePoint
-                    font.family: notoRegular
+                    font.family: defaultFontFamily
                     color: Singletons.Colors.formElementFontColor
                 }
             }
@@ -484,7 +484,7 @@ Rectangle {
                 text: Singletons.Strings.saveTo //qsTr("Save To")
                 color: Singletons.Colors.darkGray
                 font.pointSize: Singletons.Config.smallFontSizePoint
-                font.family: notoRegular
+                font.family: defaultFontFamily
                 Layout.fillWidth: true
                 Layout.preferredHeight: sf(20)
                 Accessible.role: Accessible.Heading
@@ -546,7 +546,7 @@ Rectangle {
                             Text {
                                 text: Singletons.Strings.saveTo
                                 color: app.info.properties.mainButtonFontColor
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                                 anchors.centerIn: parent
                             }
                         }
@@ -575,7 +575,7 @@ Rectangle {
                             id: saveToLocationFolder
                             text: ""
                             font.pointSize: Singletons.Config.smallFontSizePoint
-                            font.family: notoRegular
+                            font.family: defaultFontFamily
                             fontSizeMode: Text.Fit
                             minimumPointSize: 10
                             verticalAlignment: Text.AlignVCenter
@@ -649,7 +649,7 @@ Rectangle {
                                    Layout.preferredWidth: parent.width/2
                                    text: Singletons.Strings.description
                                    font.pointSize: Singletons.Config.smallFontSizePoint
-                                   font.family: notoRegular
+                                   font.family: defaultFontFamily
                                    color: Singletons.Colors.darkGray
                                    verticalAlignment: Text.AlignVCenter
                                    Accessible.role: Accessible.Heading
@@ -662,7 +662,7 @@ Rectangle {
                                    Layout.fillWidth: true
                                    text: "4000"
                                    font.pointSize: Singletons.Config.xSmallFontSizePoint
-                                   font.family: notoRegular
+                                   font.family: defaultFontFamily
                                    color: Singletons.Colors.darkGray
                                    horizontalAlignment: Text.AlignRight
                                    verticalAlignment: Text.AlignVCenter
@@ -695,7 +695,7 @@ Rectangle {
                                     wrapMode: Text.Wrap
 
                                     color: Singletons.Colors.formElementFontColor
-                                    font.family: notoRegular
+                                    font.family: defaultFontFamily
                                     font.pointSize: Singletons.Config.xSmallFontSizePoint
                                     background: Rectangle {
                                         color: _uiEntryElementStates(parent)
@@ -733,7 +733,7 @@ Rectangle {
                             Label {
                                 text: Singletons.Strings.shareThisItemWith
                                 font.pointSize: Singletons.Config.smallFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                                 color: Singletons.Colors.mainLabelFontColor
                                 anchors.fill: parent
                                 verticalAlignment: Text.AlignVCenter

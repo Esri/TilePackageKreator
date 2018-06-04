@@ -39,6 +39,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = false;
         mainView.appToolBar.backButtonVisible = false;
         mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = true;
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -111,7 +112,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: Singletons.Strings.upload
                                     font.pointSize: Singletons.Config.largeFontSizePoint * .8
-                                    font.family: notoRegular
+                                    font.family: defaultFontFamily
                                     font.capitalization: Font.AllUppercase
                                 }
                             }
@@ -126,7 +127,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: Singletons.Strings.localTilePackage
                                     font.pointSize: Singletons.Config.baseFontSizePoint
-                                    font.family: notoRegular
+                                    font.family: defaultFontFamily
                                 }
                             }
                             Item {
@@ -201,7 +202,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: Singletons.Strings.create
                                     font.pointSize: Singletons.Config.largeFontSizePoint * .8
-                                    font.family: notoRegular
+                                    font.family: defaultFontFamily
                                     font.capitalization: Font.AllUppercase
                                 }
                             }
@@ -216,7 +217,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: Singletons.Strings.newTilePackage
                                     font.pointSize: Singletons.Config.baseFontSizePoint
-                                    font.family: notoRegular
+                                    font.family: defaultFontFamily
                                 }
                             }
                             Item {
@@ -291,7 +292,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: Singletons.Strings.browse
                                     font.pointSize: Singletons.Config.largeFontSizePoint * .8
-                                    font.family: notoRegular
+                                    font.family: defaultFontFamily
                                     font.capitalization: Font.AllUppercase
                                 }
                             }
@@ -306,7 +307,7 @@ Item {
                                     textFormat: Text.RichText
                                     text: Singletons.Strings.organizationTilePackages
                                     font.pointSize: Singletons.Config.baseFontSizePoint
-                                    font.family: notoRegular
+                                    font.family: defaultFontFamily
                                 }
                             }
                             Item {

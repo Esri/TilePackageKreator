@@ -60,7 +60,7 @@ Dialog {
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
                     font.pointSize: Singletons.Config.largeFontSizePoint
-                    font.family: notoRegular
+                    font.family: defaultFontFamily
                     color: Singletons.Colors.formElementFontColor
                 }
             }
@@ -82,7 +82,7 @@ Dialog {
                         textFormat: Text.RichText
                         text: qsTr("Subject") + "<span style:\"color:red\">*</span>"
                         verticalAlignment: Text.AlignVCenter
-                        font.family: notoRegular
+                        font.family: defaultFontFamily
                     }
 
                     TextField {
@@ -99,7 +99,7 @@ Dialog {
                                 color: Singletons.Colors.formElementBackground
                             }
                             textColor: Singletons.Colors.formElementFontColor
-                            font.family: notoRegular
+                            font.family: defaultFontFamily
 
                         }
                         onTextChanged: {
@@ -132,7 +132,7 @@ Dialog {
                         textFormat: Text.RichText
                         text: qsTr("Message") + "<span style:\"color:red\">*</span>"
                         verticalAlignment: Text.AlignTop
-                        font.family: notoRegular
+                        font.family: defaultFontFamily
                     }
                     TextArea {
                         id: feedbackMessage
@@ -141,7 +141,7 @@ Dialog {
                         style: TextAreaStyle {
                             backgroundColor: Singletons.Colors.formElementBackground
                             textColor: Singletons.Colors.formElementFontColor
-                            font.family: notoRegular
+                            font.family: defaultFontFamily
                             frame: Rectangle {
                                 border.width: Singletons.Config.formElementBorderWidth
                                 border.color: Singletons.Colors.formElementBorderColor
@@ -194,7 +194,7 @@ Dialog {
                                 textFormat: Text.RichText
                                 text: qsTr("Cancel")
                                 font.pointSize: Singletons.Config.baseFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
 
                             onClicked: {
@@ -236,7 +236,7 @@ Dialog {
                                 textFormat: Text.RichText
                                 text: qsTr("Send")
                                 font.pointSize: Singletons.Config.baseFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
 
 

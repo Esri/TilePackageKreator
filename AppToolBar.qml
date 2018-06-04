@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2018 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,8 @@ Item {
     property alias aboutButtonEnabled: aboutButton.enabled
     property alias userButtonVisible: userButton.visible
     property alias userButtonEnabled: userButton.enabled
+    property alias settingsButtonVisible: settingsButton.visible
+    property alias settingsButtonEnabled: settingsButton.enabled
 
     // UI //////////////////////////////////////////////////////////////////////
 
@@ -84,7 +86,7 @@ Item {
             //------------------------------------------------------------------
 
             Button{
-                id:backButton
+                id: backButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
 
@@ -112,7 +114,7 @@ Item {
                 Accessible.name: Singletons.Strings.goBackToPreviousView
                 Accessible.description: Singletons.Strings.goBackToPreviousViewDesc
                 Accessible.onPressAction: {
-                    if(enabled && visible){
+                    if (enabled && visible) {
                         clicked();
                     }
                 }
@@ -131,7 +133,7 @@ Item {
                     anchors.centerIn: parent
                     verticalAlignment: Text.AlignVCenter
                     leftPadding: sf(20)
-                    font.family: notoRegular
+                    font.family: defaultFontFamily
                     font.pointSize: toolBarFontPointSize
                     color: toolBarFontColor
                     textFormat: Text.RichText
@@ -165,7 +167,7 @@ Item {
                     Accessible.ignored: true
                 }
 
-                Rectangle{
+                Rectangle {
                     id: numberOfUpdatesIndicator
                     visible: false
                     color: "orange"
@@ -176,7 +178,7 @@ Item {
                     anchors.right: updatesButton.right
                     anchors.topMargin: 4 * AppFramework.displayScaleFactor
                     anchors.rightMargin: 4 * AppFramework.displayScaleFactor
-                    Text{
+                    Text {
                         id: numberOfUpdatesIndicatorCount
                         anchors.centerIn: parent
                         text: "0"
@@ -193,7 +195,7 @@ Item {
                 Accessible.name: Singletons.Strings.xUpdatesAvaliable.arg(numberOfUpdatesIndicatorCount.text)
                 Accessible.description: Singletons.Strings.xUpdatesAvaliableDesc
                 Accessible.onPressAction: {
-                    if(enabled && visible){
+                    if (enabled && visible) {
                         clicked();
                     }
                 }
@@ -201,7 +203,7 @@ Item {
 
             //------------------------------------------------------------------
 
-            Button{
+            Button {
                 id: feedbackButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
@@ -209,7 +211,7 @@ Item {
                 ToolTip.text: Singletons.Strings.feedback
                 enabled: true
 
-                background: Rectangle{
+                background: Rectangle {
                     color: toolBarBackground
                     anchors.fill: parent
                 }
@@ -230,7 +232,7 @@ Item {
                 Accessible.name: Singletons.Strings.feedback
                 Accessible.description: Singletons.Strings.feedbackDesc
                 Accessible.onPressAction: {
-                    if(enabled && visible){
+                    if (enabled && visible) {
                         clicked();
                     }
                 }
@@ -266,7 +268,7 @@ Item {
                 Accessible.name: Singletons.Strings.aboutTheApp
                 Accessible.description: Singletons.Strings.aboutTheAppDesc
                 Accessible.onPressAction: {
-                    if(enabled && visible){
+                    if (enabled && visible) {
                         clicked();
                     }
                 }
@@ -274,14 +276,50 @@ Item {
 
             //------------------------------------------------------------------
 
-            Button{
+            Button {
+                id: settingsButton
+                Layout.preferredWidth: toolBarHeight
+                Layout.fillHeight: true
+                ToolTip.visible: hovered
+                ToolTip.text: Singletons.Strings.settings
+
+                background: Rectangle {
+                    color: toolBarBackground
+                    anchors.fill: parent
+                }
+
+                IconFont {
+                    anchors.centerIn: parent
+                    icon: _icons.settings
+                    iconSizeMultiplier: 1.1
+                    color: _returnButtonColor(settingsButton)
+                    Accessible.ignored: true
+                }
+
+                onClicked: {
+                    stackView.push(sv);
+                }
+
+                Accessible.role: Accessible.Button
+                Accessible.name: Singletons.Strings.settings
+                Accessible.description: Singletons.Strings.settingsDesc
+                Accessible.onPressAction: {
+                    if (enabled && visible) {
+                        clicked();
+                    }
+                }
+            }
+
+            //------------------------------------------------------------------
+
+            Button {
                 id: historyButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
                 ToolTip.visible: hovered
                 ToolTip.text: Singletons.Strings.history
 
-                background: Rectangle{
+                background: Rectangle {
                     color: toolBarBackground
                     anchors.fill: parent
                 }
@@ -302,7 +340,7 @@ Item {
                 Accessible.name: Singletons.Strings.exportAndUploadHistory
                 Accessible.description: Singletons.Strings.exportAndUploadHistoryDesc
                 Accessible.onPressAction: {
-                    if(enabled && visible){
+                    if (enabled && visible) {
                         clicked();
                     }
                 }
@@ -310,7 +348,7 @@ Item {
 
             //------------------------------------------------------------------
 
-            Button{
+            Button {
                 id: userButton
                 Layout.preferredWidth: toolBarHeight
                 Layout.fillHeight: true
@@ -318,7 +356,7 @@ Item {
                 ToolTip.text: (portal.user !== null && portal.user !== "" && portal.user !== undefined) ? Singletons.Strings.signOut + ": " + portal.user.fullName : "User Unknown"
                 enabled: true
 
-                background: Rectangle{
+                background: Rectangle {
                     color: toolBarBackground
                     anchors.fill: parent
                 }
@@ -341,7 +379,7 @@ Item {
                 Accessible.name: Singletons.Strings.signOut
                 Accessible.description: Singletons.Strings.signOutDesc
                 Accessible.onPressAction: {
-                    if(enabled && visible){
+                    if (enabled && visible) {
                         clicked();
                     }
                 }
@@ -355,7 +393,7 @@ Item {
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     onUpdateCountChanged: {
-        if(updateCount > 0){
+        if (updateCount > 0) {
             updatesButtonEnabled = true;
             updatesButtonVisible = true;
             updateIndicatorVisible = true;
@@ -365,21 +403,21 @@ Item {
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 
-    AboutDialog{
+    AboutDialog {
         id: aboutDialog
     }
 
     //--------------------------------------------------------------------------
 
-    FeedbackDialog{
+    FeedbackDialog {
         id: feedbackDialog
         metrics: mainView.appMetrics
     }
 
     // METHODS /////////////////////////////////////////////////////////////////
 
-    function _returnButtonColor(cntrl){
-        if(cntrl.enabled === false){
+    function _returnButtonColor(cntrl) {
+        if (cntrl.enabled === false) {
             return toolBarButtonDisabledColor;
         }
         else if(cntrl.hovered){
@@ -388,7 +426,7 @@ Item {
         else if(cntrl.pressed){
             return toolBarButtonPressedColor;
         }
-        else{
+        else {
             return toolBarButtonColor;
         }
     }

@@ -36,8 +36,14 @@ Item {
     property int tileServiceSum: 0
     property var requests: []
     property alias getAvailableServices: tileServicesSearch
-    property string searchQuery: '(type:"Map Service" AND owner:esri AND title:(for Export)) OR (type:"Map Service" AND owner:' + portal.username + ') OR (type:("Map Service") AND group:(access:org))'
+    property string searchQuery: !app.includeCurrentUserInSearch
+                                 ? app.servicesSearchQuery
+                                 : app.currentUserSearchQuery > ""
+                                   ? app.servicesSearchQuery + " " + app.currentUserSearchQuery
+                                   : app.servicesSearchQuery
     property SqlQueryModel userAddedServices
+    property bool useTimeout: app.timeoutNonResponsiveServices
+    property int timeoutInterval: app.timeoutValue
 
     property ListModel servicesListModel: ListModel {
         property var tilesToRemove: []
@@ -62,6 +68,13 @@ Item {
     signal failed(var error)
     signal serviceAdded()
     signal serviceNotAdded()
+
+
+    function reset(){
+        tileServiceCount = 0;
+        tileServiceSum = 0;
+        requests = [];
+    }
 
     // COMPONENTS //////////////////////////////////////////////////////////////
 
@@ -95,7 +108,15 @@ Item {
                     var component = Qt.createComponent("AvailableServicesInfoRequest.qml");
 
                     if (component.status === Component.Ready) {
-                        var thisRequest = component.createObject(parent, { portal:availableServicesModel.portal, tileIndex: tileServiceCount, serviceUrl: result.url } );
+                        var thisRequest = component.createObject(parent,
+                                                                 {
+                                                                     portal:availableServicesModel.portal,
+                                                                     tileIndex: tileServiceCount,
+                                                                     serviceUrl: result.url,
+                                                                     useTimeout: availableServicesModel.useTimeout,
+                                                                     timeoutInterval: availableServicesModel.timeoutInterval
+                                                                 }
+                                                                 );
                         thisRequest.complete.connect(function(serviceData){
 
                             if (serviceData.keep === true) {
@@ -187,7 +208,15 @@ Item {
         var component = Qt.createComponent("AvailableServicesInfoRequest.qml");
 
         if (component.status === Component.Ready) {
-            var thisRequest = component.createObject(parent, { portal:availableServicesModel.portal, tileIndex: servicesListModel.count+1 , serviceUrl: url } );
+            var thisRequest = component.createObject(parent,
+                                                     {
+                                                         portal:availableServicesModel.portal,
+                                                         tileIndex: servicesListModel.count+1,
+                                                         serviceUrl: url,
+                                                         useTimeout: availableServicesModel.useTimeout,
+                                                         timeoutInterval: availableServicesModel.timeoutInterval
+                                                     }
+                                                     );
             thisRequest.complete.connect(function(serviceData){
 
                 if(serviceData.keep === true){
@@ -228,7 +257,8 @@ Item {
                 thisRequest.destroy(2000);
             });
 
-            thisRequest.send();
+            thisRequest.sendRequest();
+            //thisRequest.send();
         }
     }
 

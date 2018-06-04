@@ -60,7 +60,9 @@ Item {
             if (serviceInfo.hasOwnProperty("tileInfo")) {
                 if (serviceInfo.tileInfo.hasOwnProperty("lods")) {
                     var availableLevels = (parseInt(serviceInfo.tileInfo.lods.length,10) - 1);
-                    exportDetails.maxLevels = availableLevels > 19 ? 19 : availableLevels;
+                    exportDetails.maxLevels = app.allowAllLevels
+                            ? availableLevels
+                            : availableLevels > 21 ? 21 : availableLevels;
                     mapViewPlus.map.maximumZoomLevel = exportDetails.maxLevels;
                 }
             }
@@ -82,6 +84,7 @@ Item {
         mainView.appToolBar.backButtonEnabled = true;
         mainView.appToolBar.backButtonVisible = true;
         mainView.appToolBar.historyButtonEnabled = true;
+        mainView.appToolBar.settingsButtonEnabled = false;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage
     }
 
@@ -169,6 +172,10 @@ Item {
                                 zoomLevelIndicator.text = "%1".arg(parseFloat(level).toFixed(1));
                             }
 
+                            onClearErrors: {
+                                exportStatusIndicator.hideImmediately();
+                            }
+
                             onPositionChanged: {
                                if (!cursorIsOffMap) {
                                     _displayCoordinates(position.coordinate);
@@ -215,7 +222,9 @@ Item {
                                     if (serviceInfo.hasOwnProperty("tileInfo")) {
                                         if (serviceInfo.tileInfo.hasOwnProperty("lods")) {
                                             var availableLevels = (parseInt(serviceInfo.tileInfo.lods.length,10) - 1);
-                                            exportDetails.maxLevels = availableLevels > 19 ? 19 : availableLevels;
+                                            exportDetails.maxLevels = app.allowAllLevels
+                                                    ? availableLevels
+                                                    : availableLevels > 21 ? 21 : availableLevels;
                                             mapViewPlus.map.maximumZoomLevel = exportDetails.maxLevels;
                                         }
                                     }
@@ -258,7 +267,7 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
                                                 font.pointSize: Singletons.Config.smallFontSizePoint
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
 
                                                 Accessible.role: Accessible.Heading
                                                 Accessible.name: text
@@ -275,7 +284,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "--"
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
 
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
@@ -308,7 +317,7 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
                                                 font.pointSize: Singletons.Config.smallFontSizePoint
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
 
                                                 Accessible.role: Accessible.Heading
                                                 Accessible.name: text
@@ -325,7 +334,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "-- --"
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
 
                                                 Accessible.role: Accessible.Indicator
                                                 Accessible.name: text
@@ -358,7 +367,7 @@ Item {
                                                 horizontalAlignment: Text.AlignHCenter
                                                 color: "#fff"
                                                 font.pointSize: Singletons.Config.smallFontSizePoint
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
 
                                                 Accessible.role: Accessible.Heading
                                                 Accessible.name: text
@@ -376,7 +385,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: Singletons.Strings.notAvailableWithPaths
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
 
                                                 Accessible.ignored: mapViewPlus.geometryType !== Singletons.Constants.kMultipath
                                                 Accessible.role: Accessible.Indicator
@@ -392,7 +401,7 @@ Item {
                                                 verticalAlignment: Text.AlignVCenter
                                                 horizontalAlignment: Text.AlignHCenter
                                                 text: "Tiles: -- Size: --"
-                                                font.family: notoRegular
+                                                font.family: defaultFontFamily
 
                                                 Accessible.ignored: mapViewPlus.geometryType === Singletons.Constants.kMultipath
                                                 Accessible.role: Accessible.Indicator
@@ -613,7 +622,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: (!exporting) ? Singletons.Strings.createTilePackage : Singletons.Strings.create
                                 font.pointSize: Singletons.Config.baseFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
 
                             ProgressIndicator {
@@ -694,7 +703,7 @@ Item {
                             textFormat: Text.RichText
                             text: Singletons.Strings.cancel
                             font.pointSize: Singletons.Config.baseFontSizePoint
-                            font.family: notoRegular
+                            font.family: defaultFontFamily
                         }
 
                         onClicked: {

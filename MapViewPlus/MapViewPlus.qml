@@ -1,4 +1,4 @@
-/* Copyright 2016 Esri
+/* Copyright 2018 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  *
  */
 
-import QtQuick 2.6
-import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.1
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 import QtLocation 5.3
 import QtPositioning 5.3
 import QtGraphicalEffects 1.0
@@ -28,6 +28,7 @@ import ArcGIS.AppFramework.Sql 1.0
 import "../Portal"
 import "../singletons" as Singletons
 import "../Controls" as Controls
+import "../ProgressIndicator"
 import "../"
 //------------------------------------------------------------------------------
 
@@ -80,6 +81,7 @@ Item {
     signal drawingFinished()
     signal drawingCleared()
     signal drawingError(string error)
+    signal clearErrors()
     signal zoomLevelChanged(var level)
     signal positionChanged(var position)
     signal redraw(var data)
@@ -145,6 +147,33 @@ Item {
 
     // UI //////////////////////////////////////////////////////////////////////
 
+    Rectangle {
+        id: busyIndicator
+        color:"transparent"
+        anchors.fill: parent
+        visible: false
+        z: 10000000
+
+        Rectangle {
+            anchors.fill:parent
+            opacity: .9
+            color: Singletons.Colors.subtleBackground
+        }
+
+        ProgressIndicator {
+            id: workerScriptProgressIndicator
+            statusTextFontSize: Singletons.Config.smallFontSizePoint
+            statusTextMinimumFontSize: 6
+            statusTextLeftMargin: sf(10)
+            iconContainerLeftMargin: sf(5)
+            iconContainerHeight: this.containerHeight - sf(5)
+            width: parent.width * .8
+            anchors.centerIn: parent
+        }
+    }
+
+    // -------------------------------------------------------------------------
+
     Item {
         id: topMenu
         width: ( parent.width < sf(1000) ) ? parent.width - sf(20) : sf(980)
@@ -206,8 +235,8 @@ Item {
             }
 
             Item {
-                Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.preferredWidth: parent.width * .56
 
                 MapDrawingMenu {
                     id: drawingMenu
@@ -216,6 +245,9 @@ Item {
                     drawingExists: userDrawnExtent
                     historyAvailable: mapViewPlus.historyAvailable && (previewMap.map !== null ? previewMap.map.mapItems.length <= 0 : false)
                     bookmarksAvailable: userBookmarks.count > 0
+                    bookmarksPopupOpen: bookmarksPopup.visible
+                    geoJsonInMemory: geoJsonHelper.geojson !== null
+                    geoJsonPopupOpen: geoJsonPopup.visible
 
                     onDrawingRequest: {
                         if (g === Singletons.Constants.kRedraw){
@@ -230,6 +262,12 @@ Item {
 
                     onBookmarksRequested: {
                         bookmarksPopup.open();
+                    }
+                    onGeoJsonFeatureRequested: {
+                        geoJsonPopup.open();
+                        if (previewMap.map.mapItems.length === 0 ) {
+                            geoJsonHelper.getFeature(0);
+                        }
                     }
                 }
 
@@ -267,6 +305,356 @@ Item {
                 spacing: sf(2)
                 delegate: bookmarkDelegate
                 clip: true
+            }
+        }
+
+        Popup {
+            id: geoJsonPopup
+            width: sf(315)
+            height: sf(96)
+            x: topMenu.width - width
+            y: topMenu.height
+            padding: 0
+
+            background: Rectangle {
+                color: "#fff"
+                border.color: Singletons.Colors.mediumGray
+                border.width: sf(1)
+            }
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: sf(5)
+                spacing: sf(5)
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        spacing: 0
+
+                        Item {
+                            Layout.preferredHeight: sf(40)
+                            Layout.topMargin: sf(15)
+                            Layout.fillWidth: true
+                            Accessible.role: Accessible.Pane
+
+                            RowLayout {
+                                anchors.fill: parent
+                                spacing: 0
+
+                                Item {
+                                    Layout.fillHeight: true
+                                    Layout.preferredWidth: height
+                                    Accessible.role: Accessible.Pane
+
+                                    Button {
+                                        anchors.fill: parent
+
+                                        ToolTip.visible: hovered
+                                        ToolTip.text: Singletons.Strings.selectPreviousFeature
+                                        enabled: geoJsonHelper.multipleFeatures
+
+                                        background: Rectangle{
+                                            color: "transparent"
+                                            anchors.fill: parent
+                                        }
+
+                                        IconFont {
+                                            anchors.centerIn: parent
+                                            icon: _icons.chevron_left
+                                            iconSizeMultiplier: 1
+                                            color: parent.enabled ? Singletons.Colors.mainButtonBackgroundColor : Singletons.Colors.mediumGray
+                                            Accessible.ignored: true
+                                        }
+
+                                        onClicked: {
+                                            clearErrors();
+                                            var featureToGet = geoJsonHelper.currentFeature === 0
+                                                    ? geoJsonHelper.numberOfFeatures - 1
+                                                    : geoJsonHelper.currentFeature - 1;
+                                            geoJsonHelper.getFeature(featureToGet);
+                                        }
+
+                                        Accessible.role: Accessible.Button
+                                        Accessible.name: Singletons.Strings.selectPreviousFeature
+                                        Accessible.description: Singletons.Strings.selectPreviousFeature
+                                        Accessible.onPressAction: {
+                                            if (enabled && visible) {
+                                                clicked();
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Item {
+                                    Layout.fillHeight: true
+                                    Layout.fillWidth: true
+                                    Accessible.role: Accessible.Pane
+
+                                    Controls.StyledTextField {
+                                        id: featureToUse
+                                        ToolTip.visible: hovered
+                                        ToolTip.text: Singletons.Strings.enterASpecificFeature
+                                        placeholderText: Singletons.Strings.enterASpecificFeature
+                                        anchors.fill: parent
+                                        text: "1"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        leftPadding: 0
+                                        rightPadding: 0
+                                        font.pointSize: Singletons.Config.mediumFontSizePoint
+                                        enabled: geoJsonHelper.multipleFeatures
+                                        onAccepted: {
+                                            clearErrors();
+
+                                            var enteredNumber;
+
+                                            if (!text.match(/^\d+$/)) {
+                                                enteredNumber = 1;
+                                            }
+                                            else {
+                                                enteredNumber = parseInt(text, 10);
+                                            }
+
+                                            if (enteredNumber < 0 || enteredNumber === 0) {
+                                                enteredNumber = 1;
+                                            }
+
+                                            if (enteredNumber > geoJsonHelper.numberOfFeatures) {
+                                                enteredNumber = geoJsonHelper.numberOfFeatures;
+                                            }
+
+                                            enteredNumber--;
+
+                                            geoJsonHelper.getFeature(enteredNumber);
+                                        }
+                                        Accessible.name: placeholderText
+
+                                        Connections {
+                                            target: geoJsonHelper
+                                            onCurrentFeatureChanged: {
+                                                featureToUse.text = geoJsonHelper.currentFeature + 1;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Item {
+                                    Layout.fillHeight: true
+                                    Layout.preferredWidth: height
+                                    Accessible.role: Accessible.Pane
+
+                                    Button {
+                                        anchors.fill: parent
+
+                                        ToolTip.visible: hovered
+                                        ToolTip.text: Singletons.Strings.selectNextFeature
+                                        enabled: geoJsonHelper.multipleFeatures
+
+                                        background: Rectangle{
+                                            color: "transparent"
+                                            anchors.fill: parent
+                                        }
+
+                                        IconFont {
+                                            anchors.centerIn: parent
+                                            icon: _icons.chevron_right
+                                            iconSizeMultiplier: 1
+                                            color: parent.enabled ? Singletons.Colors.mainButtonBackgroundColor : Singletons.Colors.mediumGray
+                                            Accessible.ignored: true
+                                        }
+
+                                        onClicked: {
+                                            clearErrors();
+                                            var featureToGet = geoJsonHelper.currentFeature === geoJsonHelper.numberOfFeatures - 1
+                                                    ? 0
+                                                    : geoJsonHelper.currentFeature + 1;
+                                            console.log(featureToGet)
+                                            geoJsonHelper.getFeature(featureToGet);
+                                        }
+
+                                        Accessible.role: Accessible.Button
+                                        Accessible.name: Singletons.Strings.selectNextFeature
+                                        Accessible.description: Singletons.Strings.selectNextFeature
+                                        Accessible.onPressAction: {
+                                            if (enabled && visible) {
+                                                clicked();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Accessible.role: Accessible.Pane
+
+                            Text {
+                                anchors.fill: parent
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                text: Singletons.Strings.viewingFeatureXofX.arg(geoJsonHelper.currentFeature + 1).arg(geoJsonHelper.numberOfFeatures)
+                                color: Singletons.Colors.darkGray
+                                font.pointSize: Singletons.Config.xSmallFontSizePoint
+                                font.family: defaultFontFamily
+                                wrapMode: Text.Wrap
+                            }
+                        }
+                    }
+
+                    Accessible.role: Accessible.Pane
+                }
+
+                Rectangle {
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: sf(1)
+                    color: Singletons.Colors.formElementBorderColor
+                    Accessible.role: Accessible.Separator
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Accessible.role: Accessible.Pane
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        spacing: sf(6)
+                        Item {
+                            Layout.fillHeight: true
+                            Accessible.ignored: true
+                        }
+                        Button {
+                            Layout.preferredHeight: sf(30)
+                            Layout.fillWidth: true
+                            ToolTip.text: Singletons.Strings.saveAsGeojson
+                            ToolTip.visible: hovered
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(parent, "clear")
+                                radius: sf(4)
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: app.info.properties.mainButtonBorderColor
+                                }
+                            RowLayout {
+                                anchors.fill: parent
+                                spacing: 0
+                                Item {
+                                    Layout.fillHeight: true
+                                    Layout.fillWidth: true
+                                    Layout.leftMargin: sf(10)
+                                    Accessible.role: Accessible.Pane
+
+                                    Text {
+                                        anchors.fill: parent
+                                        verticalAlignment: Text.AlignVCenter
+                                        text: Singletons.Strings.saveAsGeojson
+                                        font.family: defaultFontFamily
+                                        font.pointSize: Singletons.Config.smallFontSizePoint
+                                        elide: Text.ElideRight
+                                        color: app.info.properties.mainButtonBorderColor
+                                    }
+                                }
+                                Item {
+                                    Layout.fillHeight: true
+                                    Layout.preferredWidth: height
+                                    Accessible.role: Accessible.Pane
+
+                                    IconFont {
+                                        anchors.centerIn: parent
+                                        icon: _icons.download
+                                        iconSizeMultiplier: .8
+                                        color: app.info.properties.mainButtonBorderColor
+                                    }
+                                }
+                            }
+
+                            onClicked: {
+                                geoJsonHelper.saveGeoJsonToFile(geoJsonHelper.geojson, "tpk_saved_geojson_%1".arg(Date.now().toString()));
+                            }
+
+                            Accessible.role: Accessible.Button
+                            Accessible.name: Singletons.Strings.saveAsGeojson
+                            Accessible.description: Singletons.Strings.saveAsGeojson
+                            Accessible.onPressAction: {
+                                if (enabled && visible) {
+                                    clicked();
+                                }
+                            }
+                        }
+
+                        Button {
+                            Layout.preferredHeight: sf(30)
+                            Layout.fillWidth: true
+                            ToolTip.text: Singletons.Strings.clearAllData
+                            ToolTip.visible: hovered
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(parent, "clear")
+                                radius: sf(4)
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: "red"
+                                }
+
+                            RowLayout {
+                                anchors.fill: parent
+                                spacing: 0
+
+                                Item {
+                                    Layout.fillHeight: true
+                                    Layout.fillWidth: true
+                                    Layout.leftMargin: sf(10)
+                                    Accessible.role: Accessible.Pane
+
+                                    Text {
+                                        anchors.fill: parent
+                                        verticalAlignment: Text.AlignVCenter
+                                        text: Singletons.Strings.clearAllData
+                                        font.family: defaultFontFamily
+                                        font.pointSize: Singletons.Config.smallFontSizePoint
+                                        elide: Text.ElideRight
+                                        color: "red"
+                                    }
+                                }
+
+                                Item {
+                                    Layout.fillHeight: true
+                                    Layout.preferredWidth: height
+                                    Accessible.role: Accessible.Pane
+
+                                    IconFont {
+                                        anchors.centerIn: parent
+                                        icon: _icons.trash_bin
+                                        iconSizeMultiplier: .8
+                                        color: "red"
+                                    }
+                                }
+                            }
+                            onClicked: {
+                                geoJsonHelper.geojson = null;
+                                geoJsonPopup.close();
+                            }
+                            Accessible.role: Accessible.Button
+                            Accessible.name: Singletons.Strings.clearAllData
+                            Accessible.description: Singletons.Strings.clearAllData
+                            Accessible.onPressAction: {
+                                if (enabled && visible) {
+                                    clicked();
+                                }
+                            }
+                        }
+                        Item {
+                            Layout.fillHeight: true
+                            Accessible.ignored: true
+                        }
+                    }
+                }
             }
         }
     }
@@ -314,6 +702,7 @@ Item {
                 }
 
                 onClicked: {
+                    console.log(map.maximumZoomLevel)
                     if(map.zoomLevel < map.maximumZoomLevel){
                         map.zoomLevel = Math.floor(map.zoomLevel) + 1;
                     }
@@ -346,7 +735,7 @@ Item {
                     }
                 }
                 onClicked: {
-                    if(map.zoomLevel > 0 && map.zoomLevel > map.minimumZoomLevel){
+                    if (map.zoomLevel > 0 && map.zoomLevel > map.minimumZoomLevel){
                         map.zoomLevel = Math.ceil(map.zoomLevel) - 1;
                     }
                 }
@@ -388,7 +777,7 @@ Item {
                 Text {
                     id: drawingNotice
                     anchors.fill: parent
-                    font.family: notoRegular
+                    font.family: defaultFontFamily
                     font.pointSize: Singletons.Config.xSmallFontSizePoint
                     verticalAlignment: Text.AlignVCenter
                     wrapMode: Text.Wrap
@@ -410,6 +799,8 @@ Item {
            z: previewMap.z + 3
     }
 
+
+
     //--------------------------------------------------------------------------
 
     DropArea {
@@ -420,6 +811,7 @@ Item {
             // drag.urls
         }
         onDropped: {
+            clearErrors();
 
             var notJSON = false;
 
@@ -437,12 +829,11 @@ Item {
                 for (var x = 0; x < drop.urls.length; x++) {
 
                     var url = drop.urls[x].toString();
-                    var fileType = url.substr(url.length-4, 4);
 
-                    if (fileType === ".prj") {
+                    if (url.search(/.prj$/gi) > -1) {
                         projectionFilePath = url;
                     }
-                    if (fileType === ".shp") {
+                    if (url.search(/.shp$/gi) > -1) {
                         shapeFilePath = url;
                     }
                 }
@@ -479,13 +870,14 @@ Item {
                             coordinateSystem = "";
                             return;
                         }
-
-                        console.log(coordinateSystem);
                     }
                 }
 
                 if (shapeFilePath !== "") {
-
+                    busyIndicator.visible = true;
+                    workerScriptProgressIndicator.show();
+                    workerScriptProgressIndicator.progressIcon = workerScriptProgressIndicator.working;
+                    workerScriptProgressIndicator.progressText = qsTr("Reading shapefile..");
                     workerScript.sendMessage({"path": shapeFilePath, "coordinate_system": coordinateSystem});
                 }
             }
@@ -872,8 +1264,9 @@ Item {
                 console.log("paste")
                 if (AppFramework.clipboard.dataAvailable) {
                     try {
-                        var json = JSON.parse(AppFramework.clipboard.text)
-                        geoJsonHelper.parseGeometry(json);
+                        var json = JSON.parse(AppFramework.clipboard.text);
+                        geoJsonHelper.setGeoJson(json);
+                        geoJsonHelper.getFeature(0);
                     }
                     catch(e) {
                         console.log("not json")
@@ -894,7 +1287,7 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    MapPolyline{
+    MapPolyline {
         id: drawnPolyline
         line.width: sf(3)
         line.color: drawnExtentOutlineColor
@@ -902,7 +1295,7 @@ Item {
 
     //--------------------------------------------------------------------------
 
-    MapPolygon{
+    MapPolygon {
         id: drawnPolygon
         color: drawingExtentFillColor
         border.width: sf(2)
@@ -1018,6 +1411,18 @@ Item {
             }
 
             mapViewPlus.map.fitViewportToMapItems();
+
+            if (!geoJsonPopup.visible) {
+                geoJsonPopup.open();
+            }
+        }
+
+        onUnsupportedGeometry: {
+            drawingFinished();
+            clearDrawingCanvas();
+            clearMap();
+            drawingCleared();
+            _updateDrawingHistory("clear", null);
         }
 
         onError: {
@@ -1060,7 +1465,7 @@ Item {
                             text: qsTr("Enter a title")
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: Singletons.Config.baseFontSizePoint
-                            font.family: notoRegular
+                            font.family: defaultFontFamily
                         }
                     }
                 }
@@ -1115,7 +1520,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: Singletons.Strings.cancel
                                 font.pointSize: Singletons.Config.smallFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
 
                             onClicked: {
@@ -1145,7 +1550,7 @@ Item {
                                 textFormat: Text.RichText
                                 text: Singletons.Strings.create
                                 font.pointSize: Singletons.Config.smallFontSizePoint
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                             }
 
                             onClicked: {
@@ -1241,7 +1646,7 @@ Item {
                                 anchors.fill: parent
                                 verticalAlignment: Text.AlignVCenter
                                 text: name
-                                font.family: notoRegular
+                                font.family: defaultFontFamily
                                 font.pointSize: Singletons.Config.smallFontSizePoint
                                 elide: Text.ElideRight
                                 color: app.info.properties.mainButtonFontColor
@@ -1258,7 +1663,7 @@ Item {
                 Button {
                     Layout.fillHeight: true
                     Layout.preferredWidth: height
-                    ToolTip.text: qsTr("Download as geojson")
+                    ToolTip.text: Singletons.Strings.saveAsGeojson
                     ToolTip.visible: hovered
                     background: Rectangle {
                         anchors.fill: parent
@@ -1276,7 +1681,15 @@ Item {
                     }
 
                     onClicked: {
-                        geoJsonHelper.saveGeojsonToFile(JSON.parse(geojson), name);
+                        geoJsonHelper.saveGeoJsonToFile(JSON.parse(geojson), name);
+                    }
+                    Accessible.role: Accessible.Button
+                    Accessible.name: Singletons.Strings.saveAsGeojson
+                    Accessible.description: Singletons.Strings.saveAsGeojson
+                    Accessible.onPressAction: {
+                        if (enabled && visible) {
+                            clicked();
+                        }
                     }
                 }
                 Button {
@@ -1304,6 +1717,14 @@ Item {
                         appDatabase.write(sql);
                         _loadBookmarks();
                     }
+                    Accessible.role: Accessible.Button
+                    Accessible.name: Singletons.Strings.deleteBookmark
+                    Accessible.description: Singletons.Strings.deleteBookmark
+                    Accessible.onPressAction: {
+                        if (enabled && visible) {
+                            clicked();
+                        }
+                    }
                 }
             }
         }
@@ -1317,12 +1738,19 @@ Item {
 
         onMessage: {
             if (messageObject.hasOwnProperty("geojson")){
-                geoJsonHelper.parseGeometry(messageObject.geojson);
-                // messageObject.geojson;
+                workerScriptProgressIndicator.progressIcon = workerScriptProgressIndicator.success
+                workerScriptProgressIndicator.progressText = Singletons.Strings.shapefileSuccessfullyImported
+                geoJsonHelper.setGeoJson(messageObject.geojson);
+                busyIndicator.visible = false;
+                geoJsonHelper.getFeature(0);
+                geoJsonPopup.open();
             }
             if (messageObject.hasOwnProperty("error")){
                 drawingError("Error: %1".arg(messageObject.error.message));
-                // messageObject.error.message
+                busyIndicator.visible = false;
+            }
+            if (messageObject.hasOwnProperty("status")){
+                workerScriptProgressIndicator.progressText = messageObject.status;
             }
         }
     }
@@ -1330,7 +1758,6 @@ Item {
     // METHODS /////////////////////////////////////////////////////////////////
 
     function getCurrentGeometry(){
-        console.log("----------------getCurrentGeometry():", geometryType);
         var g;
         if (drawMultipath) {
             g = getMutlipathGeometry();

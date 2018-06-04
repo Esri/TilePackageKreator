@@ -36,4 +36,10 @@ QtObject {
     readonly property string kDatabasePath: "~/ArcGIS/Data/Sql"
     readonly property string kDatabaseName: "tilepackagekreator.sqlite"
 
+    readonly property string kAllowAllZoomLevels: "allowAllZoomLevels"
+    readonly property string kAllowNonWebMercatorServices: "allowNonWebMercatorServices"
+    readonly property string kTimeOutUnresponsiveServices: "timeoutUnresponsiveServices"
+    readonly property string kTimeOutValue: "timeoutValue"
+    readonly property string kSearchQueryString: "searchQueryString"
+    readonly property string kIncludeCurrentUserInSearch: "includeCurrentUser"
 }

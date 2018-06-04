@@ -30,6 +30,7 @@ QtObject {
     readonly property string addTileService: qsTr("Add a tile service manually")
     readonly property string addTileServiceDesc: qsTr("This control will reveal an input form which the user can enter a url for a tile service to add to the list.")
     readonly property string alertMessageDesc: qsTr("This alert message provides information about where .pitem files are saved, or if there was an error.")
+    readonly property string allowNonWebMerctorServices: qsTr("Allow Non-Web Mercator Services <br> <span style=\"font-size:10pt; color:\'red'\"><strong>NOTE: Map may not display but export will still work.</strong></span>")
     readonly property string animatedSpinner: qsTr("animated spinner")
     readonly property string animatedSpinnerDesc: qsTr("This is an animated spinner that appears when network queries are in progress.")
 
@@ -48,6 +49,7 @@ QtObject {
     readonly property string cancel: qsTr("Cancel")
     readonly property string cancelling: qsTr("Cancelling")
     readonly property string cancellingUpload: qsTr("Cancelling Upload.")
+    readonly property string clearAllData: qsTr("Clear all data")
     readonly property string contextMenuDesc: qsTr("Context menu for this service.")
     readonly property string checkingSpatialReference: qsTr("Checking Spatial Reference")
     readonly property string create: qsTr("Create")
@@ -67,6 +69,7 @@ QtObject {
     readonly property string deleteBookmark: qsTr("Delete Bookmark")
     readonly property string deleteExtent: qsTr("Delete Extent")
     readonly property string deleteHistory: qsTr("Delete History")
+    readonly property string deleteTileService: qsTr("Delete tile service")
     readonly property string description: qsTr("Description")
     readonly property string descriptionCopyPaste: qsTr("Copy and paste description text here.")
     readonly property string descriptionCharCountDesc: qsTr("This text displays the number of charcters left available in the description text area.")
@@ -85,6 +88,8 @@ QtObject {
 
 
     // E -----------------------------------------------------------------------
+    readonly property string enableAllZoomLevels: qsTr("Enable zoom levels greater than 21.<br> <span style=\"font-size:11pt; color:\'red'\">NOTE: Exports often fail above level 21 regardless of area of interest.</span>")
+    readonly property string enterASpecificFeature: qsTr("Enter a specific feature to use")
     readonly property string enterATitle: qsTr("Enter a title")
     readonly property string enterUrlForTileService: qsTr("Enter a url for a tile service.")
     readonly property string estimatedOutputSize: qsTr("Estimated Output Size")
@@ -166,14 +171,20 @@ QtObject {
 
     // S -----------------------------------------------------------------------
     readonly property string saveAsBookmark: qsTr("Save as bookmark")
+    readonly property string saveAsGeojson: qsTr("Save as geojson")
     readonly property string saveTo: qsTr("Save To")
     readonly property string saveToDesc: qsTr("This button will open a file dialog chooser that allows the user to select the folder to save the tile package to locally.")
     readonly property string saveToLocationDesc: qsTr("Selected save to location")
     readonly property string saveTpkLocally: qsTr("Save tile package locally")
     readonly property string searchAddressOrLatLon: qsTr("Search address or @lat,lon")
     readonly property string selectAnOperation: qsTr("Select an Operation")
+    readonly property string selectNextFeature: qsTr("Select next feature")
+    readonly property string selectPreviousFeature: qsTr("Select previous feature")
     readonly property string selectTileService: qsTr("Select tile service to be used as the source for the tile package")
     readonly property string selectTileServiceDesc: qsTr("This control will select the tile service to export tiles from and will transition to the export area and details selection view.")
+    readonly property string settings: qsTr("Settings")
+    readonly property string settingsDesc: qsTr("The settings view allows you to change various parameters used in the Tile Package Kreator")
+    readonly property string shapefileSuccessfullyImported: qsTr("Shapefile successfully read and converted to geojson.")
     readonly property string shareThisItemWith: qsTr("Share this item with:")
     readonly property string sharingItem: qsTr("Sharing item.")
     readonly property string signOut: qsTr("Sign out")
@@ -186,9 +197,10 @@ QtObject {
     readonly property string tileServiceThumbnailDesc: qsTr("Tile service thumbnail image.")
     readonly property string tileServiceTitleDesc: qsTr("Title of the tile service.")
     readonly property string tileServiceUrlExample: qsTr("Enter url (e.g. http://someservice.gov/arcgis/rest/services/example/MapServer)")
+    readonly property string timeOutAfter: qsTr("Time out after:")
+    readonly property string timeOutNonResponsive: qsTr("Time out non-responsive services when querying available services.<br> <span style=\"font-size:11pt; color:\'red'\">Sometimes services go down or change. This will kill the request to those in the time set,<br> rather than waiting for the Network Request to time out, which could be up over 60 seconds.</span> ")
     readonly property string title: qsTr("Title")
     readonly property string tpkFilesOnly: qsTr(".tpk files only please")
-
 
     // U -----------------------------------------------------------------------
     readonly property string updatesAvailable: qsTr("Updates Available")
@@ -249,4 +261,6 @@ QtObject {
     property string xUpdatesAvaliableDesc: qsTr("This button is enabled when there are updates available to the application. The action on this button will only work when the button is enabled via the application.")
     property string uploadedSeeX: qsTr("Uploaded. <a href=\"%1\">See Tile Package Item</a>")
     property string uploadingAndSharedSeeX: qsTr("Uploaded and Shared. <a href=\"%1\">See Tile Package Item</a>")
+    property string viewingFeatureXofX: qsTr("Viewing feature %1 of %2")
+    property string xSeconds: qsTr("%1 Seconds")
 }
