@@ -85,7 +85,9 @@ Item {
         mainView.appToolBar.backButtonVisible = true;
         mainView.appToolBar.historyButtonEnabled = true;
         mainView.appToolBar.settingsButtonEnabled = false;
-        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage
+        mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage;
+        mapViewPlus.mapTileService = currentTileService.url;
+        mapViewPlus.mapTileServiceUsesToken = currentTileService.useTokenToAccess;
     }
 
     //--------------------------------------------------------------------------
@@ -161,8 +163,8 @@ Item {
                             mapDefaultLong: app.info.properties.mapDefaultLong
                             mapDefaultZoomLevel: (calledFromAnotherApp && dlr.zoomLevel !== null) ? dlr.zoomLevel : app.info.properties.mapDefaultZoomLevel
                             mapDefaultCenter: (calledFromAnotherApp && dlr.center !== null) ? dlr.center : {"lat": app.info.properties.mapDefaultLat, "long": app.info.properties.mapDefaultLong }
-                            mapTileService: currentTileService.url
-                            mapTileServiceUsesToken: currentTileService.useTokenToAccess
+//                            mapTileService: currentTileService.url
+//                            mapTileServiceUsesToken: currentTileService.useTokenToAccess
 
                             Component.onCompleted: {
                                 zoomLevelIndicator.text = "%1".arg(parseFloat(mapViewPlus.map.zoomLevel).toFixed(1));
@@ -440,8 +442,13 @@ Item {
                         tpkTitle: exportView.extractDefaultTPKTitle(exportView.currentTileService.title)
 
                         onChangeTileService: {
+                            if (mapViewPlus.map !== null) {
+                                mapViewPlus.map.clearData();
+                            }
                             exportView.currentTileIndex = index;
                             exportView.currentTileService = availableServices.get(index);
+                            mapViewPlus.mapTileService = exportView.currentTileService.url;
+                            mapViewPlus.mapTileServiceUsesToken = exportView.currentTileService.useTokenToAccess;
                         }
 
                         onExportZoomLevelsChanged: {

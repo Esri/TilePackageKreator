@@ -1218,7 +1218,7 @@ Item {
         anchors.fill: parent
         defaultCenter: mapDefaultCenter
         defaultZoomLevel: mapDefaultZoomLevel
-        mapService: mapTileService
+        mapService: mapTileService !== null ? mapTileService : ""
         useToken: mapTileServiceUsesToken
         z: 50000
         focus: !drawing

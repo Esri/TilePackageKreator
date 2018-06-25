@@ -82,12 +82,6 @@ Item {
                     name: "ArcGIS.mapping.mapTypes.mapSources"
                     value: internal.mapSources
                 }
-
-//                PluginParameter {
-//                    id: pluginMaxZoomLevel
-//                    name: "ArcGIS.mapping.maximumZoomLevel"
-//                    value: exportDetails.maxLevels
-//                }
             }
 
             center: QtPositioning.coordinate(defaultCenter.lat,defaultCenter.long)
@@ -103,14 +97,12 @@ Item {
             }
 
             gesture.onFlickStarted: {
-                console.log('flick started');
             }
+
             gesture.onPinchStarted: {
-                console.log('pinch started');
             }
 
             Component.onCompleted: {
-                clearData();
             }
 
             onZoomLevelChanged: {
