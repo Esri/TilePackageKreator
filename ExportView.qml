@@ -86,8 +86,15 @@ Item {
         mainView.appToolBar.historyButtonEnabled = true;
         mainView.appToolBar.settingsButtonEnabled = false;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.createNewTilePackage;
+    }
+
+    StackView.onActivated: {
         mapViewPlus.mapTileService = currentTileService.url;
         mapViewPlus.mapTileServiceUsesToken = currentTileService.useTokenToAccess;
+    }
+
+    StackView.onDeactivating: {
+        mapViewPlus.map.clearData();
     }
 
     //--------------------------------------------------------------------------
@@ -442,9 +449,9 @@ Item {
                         tpkTitle: exportView.extractDefaultTPKTitle(exportView.currentTileService.title)
 
                         onChangeTileService: {
-                            if (mapViewPlus.map !== null) {
-                                mapViewPlus.map.clearData();
-                            }
+//                            if (mapViewPlus.map !== null) {
+//                                mapViewPlus.map.clearData();
+//                            }
                             exportView.currentTileIndex = index;
                             exportView.currentTileService = availableServices.get(index);
                             mapViewPlus.mapTileService = exportView.currentTileService.url;
