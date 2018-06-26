@@ -1218,7 +1218,7 @@ Item {
         anchors.fill: parent
         defaultCenter: mapDefaultCenter
         defaultZoomLevel: mapDefaultZoomLevel
-        mapService: mapTileService
+        mapService: mapTileService !== null ? mapTileService : ""
         useToken: mapTileServiceUsesToken
         z: 50000
         focus: !drawing
@@ -2115,6 +2115,14 @@ Item {
 
     function _loadBookmarks(){
         userBookmarks = appDatabase.read("SELECT * FROM 'bookmarks' WHERE user IS '%1'".arg(portal.user.email));
+    }
+
+    //--------------------------------------------------------------------------
+
+    function mapClearData(){
+        if (map.mapReady && map !== null) {
+            map.clearData();
+        }
     }
 
     // END /////////////////////////////////////////////////////////////////////
