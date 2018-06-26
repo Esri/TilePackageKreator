@@ -34,16 +34,9 @@ Item {
     property bool exportHistoryExists: false
     property bool uploadHistoryExists: false
 
-//    property var xHistory
-//    property var uHistory
-
-
     // SIGNAL IMPLEMENTATIONS //////////////////////////////////////////////////
 
     Component.onCompleted: {
-//        xHistory = appDatabase.read("SELECT * FROM 'exports' ORDER BY OBJECTID DESC");
-        getExportHistory();
-        getUploadHistory();
     }
 
     //--------------------------------------------------------------------------
@@ -55,6 +48,10 @@ Item {
         mainView.appToolBar.backButtonEnabled = true;
         mainView.appToolBar.backButtonVisible = true;
         mainView.appToolBar.toolBarTitleLabel = Singletons.Strings.exportAndUploadHistory;
+    }
+    StackView.onActivated: {
+        getExportHistory();
+        getUploadHistory();
     }
 
     // UI //////////////////////////////////////////////////////////////////////
@@ -144,32 +141,6 @@ Item {
                     Item {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-
-//                        ListView {
-//                            id: exportListView
-//                            width: parent.width
-//                            height: parent.height
-//                            clip: true
-//                            flickableDirection: Flickable.VerticalFlick
-//                            model: xHistory
-//                            spacing: sf(5)
-//                            delegate: Rectangle {
-//                                width: parent.width
-//                                height: childrenRect.height
-//                                color: "gold"
-//                                Column{
-//                                    anchors.fill: parent
-//                                    Text {
-//                                        width: parent.width
-//                                        text: title
-//                                    }
-//                                    Text {
-//                                        width: parent.width
-//                                        text: new Date(transaction_date).toLocaleDateString() + " " + new Date(transaction_date).toLocaleTimeString()
-//                                    }
-//                                }
-//                            }
-//                        }
 
                         Flickable {
                             id: exportFlickable

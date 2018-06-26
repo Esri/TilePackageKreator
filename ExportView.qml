@@ -94,7 +94,7 @@ Item {
     }
 
     StackView.onDeactivating: {
-        mapViewPlus.map.clearData();
+        mapViewPlus.mapClearData();
     }
 
     //--------------------------------------------------------------------------
@@ -149,7 +149,7 @@ Item {
                 // MAP SECTION /////////////////////////////////////////////////
 
                 Rectangle {
-                    color: "#fff"
+                    color:"#fff"
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
@@ -164,14 +164,13 @@ Item {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             clip: true
+                            enabled: map !== null && map.mapReady
 
                             mapViewPlusPortal: exportView.portal
                             mapDefaultLat: app.info.properties.mapDefaultLat
                             mapDefaultLong: app.info.properties.mapDefaultLong
                             mapDefaultZoomLevel: (calledFromAnotherApp && dlr.zoomLevel !== null) ? dlr.zoomLevel : app.info.properties.mapDefaultZoomLevel
                             mapDefaultCenter: (calledFromAnotherApp && dlr.center !== null) ? dlr.center : {"lat": app.info.properties.mapDefaultLat, "long": app.info.properties.mapDefaultLong }
-//                            mapTileService: currentTileService.url
-//                            mapTileServiceUsesToken: currentTileService.useTokenToAccess
 
                             Component.onCompleted: {
                                 zoomLevelIndicator.text = "%1".arg(parseFloat(mapViewPlus.map.zoomLevel).toFixed(1));
@@ -199,6 +198,9 @@ Item {
                             }
 
                             onDrawingStarted: {
+                                if (!map.mapReady){
+                                    return;
+                                }
                             }
 
                             onDrawingFinished: {
@@ -237,6 +239,22 @@ Item {
                                             mapViewPlus.map.maximumZoomLevel = exportDetails.maxLevels;
                                         }
                                     }
+                                }
+                            }
+
+                            Rectangle {
+                                anchors.fill: parent
+                                color: "#333"
+                                visible: mapViewPlus.map === null || !mapViewPlus.map.mapReady
+                                Text {
+                                    anchors.fill: parent
+                                    anchors.margins: sf(20)
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: Text.AlignHCenter
+                                    wrapMode: Text.Wrap
+                                    text: qsTr("Error Loading Map Service: %1".arg(currentTileService.url))
+                                    font.pointSize: 18
+                                    color: "#fff"
                                 }
                             }
                         }
@@ -449,9 +467,6 @@ Item {
                         tpkTitle: exportView.extractDefaultTPKTitle(exportView.currentTileService.title)
 
                         onChangeTileService: {
-//                            if (mapViewPlus.map !== null) {
-//                                mapViewPlus.map.clearData();
-//                            }
                             exportView.currentTileIndex = index;
                             exportView.currentTileService = availableServices.get(index);
                             mapViewPlus.mapTileService = exportView.currentTileService.url;
