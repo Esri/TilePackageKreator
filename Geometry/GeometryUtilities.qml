@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.5
+import QtQuick 2.15
 
 QtObject {
 

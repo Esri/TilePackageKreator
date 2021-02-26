@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.3
+import QtQuick 2.15
 
 import ArcGIS.AppFramework 1.0
 

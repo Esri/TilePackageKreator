@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.9
+import QtQuick 2.15
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtLocation 5.3
@@ -434,7 +434,7 @@ Item {
 
                                         Connections {
                                             target: geoJsonHelper
-                                            onCurrentFeatureChanged: {
+                                            function onCurrentFeatureChanged() {
                                                 featureToUse.text = geoJsonHelper.currentFeature + 1;
                                             }
                                         }
@@ -909,33 +909,22 @@ Item {
             }
         }
 
-        Connections {
-            target: closePolygonMapItem
 
-            onEnabledChanged: {
-                if (closePolygonMapItem.enabled) {
-                    closePolygonMouseListener.updateMyPosition();
-                }
-                else {
-                    closePolygonMouseListener.visible = false;
-                }
-            }
-        }
 
         Connections {
             target: multipathDrawingMouseArea
-            onMapPanningFinished: {
+            function onMapPanningFinished() {
                 closePolygonMouseListener.updateMyPosition();
             }
 
-            onMapPanningStarted: {
+            function onMapPanningStarted() {
                 closePolygonMouseListener.visible = false;
             }
         }
 
         Connections {
             target: previewMap
-            onZoomLevelChanged: {
+            function onZoomLevelChanged() {
                 if (drawing && drawPolygon){
                     closePolygonMouseListener.updateMyPosition();
                 }
@@ -1388,6 +1377,19 @@ Item {
                border.width: sf(2)
             }
         }
+
+
+        onEnabledChanged: {
+            if (closePolygonMapItem.enabled) {
+                closePolygonMouseListener.updateMyPosition();
+            }
+            else {
+                closePolygonMouseListener.visible = false;
+            }
+        }
+
+
+
     }
 
     //--------------------------------------------------------------------------

@@ -15,7 +15,7 @@
  */
 
 import QtQml 2.2
-import QtQuick 2.7
+import QtQuick 2.15
 import QtQuick.Controls 1.4 as OldControls
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
@@ -111,7 +111,7 @@ Rectangle {
         Connections {
             target: bufferRadiusContainer
 
-            onVisibleChanged: {
+            function onVisibleChanged() {
                 if (bufferRadiusContainer.visible) {
                     details.contentHeight += bufferRadiusContainer.controlHeight;
                 }
@@ -234,14 +234,14 @@ Rectangle {
 
                             Connections {
                                 target: desiredLevelsSlider.second
-                                onValueChanged: {
+                                function onValueChanged() {
                                     tpkDetailsForm.exportZoomLevelsChanged();
                                 }
                             }
 
                             Connections {
                                 target: desiredLevelsSlider.first
-                                onValueChanged: {
+                                function onValueChanged() {
                                     tpkDetailsForm.exportZoomLevelsChanged();
                                 }
                             }

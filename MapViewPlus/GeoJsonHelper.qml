@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.5
+import QtQuick 2.15
 import ArcGIS.AppFramework 1.0
 import QtQuick.Dialogs 1.2
 import '../Geometry'

@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.7
+import QtQuick 2.15
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
@@ -1089,7 +1089,7 @@ Item {
     Connections {
         target: app
 
-        onIncomingUrlChanged: {
+        function onIncomingUrlChanged() {
             if (mapViewPlus.userDrawnExtent) {
                 mapViewPlus.clearExtentButton.clicked();
             }

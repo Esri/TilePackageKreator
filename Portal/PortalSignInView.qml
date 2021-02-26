@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.5
+import QtQuick 2.15
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.1
@@ -72,7 +72,7 @@ Rectangle {
     Connections {
         target: portal
 
-        onCanPublishChanged: {
+        function onCanPublishChanged() {
             if(!portal.clientMode) {
                 if(portal.canPublish) {
                     accepted()
@@ -80,7 +80,7 @@ Rectangle {
             }
         }
 
-        onSignedInChanged: {
+        function onSignedInChanged() {
             //console.log("PortalSignInView::onSignedInChange: ", portal.info, portal.user, portal.token);
             if (portal.signedIn && portal.user && (portal.user.orgId || portal.isPortal)) {
                 if(portal.clientMode) {
@@ -89,7 +89,7 @@ Rectangle {
             }
         }
 
-        onError: {
+        function onError() {
             portal.busy = false;
             signInItem.visible = !useOAuth;
             if (portal.user && !(portal.user.orgId || portal.isPortal)) {

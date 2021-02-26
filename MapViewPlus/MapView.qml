@@ -14,7 +14,7 @@
  *
  */
 
-import QtQuick 2.5
+import QtQuick 2.15
 import QtLocation 5.3
 import QtPositioning 5.3
 //------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ Item {
     Connections {
         target: portal
 
-        onTokenChanged: {
+        function onTokenChanged() {
             reset();
         }
     }
