@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.15
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 //------------------------------------------------------------------------------
@@ -148,6 +148,7 @@ Item {
                 spacing: sf(8)
                 Text {
                     Layout.fillHeight: true
+                    Layout.fillWidth: true
                     Layout.preferredWidth: contentWidth
                     text: qsTr("Search Query for Tile Services (see <a href='https://developers.arcgis.com/rest/users-groups-and-items/search.htm'>Search API</a> for more details)")
                     verticalAlignment: Text.AlignVCenter

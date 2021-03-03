@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.15
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 
@@ -324,7 +323,7 @@ Rectangle {
 
                     enabled: !portalInfoRequest.isBusy
                     placeholderText: qsTr("Example: https://webadaptor.example.com/arcgis")
-                    textColor: "black"
+                    color: "black"
                 }
 
                 GridLayout {

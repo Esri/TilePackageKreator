@@ -14,8 +14,7 @@
              *
               */
 import QtQuick 2.15
-import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 
@@ -90,18 +89,17 @@ Dialog {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         placeholderText: qsTr("Enter a subject")
-                        style: TextFieldStyle {
-                            background: Rectangle {
-                                anchors.fill: parent
-                                border.width: Singletons.Config.formElementBorderWidth
-                                border.color: Singletons.Colors.formElementBorderColor
-                                radius: Singletons.Config.formElementRadius
-                                color: Singletons.Colors.formElementBackground
-                            }
-                            textColor: Singletons.Colors.formElementFontColor
-                            font.family: defaultFontFamily
-
+                        background: Rectangle {
+                            anchors.fill: parent
+                            border.width: Singletons.Config.formElementBorderWidth
+                            border.color: Singletons.Colors.formElementBorderColor
+                            radius: Singletons.Config.formElementRadius
+                            color: Singletons.Colors.formElementBackground
                         }
+                        color: Singletons.Colors.formElementFontColor
+                        font.family: defaultFontFamily
+
+
                         onTextChanged: {
                              if(text.length > 0 && feedbackMessage.text.length > 0){
                                     sendFeedbackBtn.enabled = true;
@@ -138,16 +136,17 @@ Dialog {
                         id: feedbackMessage
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        style: TextAreaStyle {
-                            backgroundColor: Singletons.Colors.formElementBackground
-                            textColor: Singletons.Colors.formElementFontColor
-                            font.family: defaultFontFamily
-                            frame: Rectangle {
-                                border.width: Singletons.Config.formElementBorderWidth
-                                border.color: Singletons.Colors.formElementBorderColor
-                                anchors.fill: parent
-                            }
+                        background: Rectangle{
+
+                            border.width: Singletons.Config.formElementBorderWidth
+                            border.color: Singletons.Colors.formElementBorderColor
+                            anchors.fill: parent
+                            color: Singletons.Colors.formElementBackground
+
                         }
+                       color: Singletons.Colors.formElementFontColor
+                       font.family: defaultFontFamily
+
                         onTextChanged: {
                              if(text.length > 0 && feedbackSubject.text.length > 0){
                                     sendFeedbackBtn.enabled = true;
@@ -178,14 +177,13 @@ Dialog {
                             anchors.fill: parent
                             anchors.margins: 10 * AppFramework.displayScaleFactor
                             anchors.leftMargin: 0
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: Singletons.Config.buttonStates(control, "major")
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: app.info.properties.mainButtonBorderWidth
-                                    border.color: app.info.properties.mainButtonBorderColor
-                                }
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(control, "major")
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: app.info.properties.mainButtonBorderWidth
+                                border.color: app.info.properties.mainButtonBorderColor
                             }
 
                             Text {
@@ -220,15 +218,15 @@ Dialog {
                             anchors.margins: 10 * AppFramework.displayScaleFactor
                             anchors.rightMargin: 0
                             enabled: false
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: Singletons.Config.buttonStates(control)
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
-                                    border.color: app.info.properties.mainButtonBorderColor
-                                }
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(control)
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: app.info.properties.mainButtonBorderColor
                             }
+
 
                             Text {
                                 color: app.info.properties.mainButtonFontColor

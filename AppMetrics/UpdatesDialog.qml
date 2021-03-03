@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.15
-import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 //------------------------------------------------------------------------------
@@ -110,15 +109,14 @@ Dialog {
                                         Button {
                                             anchors.fill: parent
                                             anchors.margins: 10 * AppFramework.displayScaleFactor
-                                            style: ButtonStyle {
-                                                background: Rectangle {
-                                                    anchors.fill: parent
-                                                    color: Singletons.Config.buttonStates(control, "major")
-                                                    radius: app.info.properties.mainButtonRadius
-                                                    border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
-                                                    border.color: app.info.properties.mainButtonBorderColor
-                                                }
+                                            background: Rectangle {
+                                                anchors.fill: parent
+                                                color: Singletons.Config.buttonStates(control, "major")
+                                                radius: app.info.properties.mainButtonRadius
+                                                border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                                border.color: app.info.properties.mainButtonBorderColor
                                             }
+
 
                                             Text {
                                                 color: app.info.properties.mainButtonBorderColor
@@ -171,15 +169,14 @@ Dialog {
                             anchors.margins: 10 * AppFramework.displayScaleFactor
                             anchors.rightMargin: 0
                             enabled: true
-                            style: ButtonStyle {
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: Singletons.Config.buttonStates(control)
-                                    radius: app.info.properties.mainButtonRadius
-                                    border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
-                                    border.color: app.info.properties.mainButtonBorderColor
-                                }
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: Singletons.Config.buttonStates(control)
+                                radius: app.info.properties.mainButtonRadius
+                                border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.color: app.info.properties.mainButtonBorderColor
                             }
+
 
                             Text {
                                 color: app.info.properties.mainButtonFontColor
