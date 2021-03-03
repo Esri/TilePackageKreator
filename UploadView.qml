@@ -17,8 +17,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtGraphicalEffects 1.0
-import QtQuick.Dialogs 1.2
+import QtGraphicalEffects 1.12
+import QtQuick.Dialogs 1.3
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------

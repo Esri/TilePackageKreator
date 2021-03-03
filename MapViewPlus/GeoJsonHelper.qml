@@ -16,7 +16,7 @@
 
 import QtQuick 2.15
 import ArcGIS.AppFramework 1.0
-import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs 1.3
 import '../Geometry'
 import '../singletons' as Singletons
 

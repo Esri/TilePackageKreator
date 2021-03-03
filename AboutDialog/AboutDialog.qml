@@ -17,7 +17,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs 1.3
 
 import ArcGIS.AppFramework 1.0
 
@@ -81,7 +81,7 @@ Dialog {
         }
 
         AboutText {
-            text: "Copyright © 2018 Esri Inc. All Rights Reserved"
+            text: "Copyright © 2021 Esri Inc. All Rights Reserved"
         }
 
         AboutText {

@@ -18,8 +18,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtLocation 5.15
-import QtPositioning 5.3
-import QtGraphicalEffects 1.0
+import QtPositioning 5.15
+import QtGraphicalEffects 1.12
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 import ArcGIS.AppFramework.Controls 1.0

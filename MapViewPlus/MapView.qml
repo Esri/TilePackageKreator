@@ -16,7 +16,7 @@
 
 import QtQuick 2.15
 import QtLocation 5.15
-import QtPositioning 5.3
+import QtPositioning 5.15
 //------------------------------------------------------------------------------
 import "../Portal"
 
