@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.15
-import QtQuick.Controls 1.4 as OldControls
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtPositioning 5.15

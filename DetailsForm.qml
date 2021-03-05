@@ -16,7 +16,6 @@
 
 import QtQml 2.15
 import QtQuick 2.15
-import QtQuick.Controls 1.4 as OldControls
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs 1.3
@@ -680,11 +679,11 @@ Rectangle {
                             Layout.preferredHeight: sf(70)
 
 
-                            OldControls.ScrollView {
+                            ScrollView {
                                 id: views
                                 anchors.fill: parent
-                                horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-                                verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
+                                ScrollBar.horizontal.policy: Qt.ScrollBarAlwaysOff
+                                ScrollBar.vertical.policy: Qt.ScrollBarAsNeeded
                                 TextArea {
                                     id: tpkDescriptionTextArea
                                     height: sf(200)
