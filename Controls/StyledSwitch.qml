@@ -16,7 +16,6 @@
 
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Controls.Private 1.0
 
 Switch {
     property color disabledColor: "grey"
