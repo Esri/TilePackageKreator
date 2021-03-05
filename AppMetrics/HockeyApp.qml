@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.15
-import QtQuick.Window 2.0
+import QtQuick.Window 2.15
 
 Item {
     property string sdkVersion: "QMLSDK (%1):1.0.1".arg(Qt.platform.os)
