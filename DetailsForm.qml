@@ -24,7 +24,6 @@ import QtPositioning 5.15
 import QtGraphicalEffects 1.12
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 import "singletons" as Singletons
 import "Controls" as Controls
 //------------------------------------------------------------------------------

@@ -20,7 +20,6 @@ import QtQuick.Layouts 1.15
 import QtGraphicalEffects 1.12
 
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 
 import "../Controls"
 import "../singletons" as Singletons

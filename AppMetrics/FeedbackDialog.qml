@@ -229,7 +229,7 @@ Dialog {
 
 
                             Text {
-                                color: app.info.properties.mainButtonFontColor
+                                color: app.info.properties.mainButtonBorderColor
                                 anchors.centerIn: parent
                                 textFormat: Text.RichText
                                 text: qsTr("Send")
