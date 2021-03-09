@@ -1,4 +1,4 @@
-/* Copyright 2018 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  *
  */
 
-import QtQuick 2.5
-import QtLocation 5.3
-import QtPositioning 5.3
+import QtQuick 2.15
+import QtLocation 5.15
+import QtPositioning 5.15
 //------------------------------------------------------------------------------
 import "../Portal"
 
@@ -146,7 +146,7 @@ Item {
     Connections {
         target: portal
 
-        onTokenChanged: {
+        function onTokenChanged() {
             reset();
         }
     }

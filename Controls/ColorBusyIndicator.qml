@@ -1,4 +1,4 @@
-/* Copyright 2015 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,62 +14,61 @@
  *
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-import QtGraphicalEffects 1.0
-import QtQuick.Window 2.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtGraphicalEffects 1.12
+import QtQuick.Window 2.15
 
 BusyIndicator {
+    id: control
     property int implicitSize: 12
     property color backgroundColor: "#CCC"
 
-    style: BusyIndicatorStyle {
-        indicator: Item {
-            implicitHeight: implicitSize * Screen.logicalPixelDensity
-            implicitWidth: implicitSize * Screen.logicalPixelDensity
+    contentItem: Item {
+        implicitHeight: implicitSize * Screen.logicalPixelDensity
+        implicitWidth: implicitSize * Screen.logicalPixelDensity
 
-            opacity: control.running ? 1.0 : 0.0
+        opacity: control.running ? 1.0 : 0.0
 
-            Behavior on opacity {
-                NumberAnimation { duration: 200 }
+        Behavior on opacity {
+            NumberAnimation { duration: 200 }
+        }
+
+        Rectangle {
+            id: rect
+            width: parent.width
+            height: parent.height
+            color: Qt.rgba(0,0,0,0)
+            radius: width/2
+            border.width: width/6
+            visible: true
+        }
+
+        ConicalGradient {
+            width: rect.width
+            height: rect.height
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: backgroundColor }
+                GradientStop { position: 1.0; color: Qt.lighter(backgroundColor) }
             }
+            source: rect
 
             Rectangle {
-                id: rect
-                width: parent.width
-                height: parent.height
-                color: Qt.rgba(0,0,0,0)
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: rect.border.width
+                height: width
                 radius: width/2
-                border.width: width/6
-                visible: true
+                color: Qt.darker(backgroundColor)
             }
 
-            ConicalGradient {
-                width: rect.width
-                height: rect.height
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: backgroundColor }
-                    GradientStop { position: 1.0; color: Qt.lighter(backgroundColor) }
-                }
-                source: rect
-
-                Rectangle {
-                    anchors.top: parent.top
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: rect.border.width
-                    height: width
-                    radius: width/2
-                    color: Qt.darker(backgroundColor)
-                }
-
-                RotationAnimation on rotation {
-                    from: 0
-                    to: 360
-                    duration: 800
-                    loops: Animation.Infinite
-                }
+            RotationAnimation on rotation {
+                from: 0
+                to: 360
+                duration: 800
+                loops: Animation.Infinite
             }
         }
     }
+
 }

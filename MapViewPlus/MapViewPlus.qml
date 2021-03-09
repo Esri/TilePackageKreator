@@ -1,4 +1,4 @@
-/* Copyright 2018 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,14 @@
  *
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.3
-import QtLocation 5.3
-import QtPositioning 5.3
-import QtGraphicalEffects 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtLocation 5.15
+import QtPositioning 5.15
+import QtGraphicalEffects 1.12
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 import ArcGIS.AppFramework.Sql 1.0
 //------------------------------------------------------------------------------
 import "../Portal"
@@ -434,7 +433,7 @@ Item {
 
                                         Connections {
                                             target: geoJsonHelper
-                                            onCurrentFeatureChanged: {
+                                            function onCurrentFeatureChanged() {
                                                 featureToUse.text = geoJsonHelper.currentFeature + 1;
                                             }
                                         }
@@ -909,33 +908,22 @@ Item {
             }
         }
 
-        Connections {
-            target: closePolygonMapItem
 
-            onEnabledChanged: {
-                if (closePolygonMapItem.enabled) {
-                    closePolygonMouseListener.updateMyPosition();
-                }
-                else {
-                    closePolygonMouseListener.visible = false;
-                }
-            }
-        }
 
         Connections {
             target: multipathDrawingMouseArea
-            onMapPanningFinished: {
+            function onMapPanningFinished() {
                 closePolygonMouseListener.updateMyPosition();
             }
 
-            onMapPanningStarted: {
+            function onMapPanningStarted() {
                 closePolygonMouseListener.visible = false;
             }
         }
 
         Connections {
             target: previewMap
-            onZoomLevelChanged: {
+            function onZoomLevelChanged() {
                 if (drawing && drawPolygon){
                     closePolygonMouseListener.updateMyPosition();
                 }
@@ -1388,6 +1376,19 @@ Item {
                border.width: sf(2)
             }
         }
+
+
+        onEnabledChanged: {
+            if (closePolygonMapItem.enabled) {
+                closePolygonMouseListener.updateMyPosition();
+            }
+            else {
+                closePolygonMouseListener.visible = false;
+            }
+        }
+
+
+
     }
 
     //--------------------------------------------------------------------------

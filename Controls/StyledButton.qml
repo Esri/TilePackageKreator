@@ -1,4 +1,4 @@
-/* Copyright 2015 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  *
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Layouts 1.1
-import QtGraphicalEffects 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtGraphicalEffects 1.12
 
 import ArcGIS.AppFramework 1.0
 
@@ -54,7 +53,6 @@ Button {
 
     signal activated()
 
-    activeFocusOnPress: true
 
     //--------------------------------------------------------------------------
 
@@ -115,99 +113,97 @@ Button {
 
     //--------------------------------------------------------------------------
 
-    style: ButtonStyle {
-        padding {
-            left: 10 * AppFramework.displayScaleFactor
-            right: 10 * AppFramework.displayScaleFactor
-            top: 6 * AppFramework.displayScaleFactor
-            bottom: 6 * AppFramework.displayScaleFactor
+    leftPadding: 10 * AppFramework.displayScaleFactor
+    rightPadding: 10 * AppFramework.displayScaleFactor
+    topPadding: 6 * AppFramework.displayScaleFactor
+    bottomPadding: 6 * AppFramework.displayScaleFactor
+
+
+    contentItem: RowLayout {
+        spacing: labelSpacing
+
+        Item {
+            Layout.preferredHeight: parent.height
+            Layout.preferredWidth: Layout.preferredHeight
+
+            visible: labelImage.source > ""
+
+            Image {
+                id: labelImage
+
+                anchors.fill: parent
+
+                source: control.iconSource
+                fillMode: Image.PreserveAspectFit
+            }
+
+            ColorOverlay {
+                anchors.fill: labelImage
+
+                source: labelImage
+                color: labelText.color
+            }
         }
 
-        label: RowLayout {
-            spacing: labelSpacing
+        Text {
+            id: labelText
 
-            Item {
-                Layout.preferredHeight: parent.height
-                Layout.preferredWidth: Layout.preferredHeight
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
-                visible: labelImage.source > ""
-
-                Image {
-                    id: labelImage
-
-                    anchors.fill: parent
-
-                    source: control.iconSource
-                    fillMode: Image.PreserveAspectFit
-                }
-
-                ColorOverlay {
-                    anchors.fill: labelImage
-
-                    source: labelImage
-                    color: labelText.color
-                }
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            text: control.text
+            minimumPointSize: 8
+            fontSizeMode: Text.Fit
+            font {
+                pointSize: textPointSize
+                family: fontFamily
             }
+            elide: Text.ElideRight
+            color: control.enabled
+                   ? control.pressed
+                     ? pressedTextColor
+                     : control.hovered
+                       ? hoveredTextColor
+                       : textColor
+            : disabledTextColor
+        }
+        }
 
-            Text {
-                id: labelText
+            background: Rectangle {
+                implicitWidth: 110
 
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                radius: button.radius
 
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                text: control.text
-                minimumPointSize: 8
-                fontSizeMode: Text.Fit
-                font {
-                    pointSize: textPointSize
-                    family: fontFamily
-                }
-                elide: Text.ElideRight
                 color: control.enabled
                        ? control.pressed
-                         ? pressedTextColor
+                         ? pressedBackgroundColor
                          : control.hovered
-                           ? hoveredTextColor
-                           : textColor
-                : disabledTextColor
-            }
-            }
+                           ? hoveredBackgroundColor
+                           : backgroundColor
+                : disabledBackgroundColor
 
-                background: Rectangle {
-                    implicitWidth: 110
+                border {
+                    color: control.enabled ? borderColor : disabledBorderColor
+                    width: control.isDefault ? 2 : 1
+                }
 
-                    radius: button.radius
-
-                    color: control.enabled
-                           ? control.pressed
-                             ? pressedBackgroundColor
-                             : control.hovered
-                               ? hoveredBackgroundColor
-                               : backgroundColor
-                    : disabledBackgroundColor
-
-                    border {
-                        color: control.enabled ? borderColor : disabledBorderColor
-                        width: control.isDefault ? 2 : 1
+                Rectangle {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        bottom: parent.bottom
                     }
 
-                    Rectangle {
-                        anchors {
-                            left: parent.left
-                            top: parent.top
-                            bottom: parent.bottom
-                        }
+                    radius: parent.radius
+                    width: parent.width * button.progress
 
-                        radius: parent.radius
-                        width: parent.width * button.progress
-
-                        color: activateColor
-                        visible: activateDelay > 0 && progress > 0 && width > radius * 2
-                    }
+                    color: activateColor
+                    visible: activateDelay > 0 && progress > 0 && width > radius * 2
                 }
             }
+
 
             //--------------------------------------------------------------------------
 

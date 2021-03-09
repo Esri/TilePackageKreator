@@ -1,4 +1,4 @@
-/* Copyright 2015 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  *
  */
 
-import QtQuick 2.3
-import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles 1.2
-import QtQuick.Layouts 1.1
-import QtGraphicalEffects 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtGraphicalEffects 1.12
 
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 
 import "../Controls"
 
@@ -78,13 +76,12 @@ FocusScope {
                 pointSize: 18
                 family: fontFamily
             }
-            style: TextFieldStyle {
-                renderType: Text.QtRendering
-            }
+            renderType: Text.QtRendering
+
             activeFocusOnTab: true
             focus: true
             inputMethodHints: Qt.ImhNoAutoUppercase + Qt.ImhNoPredictiveText + Qt.ImhSensitiveData
-            textColor: "black"
+            color: "black"
             
             onAccepted: {
                 acceptButton.tryClick();
@@ -109,9 +106,9 @@ FocusScope {
             echoMode: TextInput.Password
             placeholderText: passwordText.text
             font: usernameField.font
-            style: usernameField.style
+            renderType: Text.QtRendering
             activeFocusOnTab: true
-            textColor: "black"
+            color: "black"
             
             onAccepted: {
                 acceptButton.tryClick();
@@ -145,7 +142,7 @@ FocusScope {
                 id: acceptButton
                 
                 text: busy ? qsTr("Signing In") : qsTr("Sign In")
-                isDefault: true
+                highlighted: true
                 enabled: !busy && usernameField.text.trim().length > 0 && passwordField.text.trim().length > 0
                 onClicked: {
                     tryClick();
@@ -158,34 +155,33 @@ FocusScope {
                     
                     portal.setUser(usernameField.text.trim(), passwordField.text.trim());
                 }
-                
-                style: ButtonStyle {
-                    padding {
-                        left: 10 * AppFramework.displayScaleFactor
-                        right: 10 * AppFramework.displayScaleFactor
-                    }
-                    
-                    label: Text {
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
-                        color: control.enabled ? (control.isDefault ? "white" : "dimgray") : "gray"
-                        text: control.text
-                        font {
-                            pointSize: 16
-                            capitalization: Font.AllUppercase
-                        }
-                    }
-                    
-                    background: Rectangle {
-                        color: (control.hovered | control.pressed) ? (control.isDefault ? "#e36b00" : "darkgray") : (control.isDefault ? "#e98d32" : "lightgray")
-                        border {
-                            color: control.activeFocus ? (control.isDefault ? "#e36b00" : "darkgray") : "transparent"
-                            width: control.activeFocus ? 2 : 1
-                        }
-                        radius: 4
-                        implicitWidth: 120 * AppFramework.displayScaleFactor
+
+
+                leftPadding: 10 * AppFramework.displayScaleFactor
+                rightPadding: 10 * AppFramework.displayScaleFactor
+
+
+                contentItem: Text {
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    color: control.enabled ? (control.isDefault ? "white" : "dimgray") : "gray"
+                    text: control.text
+                    font {
+                        pointSize: 16
+                        capitalization: Font.AllUppercase
                     }
                 }
+
+                background: Rectangle {
+                    color: (control.hovered | control.pressed) ? (control.isDefault ? "#e36b00" : "darkgray") : (control.isDefault ? "#e98d32" : "lightgray")
+                    border {
+                        color: control.activeFocus ? (control.isDefault ? "#e36b00" : "darkgray") : "transparent"
+                        width: control.activeFocus ? 2 : 1
+                    }
+                    radius: 4
+                    implicitWidth: 120 * AppFramework.displayScaleFactor
+                }
+
             }
             
             Item {
@@ -201,7 +197,30 @@ FocusScope {
                 text: qsTr("Cancel")
                 enabled: !busy
                 visible: !hideCancel
-                style: acceptButton.style
+
+                leftPadding: 10 * AppFramework.displayScaleFactor
+                rightPadding: 10 * AppFramework.displayScaleFactor
+
+                contentItem: Text {
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    color: control.enabled ? (control.isDefault ? "white" : "dimgray") : "gray"
+                    text: control.text
+                    font {
+                        pointSize: 16
+                        capitalization: Font.AllUppercase
+                    }
+                }
+
+                background: Rectangle {
+                    color: (control.hovered | control.pressed) ? (control.isDefault ? "#e36b00" : "darkgray") : (control.isDefault ? "#e98d32" : "lightgray")
+                    border {
+                        color: control.activeFocus ? (control.isDefault ? "#e36b00" : "darkgray") : "transparent"
+                        width: control.activeFocus ? 2 : 1
+                    }
+                    radius: 4
+                    implicitWidth: 120 * AppFramework.displayScaleFactor
+                }
 
                 onClicked: {
                     inputArea.rejected();
@@ -236,7 +255,7 @@ FocusScope {
     Connections {
         target: portal
 
-//        onSignedInChanged: {
+//        function onSignedInChanged() {
 //            if (portal.signedIn) {
 //                if (settings) {
 ////                    if (saveUserChecked) {
@@ -383,9 +402,9 @@ FocusScope {
                     echoMode: TextInput.Password
                     placeholderText: oldPasswordLabel.text
                     font: usernameField.font
-                    style: usernameField.style
+                    renderType: Text.QtRendering
                     activeFocusOnTab: true
-                    textColor: "black"
+                    color: "black"
 
                     onAccepted: {
                         resetButton.tryClick();
@@ -410,9 +429,9 @@ FocusScope {
                     echoMode: TextInput.Password
                     placeholderText: newPasswordLabel.text
                     font: usernameField.font
-                    style: usernameField.style
+                    renderType: Text.QtRendering
                     activeFocusOnTab: true
-                    textColor: "black"
+                    color: "black"
 
                     onAccepted: {
                         resetButton.tryClick();
@@ -437,9 +456,9 @@ FocusScope {
                     echoMode: TextInput.Password
                     placeholderText: confirmPasswordLabel.text
                     font: usernameField.font
-                    style: usernameField.style
+                    renderType: Text.QtRendering
                     activeFocusOnTab: true
-                    textColor: (text === newPasswordField.text) ? "black" : "red"
+                    color: (text === newPasswordField.text) ? "black" : "red"
 
                     onAccepted: {
                         resetButton.tryClick();
@@ -472,7 +491,7 @@ FocusScope {
                     Layout.alignment: Qt.AlignCenter
 
                     text: resetRequest.isBusy ? qsTr("Changing Password") : qsTr("Change Password")
-                    isDefault: true
+                    visible: true
                     enabled: !resetRequest.isBusy &&
                              oldPasswordField.text.trim().length > 0 &&
                              newPasswordField.text.trim().length > 0 &&
@@ -491,33 +510,30 @@ FocusScope {
                         resetRequest.sendRequest(username, oldPasswordField.text, newPasswordField.text);
                     }
 
-                    style: ButtonStyle {
-                        padding {
-                            left: 10 * AppFramework.displayScaleFactor
-                            right: 10 * AppFramework.displayScaleFactor
-                        }
+                    leftPadding: 10 * AppFramework.displayScaleFactor
+                    rightPadding: 10 * AppFramework.displayScaleFactor
 
-                        label: Text {
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            color: control.enabled ? (control.isDefault ? "white" : "dimgray") : "gray"
-                            text: control.text
-                            font {
-                                pointSize: 14
-                                capitalization: Font.AllUppercase
-                            }
-                        }
-
-                        background: Rectangle {
-                            color: (control.hovered | control.pressed) ? (control.isDefault ? "#e36b00" : "darkgray") : (control.isDefault ? "#e98d32" : "lightgray")
-                            border {
-                                color: control.activeFocus ? (control.isDefault ? "#e36b00" : "darkgray") : "transparent"
-                                width: control.activeFocus ? 2 : 1
-                            }
-                            radius: 4
-                            implicitWidth: 120 * AppFramework.displayScaleFactor
+                    contentItem: Text {
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        color: control.enabled ? (control.isDefault ? "white" : "dimgray") : "gray"
+                        text: control.text
+                        font {
+                            pointSize: 14
+                            capitalization: Font.AllUppercase
                         }
                     }
+
+                    background: Rectangle {
+                        color: (control.hovered | control.pressed) ? (control.isDefault ? "#e36b00" : "darkgray") : (control.isDefault ? "#e98d32" : "lightgray")
+                        border {
+                            color: control.activeFocus ? (control.isDefault ? "#e36b00" : "darkgray") : "transparent"
+                            width: control.activeFocus ? 2 : 1
+                        }
+                        radius: 4
+                        implicitWidth: 120 * AppFramework.displayScaleFactor
+                    }
+
                 }
             }
 

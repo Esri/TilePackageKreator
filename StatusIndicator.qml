@@ -1,4 +1,4 @@
-/* Copyright 2018 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  *
  */
 
-import QtQuick 2.6
-import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.1
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 import "singletons" as Singletons

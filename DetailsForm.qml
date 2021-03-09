@@ -1,4 +1,4 @@
-/* Copyright 2017 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  *
  */
 
-import QtQml 2.2
-import QtQuick 2.7
-import QtQuick.Controls 1.4 as OldControls
-import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.1
-import QtQuick.Dialogs 1.2
-import QtLocation 5.3
-import QtPositioning 5.3
-import QtGraphicalEffects 1.0
+import QtQml 2.15
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtQuick.Dialogs 1.3
+import QtLocation 5.15
+import QtPositioning 5.15
+import QtGraphicalEffects 1.12
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 import "singletons" as Singletons
 import "Controls" as Controls
 //------------------------------------------------------------------------------
@@ -111,7 +109,7 @@ Rectangle {
         Connections {
             target: bufferRadiusContainer
 
-            onVisibleChanged: {
+            function onVisibleChanged() {
                 if (bufferRadiusContainer.visible) {
                     details.contentHeight += bufferRadiusContainer.controlHeight;
                 }
@@ -234,14 +232,14 @@ Rectangle {
 
                             Connections {
                                 target: desiredLevelsSlider.second
-                                onValueChanged: {
+                                function onValueChanged() {
                                     tpkDetailsForm.exportZoomLevelsChanged();
                                 }
                             }
 
                             Connections {
                                 target: desiredLevelsSlider.first
-                                onValueChanged: {
+                                function onValueChanged() {
                                     tpkDetailsForm.exportZoomLevelsChanged();
                                 }
                             }
@@ -680,11 +678,11 @@ Rectangle {
                             Layout.preferredHeight: sf(70)
 
 
-                            OldControls.ScrollView {
+                            ScrollView {
                                 id: views
                                 anchors.fill: parent
-                                horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-                                verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
+                                ScrollBar.horizontal.policy: Qt.ScrollBarAlwaysOff
+                                ScrollBar.vertical.policy: Qt.ScrollBarAsNeeded
                                 TextArea {
                                     id: tpkDescriptionTextArea
                                     height: sf(200)

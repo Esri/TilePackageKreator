@@ -1,4 +1,4 @@
-/* Copyright 2018 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,12 @@
  *
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtGraphicalEffects 1.12
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 //------------------------------------------------------------------------------
 import "singletons" as Singletons
 import "Controls" as Controls
@@ -148,6 +147,7 @@ Item {
                 spacing: sf(8)
                 Text {
                     Layout.fillHeight: true
+                    Layout.fillWidth: true
                     Layout.preferredWidth: contentWidth
                     text: qsTr("Search Query for Tile Services (see <a href='https://developers.arcgis.com/rest/users-groups-and-items/search.htm'>Search API</a> for more details)")
                     verticalAlignment: Text.AlignVCenter

@@ -1,4 +1,4 @@
-/* Copyright 2017 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
  *
  */
 
-import QtQuick 2.7
-import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.1
-import QtGraphicalEffects 1.0
-import QtQuick.Dialogs 1.2
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtGraphicalEffects 1.12
+import QtQuick.Dialogs 1.3
 //------------------------------------------------------------------------------
 import ArcGIS.AppFramework 1.0
 //------------------------------------------------------------------------------

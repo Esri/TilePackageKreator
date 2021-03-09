@@ -1,4 +1,4 @@
-/* Copyright 2015 Esri
+/* Copyright 2021 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  *
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Layouts 1.1
-import QtGraphicalEffects 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtGraphicalEffects 1.12
 
 import ArcGIS.AppFramework 1.0
-import ArcGIS.AppFramework.Controls 1.0
 
 import "../Controls"
 import "../singletons" as Singletons
@@ -72,7 +70,7 @@ Rectangle {
     Connections {
         target: portal
 
-        onCanPublishChanged: {
+        function onCanPublishChanged() {
             if(!portal.clientMode) {
                 if(portal.canPublish) {
                     accepted()
@@ -80,7 +78,7 @@ Rectangle {
             }
         }
 
-        onSignedInChanged: {
+        function onSignedInChanged() {
             //console.log("PortalSignInView::onSignedInChange: ", portal.info, portal.user, portal.token);
             if (portal.signedIn && portal.user && (portal.user.orgId || portal.isPortal)) {
                 if(portal.clientMode) {
@@ -89,7 +87,7 @@ Rectangle {
             }
         }
 
-        onError: {
+        function onError() {
             portal.busy = false;
             signInItem.visible = !useOAuth;
             if (portal.user && !(portal.user.orgId || portal.isPortal)) {
