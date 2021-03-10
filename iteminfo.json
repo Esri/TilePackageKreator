@@ -10,7 +10,7 @@
     "commentsEnabled": true,
     "created": 1481688674000,
     "culture": "en-au",
-    "description": "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" font-family:'Avenir Next LT Pro'; font-size:14.5pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Tile package creation tool.</p></body></html>",
+    "description": "\n<p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Tile package creation tool.</p>",
     "documentation": null,
     "extent": [
     ],
@@ -19,17 +19,18 @@
     "id": "561a8441825441349a3b1ad23fdaea75",
     "industries": [
     ],
+    "isOrgItem": true,
     "itemControl": "admin",
     "languages": [
     ],
     "largeThumbnail": null,
-    "licenseInfo": "",
+    "licenseInfo": "\n<p style='-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><br /></p>",
     "listed": false,
-    "modified": 1529977877000,
+    "modified": 1615344851000,
     "name": "561a8441825441349a3b1ad23fdaea75.zip",
-    "numComments": 67,
+    "numComments": 68,
     "numRatings": 0,
-    "numViews": 365,
+    "numViews": 451,
     "owner": "appstudio_apps",
     "ownerFolder": null,
     "properties": null,
@@ -38,9 +39,10 @@
     "scoreCompleteness": 65,
     "screenshots": [
     ],
-    "size": 859236,
+    "size": 987045,
     "snippet": "Tile package creation tool.",
     "spatialReference": null,
+    "subInfo": 0,
     "tags": [
     ],
     "thumbnail": "thumbnail/thumbnail.png",
