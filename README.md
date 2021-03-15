@@ -1,7 +1,7 @@
 # Tile Package Kreator
 ![App](./thumbnail.png)
 
-Tile Package Kreator is a desktop utility that guides you in creating Tile Package files. Tile Package files are used by out of the box mobile apps like Survey123 for ArcGIS and Collector for ArcGIS to take basemaps offline. Custom apps built with the ArcGIS Runtime SDK can also work with Tile Package files. Typically, Tile Package files are used to help bring basemaps for offline use. 
+Tile Package Kreator is a desktop utility that guides you in creating Tile Package files. Tile Package files are used by out of the box mobile apps like ArcGIS Survey123, ArcGIS QuickCapture and ArcGIS Collector to take basemaps offline. Custom apps built with the ArcGIS Runtime SDK can also work with Tile Package files. Typically, Tile Package files are used to help bring basemaps for offline use. 
 
 
 ## How to use the app
