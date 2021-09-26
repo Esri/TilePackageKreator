@@ -17,18 +17,24 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
+import ArcGIS.AppFramework 1.0
+
 Switch {
+    id: control
+
     property color disabledColor: "grey"
     property color uncheckedColor: "red"
     property color checkedColor: "green"
 
     indicator: Rectangle {
+        id: rect
+
         property color shadow: control.checked ? Qt.darker(highlight, 1.2): "#999"
         property color bg: control.checked ? highlight : uncheckedColor
         property color highlight: control.enabled ? checkedColor : disabledColor
 
         implicitWidth: Math.round(implicitHeight * 3)
-        implicitHeight: Math.max(16, Math.round(TextSingleton.implicitHeight))
+        implicitHeight: 24 * AppFramework.displayScaleFactor
 
         border.color: "gray"
         color: "red"
@@ -37,9 +43,9 @@ Switch {
         Behavior on shadow {ColorAnimation{ duration: 80 }}
         Behavior on bg {ColorAnimation{ duration: 80 }}
         gradient: Gradient {
-            GradientStop {color: shadow; position: 0}
-            GradientStop {color: bg ; position: 0.2}
-            GradientStop {color: bg ; position: 1}
+            GradientStop {color: rect.shadow; position: 0}
+            GradientStop {color: rect.bg ; position: 0.2}
+            GradientStop {color: rect.bg ; position: 1}
         }
         Rectangle {
             color: "#44ffffff"

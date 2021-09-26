@@ -180,7 +180,7 @@ Dialog {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: Singletons.Config.buttonStates(control, "major")
+                                color: Singletons.Config.buttonStates(parent, "major")
                                 radius: app.info.properties.mainButtonRadius
                                 border.width: app.info.properties.mainButtonBorderWidth
                                 border.color: app.info.properties.mainButtonBorderColor
@@ -221,9 +221,9 @@ Dialog {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: Singletons.Config.buttonStates(control)
+                                color: Singletons.Config.buttonStates(parent)
                                 radius: app.info.properties.mainButtonRadius
-                                border.width: control.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
                             }
 

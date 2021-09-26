@@ -22,8 +22,9 @@ import QtGraphicalEffects 1.12
 import ArcGIS.AppFramework 1.0
 
 Button {
-    id: button
+    id: control
 
+    property string iconSource
     property real textPointSize: 13
 
     property color backgroundColor: "#fefefe"
@@ -46,7 +47,7 @@ Button {
     property int radius: height / 2
     property int labelSpacing: 5 * AppFramework.displayScaleFactor
 
-    readonly property alias progress: button.__progress
+    readonly property alias progress: control.__progress
     property real __progress: 0.0
 
     property string fontFamily
@@ -68,9 +69,7 @@ Button {
 
     onProgressChanged: {
         if (__progress === 1.0) {
-            if (activeFocusOnPress) {
-                forceActiveFocus();
-            }
+            forceActiveFocus();
             checked = true;
             activated();
         }
@@ -174,7 +173,7 @@ Button {
             background: Rectangle {
                 implicitWidth: 110
 
-                radius: button.radius
+                radius: control.radius
 
                 color: control.enabled
                        ? control.pressed
@@ -197,7 +196,7 @@ Button {
                     }
 
                     radius: parent.radius
-                    width: parent.width * button.progress
+                    width: parent.width * control.progress
 
                     color: activateColor
                     visible: activateDelay > 0 && progress > 0 && width > radius * 2
