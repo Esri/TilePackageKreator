@@ -1,6 +1,5 @@
 {
     "appLink": "",
-    "arcgisRuntime": 0,
     "capabilities": {
         "audio": false,
         "backgroundModes": {
@@ -123,6 +122,6 @@
     "version": {
         "major": 1,
         "micro": 1,
-        "minor": 4
+        "minor": 5
     }
 }
