@@ -78,7 +78,7 @@ Dialog {
 
                     delegate: Rectangle {
                         height: 50 * AppFramework.displayScaleFactor
-                        width: parent.width
+                        width: ListView.view.width
 
                         ColumnLayout {
                             anchors.fill: parent
@@ -171,9 +171,9 @@ Dialog {
                             enabled: true
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: Singletons.Config.buttonStates(parent)
+                                color: Singletons.Config.buttonStates(closeDialogBtn)
                                 radius: app.info.properties.mainButtonRadius
-                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.width: closeDialogBtn.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
                             }
 

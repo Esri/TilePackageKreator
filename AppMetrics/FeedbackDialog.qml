@@ -180,7 +180,7 @@ Dialog {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: Singletons.Config.buttonStates(parent, "major")
+                                color: Singletons.Config.buttonStates(cancelFeedbackBtn, "major")
                                 radius: app.info.properties.mainButtonRadius
                                 border.width: app.info.properties.mainButtonBorderWidth
                                 border.color: app.info.properties.mainButtonBorderColor
@@ -221,9 +221,9 @@ Dialog {
 
                             background: Rectangle {
                                 anchors.fill: parent
-                                color: Singletons.Config.buttonStates(parent)
+                                color: Singletons.Config.buttonStates(sendFeedbackBtn)
                                 radius: app.info.properties.mainButtonRadius
-                                border.width: parent.enabled ? app.info.properties.mainButtonBorderWidth : 0
+                                border.width: sendFeedbackBtn.enabled ? app.info.properties.mainButtonBorderWidth : 0
                                 border.color: app.info.properties.mainButtonBorderColor
                             }
 
